@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+
+    "name": "Your notifier",
+    "description": "This notificates you when selected data changes.",
+    "version": "1.0",
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": ["lib/jquery-2.0.3.min.js", "lib/underscore-min.js", "eventPage.js"],
+        "persistent": false
+    },
+    "permissions": [ "<all_urls>" , "storage", "alarms"],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <title>Getting Started Extension's Popup</title>
+    <link href="/css/main.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="lib/underscore-min.js"></script>
+    <script type="text/javascript" src="state.js"></script>
+    <script type="text/javascript" src="popup.js"></script>
+    <script type="text/javascript" src="edit_rule.js"></script>
+</head>
+<body>
+<div id="container">
+    <a id="create" href="#">Create rule</a>
+
+    <div id="edit-rule-div">
+        <label class="rule_edit" title="Title">
+            <span>Title:</span><input id="title" name="title"/>
+        </label>
+
+        <label class="rule_edit" title="Page URL">
+            <span>Page URL:</span><input id="url" name="url"/>
+        </label>
+        <label class="rule_edit" title="CSS Selector">
+            <span>CSS Selector:</span><input id="selector" name="selector">
+        </label>
+
+        <button class="btn_save" id="save" name="save">Save</button>
+    </div>
+
+    <div id="existing_rules"></div>
+</div>
+</body>
+</html>
+

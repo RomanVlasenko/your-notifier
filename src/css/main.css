@@ -1,0 +1,18 @@
+#container {
+    min-width: 400px;
+}
+
+#edit-rule-div {
+    display: none;
+    height: 100px;
+}
+
+.rule_edit {
+    float: left;
+}
+
+.btn_save {
+    float: right;
+    clear: both;
+}
+
