@@ -1,10 +1,19 @@
-your_notifier
+Your notifier
 =============
 
-<b>Your notifier</b> is a Chrome extension that helps to gather and monitor data from different sources.
+<b>Your notifier</b> is a Chrome extension that helps to gather and monitor data from different online sources
+
+###Dev Notes###
+This is very early version of extension and I was not familiar with Chrome API before, so please take it as it is and I'll do my best to make it better.
+
+####TODO####
+- Save history of data changes for every rule with
+- Add preview of web-page in popup or a link to it as a simpler solution
+- Notify user when data changes
+- Make app nicer (add Bootstrap or some other ready-made styling)
 
 ###How to Use###
-- Press <i>Create rule</i>
+- Press "Create rule"
 - Add some title for a page which you'd like to monitor
 - Add URL of that page
 - Add jQuery/CSS selector by which notifier will get particular piece of data you're interested in
