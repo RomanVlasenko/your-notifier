@@ -22,6 +22,7 @@ function closeRuleEditor() {
     $('#edit-rule-div').hide();
     $('#create').text("Create rule");
     persistStatePopup();
+    clearEditor();
 }
 
 function onSaveClick() {
@@ -29,6 +30,11 @@ function onSaveClick() {
     $('#edit-rule-div').hide();
     $('#create').text("Create rule");
 
+    clearEditor();
+}
+
+function clearEditor() {
+    $('#ruleId').val('');
     $('#title').val('');
     $('#url').val('');
     $('#selector').val('');
@@ -52,37 +58,36 @@ function saveRule() {
 
 }
 
-function updateRule(rule) {
+function updateRule(newRule) {
     chrome.storage.sync.get('rules', function (data) {
 
         var rules = data.rules;
 
         var oldRule = _.find(rules, function (r) {
-            return r.id == rule.id;
+            return r.id == newRule.id;
         });
 
-        oldRule.title = rule.title;
-        oldRule.url = rule.url;
-        oldRule.selector = rule.selector;
-        oldRule.value = rule.value;
+        oldRule.title = newRule.title;
+        oldRule.url = newRule.url;
+        oldRule.selector = newRule.selector;
+        oldRule.value = newRule.value;
 
         chrome.storage.sync.set({'rules': rules}, function () {
             persistStatePopup();
             check(newRule);
-            refreshList();
         });
     });
 }
 
-function createRule(rule) {
+function createRule(newRule) {
     chrome.storage.sync.get('counter', function (data) {
-        rule.id = data.counter;
+        newRule.id = data.counter;
     });
 
     chrome.storage.sync.get('rules', function (data) {
         var rules = data.rules;
         if (rules instanceof Array) {
-            rules.push(rule);
+            rules.push(newRule);
         } else {
             chrome.storage.sync.set({'counter': 0});
             rules = [];
@@ -94,8 +99,7 @@ function createRule(rule) {
                 chrome.storage.sync.set({'counter': data.counter + 1});
             });
             persistStatePopup();
-            check(rule);
-            refreshList();
+            check(newRule);
         });
     });
 }

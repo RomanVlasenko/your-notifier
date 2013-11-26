@@ -14,7 +14,6 @@ function restoreState() {
         if (state.page == 'edit') {
             restoreEdit();
         } else if (state.page == 'popup') {
-
         }
     });
 }
@@ -26,7 +25,6 @@ function restoreEdit() {
         openRuleEditor();
     });
 }
-
 
 //These functions should be executed on popup close event
 function persistStatePopup() {
