@@ -8,12 +8,16 @@
     <script type="text/javascript" src="state.js"></script>
     <script type="text/javascript" src="popup.js"></script>
     <script type="text/javascript" src="edit_rule.js"></script>
+    <script type="text/javascript" src="checker.js"></script>
 </head>
 <body>
 <div id="container">
     <a id="create" href="#">Create rule</a>
 
     <div id="edit-rule-div">
+
+        <input type="hidden" id="ruleId" />
+
         <label class="rule_edit" title="Title">
             <span>Title:</span><input id="title" name="title"/>
         </label>
