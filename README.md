@@ -18,7 +18,7 @@ I'd like to be aware of current price for new Kindle Fire from Amazon.
 - URL: <pre>http://www.amazon.com/Kindle-Fire-HDX-Display-Wi-Fi/dp/B00BWYQ9YE/ref=sr_tr_1?s=digital-text&ie=UTF8&qid=1385503461&sr=1-1&keywords=kindle+fire</pre>
 - CSS Selector: <pre>span#buyingPriceValue</pre>
 
-###Example1:###
+###Example2:###
 I'd like to be updated on Apple stocks price
 
 ####Rule:####
