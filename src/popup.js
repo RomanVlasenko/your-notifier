@@ -33,21 +33,33 @@ function refreshList() {
 }
 
 function createRuleControlDOM(rule) {
-    var ruleControlHtml = "<div class='rule-control' id='" + rule.id + "'>" +
-                          rule.title + "=" + rule.value + " [<a href='#' class='edit'>Edit</a>] "
-        + "[<a href='#' class='delete'>X</a>]</div>";
+    var ruleControlHtml = "<div class='row rule-control'>"
+                              + "<div id='title' class='col-xs-8'></div>"
+                              + "<div id='value' class='col-xs-1'></div>"
+                              + "<div id='buttons' class='col-xs-3'></div>"
+        + "</div>";
 
-    var ruleControlDOM = $(ruleControlHtml);
+    var buttonsHtml = "<div class='btn-group'>"
+                          + "<button id='edit' type='button' class='btn btn-default'>Edit</button>"
+                          + "<button id='delete' type='button' class='btn btn-default'>X</button>"
+        + "</div>";
 
-    ruleControlDOM.find(".edit").bind("click", function (e) {
+    var buttonsDiv = $(buttonsHtml);
+    buttonsDiv.find("#edit").bind("click", function (e) {
         onEditClick(e);
     });
 
-    ruleControlDOM.find(".delete").bind("click", function (e) {
+    buttonsDiv.find("#delete").bind("click", function (e) {
         onDeleteClick(e);
     });
 
-    return ruleControlDOM;
+    var ruleControlDiv = $(ruleControlHtml);
+    ruleControlDiv.attr("id", rule.id);
+    ruleControlDiv.find("#title").html(rule.title);
+    ruleControlDiv.find("#value").html(rule.value);
+    ruleControlDiv.find("#buttons").append(buttonsDiv);
+
+    return ruleControlDiv;
 }
 
 function onDeleteClick(e) {

@@ -1,5 +1,27 @@
+body {
+    background-color: #f2f2f2;
+}
 #container {
-    min-width: 400px;
+    min-width: 450px;
+    background-color: #eee;
+    padding: 1px;
+    border: 1px solid #ccc;
+    border-radius:5px;
+}
+
+button#create {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+button#save {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.input-group-addon {
+    min-width: 70px;
+    text-align: left;
 }
 
 #edit-rule-div {

@@ -9,7 +9,7 @@
         "default_popup": "popup.html"
     },
     "background": {
-        "scripts": ["lib/jquery-2.0.3.min.js", "lib/underscore-min.js", "eventPage.js"],
+        "scripts": ["lib/jquery-2.0.3.min.js", "lib/underscore-min.js", "lib/bootstrap.min.js", "eventPage.js"],
         "persistent": false
     },
     "permissions": [ "<all_urls>" , "storage", "alarms"],
