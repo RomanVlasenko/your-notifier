@@ -35,12 +35,12 @@ function refreshList() {
 function createRuleControlDOM(rule) {
     var ruleControlHtml = "<div class='row rule-control'>"
                               + "<div id='title' class='col-xs-7'></div>"
-                              + "<div id='value' class='col-xs-2'></div>"
-                              + "<div id='buttons' class='col-xs-3'></div>"
+                              + "<div id='value' class='col-xs-3'></div>"
+                              + "<div id='buttons' class='col-xs-2'></div>"
         + "</div>";
 
     var buttonsHtml = "<div class='btn-group btn-group-sm'>"
-                          + "<button id='edit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-pencil'></span> Edit</button>"
+                          + "<button id='edit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-pencil'></span></button>"
                           + "<button id='delete' type='button' class='btn btn-default'><span class='glyphicon glyphicon-remove'></span></button>"
         + "</div>";
 
