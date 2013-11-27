@@ -2,15 +2,11 @@ var STATE = 'state';
 var EDIT_MODE = 'edit';
 var NORMAL_MODE = 'popup';
 
-chrome.runtime.onSuspend.addListener(function () {
-    alert("close");
-});
-
 $(document).ready(function () {
 
     restoreState();
 
-    $('#title, #url, #selector').change(function (e) {
+    $("#title, #url, #selector").on("input change keydown paste", function (e) {
         persistStateEdit();
     });
 

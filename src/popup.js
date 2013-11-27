@@ -48,7 +48,7 @@ function createRuleControlDOM(rule) {
     var buttonsDiv = $(buttonsHtml);
 
     ruleControlDiv.attr("id", rule.id);
-    ruleControlDiv.find("#title").html("<a id='url' href=''#'>" + rule.title + "</a>");
+    ruleControlDiv.find("#title").html("<a id='url' href=''#' title='" + rule.title + "'>" + rule.title + "</a>");
     ruleControlDiv.find("#value").html(rule.value);
     ruleControlDiv.find("#buttons").append(buttonsDiv);
 
