@@ -10,7 +10,6 @@ This is very early version of extension and I was not familiar with Chrome API b
 - Save history of data changes for every rule 
 - Add preview of web-page in popup or a link to it as a simpler solution
 - Notify user when data changes
-- Make app nicer (add Bootstrap or some other ready-made styling)
 
 ###How to Use###
 - Press "Create rule"
