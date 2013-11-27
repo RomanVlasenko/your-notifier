@@ -1,12 +1,40 @@
 body {
     background-color: #f2f2f2;
 }
+
 #container {
-    min-width: 450px;
+    max-width: 100%;
+    min-width: 500px;
     background-color: #eee;
     padding: 1px;
     border: 1px solid #ccc;
-    border-radius:5px;
+    border-radius: 5px;
+}
+
+a {
+    text-decoration: none;
+    border-bottom: 1px dashed;
+}
+
+#existing_rules {
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.rule-buttons {
+    display: inline;
+}
+
+div#title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #428bca;
+}
+
+div#value {
+    white-space: nowrap;
 }
 
 button#create {
@@ -26,15 +54,15 @@ button#save {
 
 #edit-rule-div {
     display: none;
-    height: 100px;
 }
 
-.rule_edit {
-    float: left;
+/*Bootstrap columns without spaces*/
+div {
+    padding-left: 0;
+    padding-right: 0;
 }
 
-.btn_save {
-    float: right;
-    clear: both;
+.row {
+    margin-left: 0;
+    margin-right: 0;
 }
-

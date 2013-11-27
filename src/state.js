@@ -1,3 +1,11 @@
+var STATE = 'state';
+var EDIT_MODE = 'edit';
+var NORMAL_MODE = 'popup';
+
+chrome.runtime.onSuspend.addListener(function () {
+    alert("close");
+});
+
 $(document).ready(function () {
 
     restoreState();
@@ -9,17 +17,16 @@ $(document).ready(function () {
 });
 
 function restoreState() {
-    chrome.storage.sync.get('state', function (data) {
+    chrome.storage.sync.get(STATE, function (data) {
         var state = data.state;
-        if (state.page == 'edit') {
+        if (state.page == EDIT_MODE) {
             restoreEdit();
-        } else if (state.page == 'popup') {
         }
     });
 }
 
 function restoreEdit() {
-    chrome.storage.sync.get('state', function (data) {
+    chrome.storage.sync.get(STATE, function (data) {
         var state = data.state;
         setRule(state.data.rule);
         openRuleEditor();
@@ -29,14 +36,14 @@ function restoreEdit() {
 //These functions should be executed on popup close event
 function persistStatePopup() {
     var state = {
-        page: 'popup'
+        page: NORMAL_MODE
     };
     chrome.storage.sync.set({'state': state});
 }
 
 function persistStateEdit() {
     var state = {
-        page: 'edit',
+        page: EDIT_MODE,
         data: {
             rule: getRule()
         }

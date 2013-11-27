@@ -34,17 +34,24 @@ function refreshList() {
 
 function createRuleControlDOM(rule) {
     var ruleControlHtml = "<div class='row rule-control'>"
-                              + "<div id='title' class='col-xs-8'></div>"
-                              + "<div id='value' class='col-xs-1'></div>"
+                              + "<div id='title' class='col-xs-7'></div>"
+                              + "<div id='value' class='col-xs-2'></div>"
                               + "<div id='buttons' class='col-xs-3'></div>"
         + "</div>";
 
-    var buttonsHtml = "<div class='btn-group'>"
-                          + "<button id='edit' type='button' class='btn btn-default'>Edit</button>"
-                          + "<button id='delete' type='button' class='btn btn-default'>X</button>"
+    var buttonsHtml = "<div class='btn-group btn-group-sm'>"
+                          + "<button id='edit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-pencil'></span> Edit</button>"
+                          + "<button id='delete' type='button' class='btn btn-default'><span class='glyphicon glyphicon-remove'></span></button>"
         + "</div>";
 
+    var ruleControlDiv = $(ruleControlHtml);
     var buttonsDiv = $(buttonsHtml);
+
+    ruleControlDiv.attr("id", rule.id);
+    ruleControlDiv.find("#title").html("<a id='url' href=''#'>" + rule.title + "</a>");
+    ruleControlDiv.find("#value").html(rule.value);
+    ruleControlDiv.find("#buttons").append(buttonsDiv);
+
     buttonsDiv.find("#edit").bind("click", function (e) {
         onEditClick(e);
     });
@@ -53,11 +60,13 @@ function createRuleControlDOM(rule) {
         onDeleteClick(e);
     });
 
-    var ruleControlDiv = $(ruleControlHtml);
-    ruleControlDiv.attr("id", rule.id);
-    ruleControlDiv.find("#title").html(rule.title);
-    ruleControlDiv.find("#value").html(rule.value);
-    ruleControlDiv.find("#buttons").append(buttonsDiv);
+    buttonsDiv.find("#edit").bind("click", function (e) {
+        onEditClick(e);
+    });
+
+    ruleControlDiv.find("a#url").bind("click", function (e) {
+        chrome.tabs.create({url: rule.url});
+    });
 
     return ruleControlDiv;
 }

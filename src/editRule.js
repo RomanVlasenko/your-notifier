@@ -14,7 +14,7 @@ $(document).ready(function () {
 });
 
 function openRuleEditor() {
-    $('#edit-rule-div').slideDown('fast');
+    $('#edit-rule-div').show();
     $('#create').text("Close");
     persistStateEdit();
 }
