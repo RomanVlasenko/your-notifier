@@ -14,11 +14,14 @@ $(document).ready(function () {
 });
 
 function openRuleEditor() {
+    markRuleAsEditable(getRule());
     $('#edit-rule-div').slideDown("fast");
     $('#create').hide();
     persistStateEdit();
 }
+
 function closeRuleEditor() {
+    $(".rule-control[id=" + getRule().id + "]").toggleClass("edit", false);
     $('#edit-rule-div').hide();
     $('#create').show();
     persistStatePopup();
@@ -36,6 +39,12 @@ function clearEditor() {
     $('#title').val('');
     $('#url').val('');
     $('#selector').val('');
+}
+
+function markRuleAsEditable(rule) {
+    _.each($(".rule-control"), function (e) {
+        $(e).toggleClass("edit", rule.id == $(e).attr("id"));
+    });
 }
 
 function saveRule() {

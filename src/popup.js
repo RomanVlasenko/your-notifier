@@ -41,37 +41,33 @@ function refreshRuleControls() {
 
 function createRuleControlDOM(rule) {
     var ruleControlHtml = "<div class='row rule-control'>"
-                              + "<div id='title' class='col-xs-7'></div>"
-                              + "<div id='value' class='col-xs-3'></div>"
-                              + "<div id='buttons' class='col-xs-2'></div>"
+                              + "<div class='title col-xs-7'></div>"
+                              + "<div class='value col-xs-3'></div>"
+                              + "<div class='buttons col-xs-2'></div>"
         + "</div>";
 
-    var buttonsHtml = "<div class='btn-group btn-group-sm'>"
-                          + "<button id='edit' type='button' class='btn btn-default'><span class='glyphicon glyphicon-pencil'></span></button>"
-                          + "<button id='delete' type='button' class='btn btn-default'><span class='glyphicon glyphicon-remove'></span></button>"
+    var buttonsHtml = "<div class='rule-buttons btn-group btn-group-sm'>"
+                          + "<button type='button' class='edit btn'><span class='glyphicon glyphicon-pencil'></span></button>"
+                          + "<button type='button' class='delete btn'><span class='glyphicon glyphicon-remove'></span></button>"
         + "</div>";
 
     var ruleControlDiv = $(ruleControlHtml);
     var buttonsDiv = $(buttonsHtml);
 
     ruleControlDiv.attr("id", rule.id);
-    ruleControlDiv.find("#title").html("<a id='url' href=''#' title='" + rule.title + "'>" + rule.title + "</a>");
-    ruleControlDiv.find("#value").html("<span title='" + rule.value + "'>" + rule.value + "</span>");
-    ruleControlDiv.find("#buttons").append(buttonsDiv);
+    ruleControlDiv.find(".title").html("<a class='url' href=''#' title='" + rule.title + "'>" + rule.title + "</a>");
+    ruleControlDiv.find(".value").html("<span title='" + rule.value + "'>" + rule.value + "</span>");
+    ruleControlDiv.find(".buttons").append(buttonsDiv);
 
-    buttonsDiv.find("#edit").bind("click", function (e) {
-        onEditClick(e);
-    });
-
-    buttonsDiv.find("#delete").bind("click", function (e) {
+    buttonsDiv.find("button.delete").bind("click", function (e) {
         onDeleteClick(e);
     });
 
-    buttonsDiv.find("#edit").bind("click", function (e) {
+    buttonsDiv.find("button.edit").bind("click", function (e) {
         onEditClick(e);
     });
 
-    ruleControlDiv.find("a#url").bind("click", function (e) {
+    ruleControlDiv.find("a.url").bind("click", function (e) {
         chrome.tabs.create({url: rule.url});
     });
 
@@ -105,3 +101,4 @@ function onEditClick(e) {
         openRuleEditor();
     });
 }
+

@@ -22,18 +22,26 @@ a,a:hover {
     padding: 5px;
 }
 
-.rule-buttons {
-    display: inline;
+.rule-buttons > button.btn:hover {
+    background-color: transparent;
 }
 
-div#title {
+.rule-buttons > button.btn{
+    margin-left: 1px !important;
+}
+
+.rule-buttons {
+    margin-top: 1px;
+}
+
+div.title {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     color: #428bca;
 }
 
-div#value {
+div.value {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -47,6 +55,10 @@ button#create {
 button#save {
     margin-top: 2px;
     margin-bottom: 2px;
+}
+
+.rule-control.edit a, .rule-control.edit button.edit {
+    color: #8F0000;
 }
 
 .input-group-addon {
