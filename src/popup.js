@@ -1,6 +1,6 @@
 $(document).ready(function () {
     initExtension();
-    refreshList();
+    refreshRuleControls();
 });
 
 //Initializing storage structure when app starts first time
@@ -20,15 +20,22 @@ function initExtension() {
     });
 }
 
-function refreshList() {
-    var existingRules = $('#existing_rules').empty();
+function refreshRuleControls() {
+    var oldRuleList = $('#existing-rules');
+    var refreshedRuleList = oldRuleList.clone().empty();
+
     chrome.storage.sync.get('rules', function (data) {
         var rules = data.rules;
-        $.each(rules, function (index, rule) {
-            var control = createRuleControlDOM(rule);
-            existingRules.append(control);
-        });
+        if (rules.length > 0) {
+            $.each(rules, function (index, rule) {
+                var control = createRuleControlDOM(rule);
+                refreshedRuleList.append(control);
+            });
+        } else {
+            refreshedRuleList.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
+        }
 
+        oldRuleList.replaceWith(refreshedRuleList);
     });
 }
 
@@ -49,7 +56,7 @@ function createRuleControlDOM(rule) {
 
     ruleControlDiv.attr("id", rule.id);
     ruleControlDiv.find("#title").html("<a id='url' href=''#' title='" + rule.title + "'>" + rule.title + "</a>");
-    ruleControlDiv.find("#value").html(rule.value);
+    ruleControlDiv.find("#value").html("<span title='" + rule.value + "'>" + rule.value + "</span>");
     ruleControlDiv.find("#buttons").append(buttonsDiv);
 
     buttonsDiv.find("#edit").bind("click", function (e) {
@@ -81,7 +88,7 @@ function onDeleteClick(e) {
         });
         chrome.storage.sync.set({'rules': rules});
 
-        refreshList();
+        refreshRuleControls();
     });
 }
 

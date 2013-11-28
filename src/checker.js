@@ -2,8 +2,11 @@ function check(rule) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
-            rule.value = $($.parseHTML(xhr.responseText)).find(rule.selector).text();
-            updateRuleValue(rule);
+            var newVal = $($.parseHTML(xhr.responseText)).find(rule.selector).text();
+            if (newVal) {
+                rule.value = newVal;
+                updateRuleValue(rule);
+            }
         }
     };
     xhr.open('GET', rule.url, true);
@@ -22,7 +25,7 @@ function updateRuleValue(rule) {
         oldRule.value = rule.value;
 
         chrome.storage.sync.set({'rules': rules}, function () {
-            refreshList();
+            refreshRuleControls();
         });
     });
 }

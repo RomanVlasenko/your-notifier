@@ -1,11 +1,11 @@
 $(document).ready(function () {
 
     $('#create').click(function (e) {
-        if ($("#edit-rule-div").is(":hidden")) {
-            openRuleEditor();
-        } else {
-            closeRuleEditor();
-        }
+        openRuleEditor();
+    });
+
+    $('#cancel').click(function (e) {
+        closeRuleEditor();
     });
 
     $('#save').click(function () {
@@ -14,13 +14,13 @@ $(document).ready(function () {
 });
 
 function openRuleEditor() {
-    $('#edit-rule-div').show();
-    $('#create').text("Close");
+    $('#edit-rule-div').slideDown("fast");
+    $('#create').hide();
     persistStateEdit();
 }
 function closeRuleEditor() {
     $('#edit-rule-div').hide();
-    $('#create').text("Create rule");
+    $('#create').show();
     persistStatePopup();
     clearEditor();
 }
@@ -28,8 +28,6 @@ function closeRuleEditor() {
 function onSaveClick() {
     saveRule();
     $('#edit-rule-div').hide();
-    $('#create').text("Create rule");
-
     clearEditor();
 }
 

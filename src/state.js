@@ -24,8 +24,13 @@ function restoreState() {
 function restoreEdit() {
     chrome.storage.sync.get(STATE, function (data) {
         var state = data.state;
-        setRule(state.data.rule);
-        openRuleEditor();
+        var rule = state.data.rule;
+
+        //Don't open editor when all fields are empty
+        if (!(!rule.title && !rule.url && !rule.selector)) {
+            setRule(rule);
+            openRuleEditor();
+        }
     });
 }
 
