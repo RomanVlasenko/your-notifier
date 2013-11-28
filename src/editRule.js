@@ -31,7 +31,7 @@ function closeRuleEditor() {
 function onSaveClick() {
     saveRule();
     $('#edit-rule-div').hide();
-    clearEditor();
+    closeRuleEditor()
 }
 
 function clearEditor() {
