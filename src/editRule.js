@@ -81,7 +81,7 @@ function updateRule(newRule) {
 
         chrome.storage.sync.set({'rules': rules}, function () {
             persistStatePopup();
-            check(newRule);
+            checkAndUpdate(newRule);
         });
     });
 }
@@ -106,7 +106,7 @@ function createRule(newRule) {
                 chrome.storage.sync.set({'counter': data.counter + 1});
             });
             persistStatePopup();
-            check(newRule);
+            checkAndUpdate(newRule);
         });
     });
 }
