@@ -1,4 +1,5 @@
 var storage = chrome.storage.sync;
+var tabs = chrome.tabs;
 
 var ruleControlDiv;
 var buttonsDiv;
@@ -82,8 +83,8 @@ function createRuleControlDOM(rule) {
         onCloneClick(rule);
     });
 
-    buttons.find("a.url").bind("click", function () {
-        chrome.tabs.create({url: rule.url});
+    ruleControl.find("a.url").bind("click", function () {
+        tabs.create({url: rule.url});
     });
 
     return ruleControl;
