@@ -12,7 +12,7 @@ $(document).ready(function () {
 function checkAndUpdate(rule) {
     $.get(rule.url, function (data) {
         var newVal = $(data).find(rule.selector).text().trim();
-        if (newVal && newVal != rule.value) {
+        if (newVal != 'undefined' && newVal != rule.value) {
             rule.value = newVal;
             updateRuleValue(rule);
         }

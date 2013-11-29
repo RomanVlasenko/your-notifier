@@ -37,39 +37,44 @@ function refreshRuleControls() {
         } else {
             refreshedRuleList.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
         }
+
         oldRuleList.replaceWith(refreshedRuleList);
     });
 }
 
 function createRuleControlDOM(rule) {
-    var ruleControlHtml = "<div class='row rule-control'>"
-                              + "<div class='title col-xs-7'></div>"
-                              + "<div class='value col-xs-3'></div>"
-                              + "<div class='buttons col-xs-2'></div>"
-        + "</div>";
-
-    var buttonsHtml = "<div class='rule-buttons btn-group btn-group-sm'>"
-                          + "<button type='button' class='edit btn'><span class='glyphicon glyphicon-pencil'></span></button>"
-                          + "<button type='button' class='delete btn'><span class='glyphicon glyphicon-remove'></span></button>"
-        + "</div>";
-
-    var ruleControlDiv = $(ruleControlHtml);
-    var buttonsDiv = $(buttonsHtml);
+//    Build DOM
+    var ruleControlDiv = $(".rule-control").clone();
+    var buttonsDiv = $(".rule-buttons").clone();
+    var additionalButtonsDiv = $(".rule-buttons-more").clone();
 
     ruleControlDiv.attr("id", rule.id);
     ruleControlDiv.find(".title").html("<a class='url' href=''#' title='" + rule.title + "'>" + rule.title + "</a>");
     ruleControlDiv.find(".value").html("<span title='" + rule.value + "'>" + rule.value + "</span>");
     ruleControlDiv.find(".buttons").append(buttonsDiv);
 
-    buttonsDiv.find("button.delete").bind("click", function (e) {
+    ruleControlDiv.append(additionalButtonsDiv.attr("id", rule.id));
+
+//    Add click listeners
+    buttonsDiv.find("button.edit").bind("click", function (e) {
+        onEditClick(rule);
+    });
+
+    buttonsDiv.find("button.settings").bind("click", function () {
+        onMoreSettingsClick(additionalButtonsDiv);
+    });
+
+    additionalButtonsDiv.find("button.delete").bind("click", function (e) {
+        additionalButtonsDiv.hide();
         onDeleteClick(e);
     });
 
-    buttonsDiv.find("button.edit").bind("click", function (e) {
-        onEditClick(e);
+    additionalButtonsDiv.find("button.clone").bind("click", function () {
+        additionalButtonsDiv.hide();
+        onCloneClick(rule);
     });
 
-    ruleControlDiv.find("a.url").bind("click", function (e) {
+    buttonsDiv.find("a.url").bind("click", function () {
         chrome.tabs.create({url: rule.url});
     });
 
@@ -90,17 +95,26 @@ function onDeleteClick(e) {
     });
 }
 
-function onEditClick(e) {
-    var ruleId = $(e.target).closest('.rule-control').attr('id');
-
-    storage.get('rules', function (data) {
-        var rules = data.rules;
-        var editableRule = _.find(rules, function (r) {
-            return r.id == ruleId
-        });
-
-        setRule(editableRule);
-        openRuleEditor();
-    });
+function onCloneClick(rule) {
+    var clonedRule = _.clone(rule);
+    clonedRule.id = '';
+    setRule(clonedRule);
+    openRuleEditor();
 }
 
+function onEditClick(rule) {
+    setRule(rule);
+    openRuleEditor();
+    markRuleAsEditable(rule);
+}
+
+function onMoreSettingsClick(additionalButtonsDiv) {
+    $(".rule-buttons-more").each(function (i, e) {
+        var btnDiv = $(e);
+        if (btnDiv.attr("id") == additionalButtonsDiv.attr("id")) {
+            additionalButtonsDiv.slideToggle("fast");
+        } else {
+            btnDiv.slideUp("fast");
+        }
+    });
+}

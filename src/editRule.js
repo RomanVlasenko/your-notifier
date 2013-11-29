@@ -16,7 +16,6 @@ $(document).ready(function () {
 });
 
 function openRuleEditor() {
-    markRuleAsEditable(getRule());
     $('#edit-rule-div').slideDown("fast");
     $('#create').hide();
     persistStateEdit();
