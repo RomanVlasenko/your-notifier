@@ -1,45 +1,13 @@
-$(document).ready(function (e) {
+var storage = chrome.storage.sync;
+
+$(document).ready(function () {
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
             if (request.msg == "timeToCheck") {
-                performScheduledChecking();
+                refreshRuleControls();
             }
         });
 });
-
-function performScheduledChecking() {
-
-    var rulesChecked = [];
-
-    chrome.storage.sync.get('rules', function (data) {
-        var rules = data.rules;
-        $.each(rules, function (index, rule) {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    var newVal = $($.parseHTML(xhr.responseText)).find(rule.selector).text();
-                    if (newVal) {
-                        rule.value = newVal;
-                    }
-                }
-            };
-            xhr.open('GET', rule.url, true);
-            xhr.send(null);
-
-            rulesChecked.push(rules);
-            if (rulesChecked.length == rules.length) {
-                sync(rules);
-            }
-        });
-
-    });
-}
-
-function sync(rules) {
-    chrome.storage.sync.set({'rules': rules}, function () {
-        refreshRuleControls();
-    });
-}
 
 function checkAndUpdate(rule) {
     var xhr = new XMLHttpRequest();
@@ -57,7 +25,7 @@ function checkAndUpdate(rule) {
 }
 
 function updateRuleValue(rule) {
-    chrome.storage.sync.get('rules', function (data) {
+    storage.get('rules', function (data) {
 
         var rules = data.rules;
 
@@ -67,7 +35,7 @@ function updateRuleValue(rule) {
 
         oldRule.value = rule.value;
 
-        chrome.storage.sync.set({'rules': rules}, function () {
+        storage.set({'rules': rules}, function () {
             refreshRuleControls();
         });
     });

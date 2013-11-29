@@ -2,18 +2,19 @@ var STATE = 'state';
 var EDIT_MODE = 'edit';
 var NORMAL_MODE = 'popup';
 
-$(document).ready(function () {
+var storage = chrome.storage.local;
 
+$(document).ready(function () {
     restoreState();
 
-    $("#title, #url, #selector").on("input change keydown paste", function (e) {
+    $("#title, #url, #selector").on("input", function () {
         persistStateEdit();
     });
 
 });
 
 function restoreState() {
-    chrome.storage.sync.get(STATE, function (data) {
+    storage.get(STATE, function (data) {
         var state = data.state;
         if (state.page == EDIT_MODE) {
             restoreEdit();
@@ -22,11 +23,11 @@ function restoreState() {
 }
 
 function restoreEdit() {
-    chrome.storage.sync.get(STATE, function (data) {
+    storage.get(STATE, function (data) {
         var state = data.state;
         var rule = state.data.rule;
 
-        //Don't open editor when all fields are empty
+        //Don't open editor if all fields are empty
         if (!(!rule.title && !rule.url && !rule.selector)) {
             setRule(rule);
             openRuleEditor();
@@ -39,7 +40,7 @@ function persistStatePopup() {
     var state = {
         page: NORMAL_MODE
     };
-    chrome.storage.sync.set({'state': state});
+    storage.set({'state': state});
 }
 
 function persistStateEdit() {
@@ -49,5 +50,5 @@ function persistStateEdit() {
             rule: getRule()
         }
     };
-    chrome.storage.sync.set({'state': state});
+    storage.set({'state': state});
 }

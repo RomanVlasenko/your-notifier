@@ -1,3 +1,5 @@
+var storage = chrome.storage.sync;
+
 $(document).ready(function () {
     initExtension();
     refreshRuleControls();
@@ -5,15 +7,15 @@ $(document).ready(function () {
 
 //Initializing storage structure when app starts first time
 function initExtension() {
-    chrome.storage.sync.get('rules', function (data) {
+    storage.get('rules', function (data) {
         var rules = data.rules;
         if (!(rules instanceof Array)) {
-            chrome.storage.sync.set({'counter': 0});
+            storage.set({'counter': 0});
             rules = [];
 
-            chrome.storage.sync.set({'rules': rules}, function () {
-                chrome.storage.sync.get('counter', function (data) {
-                    chrome.storage.sync.set({'counter': data.counter});
+            storage.set({'rules': rules}, function () {
+                storage.get('counter', function (data) {
+                    storage.set({'counter': data.counter});
                 });
             });
         }
@@ -24,17 +26,17 @@ function refreshRuleControls() {
     var oldRuleList = $('#existing-rules');
     var refreshedRuleList = oldRuleList.clone().empty();
 
-    chrome.storage.sync.get('rules', function (data) {
+    storage.get('rules', function (data) {
         var rules = data.rules;
         if (rules.length > 0) {
-            $.each(rules, function (index, rule) {
+            _.each(rules, function (rule) {
                 var control = createRuleControlDOM(rule);
                 refreshedRuleList.append(control);
             });
+
         } else {
             refreshedRuleList.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
         }
-
         oldRuleList.replaceWith(refreshedRuleList);
     });
 }
@@ -77,12 +79,12 @@ function createRuleControlDOM(rule) {
 function onDeleteClick(e) {
     var ruleId = $(e.target).closest('.rule-control').attr('id');
 
-    chrome.storage.sync.get('rules', function (data) {
+    storage.get('rules', function (data) {
         var rules = data.rules;
         rules = _.reject(rules, function (r) {
             return r.id == ruleId
         });
-        chrome.storage.sync.set({'rules': rules});
+        storage.set({'rules': rules});
 
         refreshRuleControls();
     });
@@ -91,7 +93,7 @@ function onDeleteClick(e) {
 function onEditClick(e) {
     var ruleId = $(e.target).closest('.rule-control').attr('id');
 
-    chrome.storage.sync.get('rules', function (data) {
+    storage.get('rules', function (data) {
         var rules = data.rules;
         var editableRule = _.find(rules, function (r) {
             return r.id == ruleId

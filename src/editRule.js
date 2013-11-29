@@ -1,3 +1,5 @@
+var storage = chrome.storage.sync;
+
 $(document).ready(function () {
 
     $('#create').click(function (e) {
@@ -50,7 +52,7 @@ function markRuleAsEditable(rule) {
 function saveRule() {
     var newRule = getRule();
 
-    chrome.storage.sync.get('rules', function (data) {
+    storage.get('rules', function (data) {
         var rules = data.rules;
         var existingRule = _.find(rules, function (r) {
             return r.id == newRule.id;
@@ -66,7 +68,7 @@ function saveRule() {
 }
 
 function updateRule(newRule) {
-    chrome.storage.sync.get('rules', function (data) {
+    storage.get('rules', function (data) {
 
         var rules = data.rules;
 
@@ -79,7 +81,7 @@ function updateRule(newRule) {
         oldRule.selector = newRule.selector;
         oldRule.value = newRule.value;
 
-        chrome.storage.sync.set({'rules': rules}, function () {
+        storage.set({'rules': rules}, function () {
             persistStatePopup();
             checkAndUpdate(newRule);
         });
@@ -87,23 +89,23 @@ function updateRule(newRule) {
 }
 
 function createRule(newRule) {
-    chrome.storage.sync.get('counter', function (data) {
+    storage.get('counter', function (data) {
         newRule.id = data.counter;
     });
 
-    chrome.storage.sync.get('rules', function (data) {
+    storage.get('rules', function (data) {
         var rules = data.rules;
         if (rules instanceof Array) {
             rules.push(newRule);
         } else {
-            chrome.storage.sync.set({'counter': 0});
+            storage.set({'counter': 0});
             rules = [];
         }
 
         //Save rules and increment counter
-        chrome.storage.sync.set({'rules': rules}, function () {
-            chrome.storage.sync.get('counter', function (data) {
-                chrome.storage.sync.set({'counter': data.counter + 1});
+        storage.set({'rules': rules}, function () {
+            storage.get('counter', function (data) {
+                storage.set({'counter': data.counter + 1});
             });
             persistStatePopup();
             checkAndUpdate(newRule);
