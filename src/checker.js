@@ -10,18 +10,13 @@ $(document).ready(function () {
 });
 
 function checkAndUpdate(rule) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            var newVal = $($.parseHTML(xhr.responseText)).find(rule.selector).text();
-            if (newVal) {
-                rule.value = newVal;
-                updateRuleValue(rule);
-            }
+    $.get(rule.url, function (data) {
+        var newVal = $(data).find(rule.selector).text().trim();
+        if (newVal && newVal != rule.value) {
+            rule.value = newVal;
+            updateRuleValue(rule);
         }
-    };
-    xhr.open('GET', rule.url, true);
-    xhr.send(null);
+    });
 }
 
 function updateRuleValue(rule) {

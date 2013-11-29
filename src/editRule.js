@@ -69,7 +69,6 @@ function saveRule() {
 
 function updateRule(newRule) {
     storage.get('rules', function (data) {
-
         var rules = data.rules;
 
         var oldRule = _.find(rules, function (r) {
@@ -96,7 +95,7 @@ function createRule(newRule) {
     storage.get('rules', function (data) {
         var rules = data.rules;
         if (rules instanceof Array) {
-            newRule.unshift(rules);
+            rules.unshift(newRule);
         } else {
             storage.set({'counter': 0});
             rules = [];
