@@ -1,8 +1,17 @@
 var storage = chrome.storage.sync;
 
+var ruleControlDiv;
+var buttonsDiv;
+var additionalButtonsDiv;
+
 $(document).ready(function () {
     initExtension();
     refreshRuleControls();
+
+    var controls = $("#controls");
+    ruleControlDiv = controls.find(".rule-control");
+    buttonsDiv = controls.find(".rule-buttons");
+    additionalButtonsDiv = controls.find(".rule-buttons-more");
 });
 
 //Initializing storage structure when app starts first time
@@ -33,7 +42,6 @@ function refreshRuleControls() {
                 var control = createRuleControlDOM(rule);
                 refreshedRuleList.append(control);
             });
-
         } else {
             refreshedRuleList.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
         }
@@ -44,41 +52,41 @@ function refreshRuleControls() {
 
 function createRuleControlDOM(rule) {
 //    Build DOM
-    var ruleControlDiv = $(".rule-control").clone();
-    var buttonsDiv = $(".rule-buttons").clone();
-    var additionalButtonsDiv = $(".rule-buttons-more").clone();
+    var ruleControl = ruleControlDiv.clone();
+    var buttons = buttonsDiv.clone();
+    var additionalButtons = additionalButtonsDiv.clone();
 
-    ruleControlDiv.attr("id", rule.id);
-    ruleControlDiv.find(".title").html("<a class='url' href=''#' title='" + rule.title + "'>" + rule.title + "</a>");
-    ruleControlDiv.find(".value").html("<span title='" + rule.value + "'>" + rule.value + "</span>");
-    ruleControlDiv.find(".buttons").append(buttonsDiv);
+    ruleControl.attr("id", rule.id);
+    ruleControl.find(".title").html("<a class='url' href=''#' title='" + rule.title + "'>" + rule.title + "</a>");
+    ruleControl.find(".value").html("<span title='" + rule.value + "'>" + rule.value + "</span>");
+    ruleControl.find(".buttons").append(buttons);
 
-    ruleControlDiv.append(additionalButtonsDiv.attr("id", rule.id));
+    ruleControl.append(additionalButtons.attr("id", rule.id));
 
 //    Add click listeners
-    buttonsDiv.find("button.edit").bind("click", function (e) {
+    buttons.find("button.edit").bind("click", function (e) {
         onEditClick(rule);
     });
 
-    buttonsDiv.find("button.settings").bind("click", function () {
-        onMoreSettingsClick(additionalButtonsDiv);
+    buttons.find("button.settings").bind("click", function () {
+        onMoreSettingsClick(additionalButtons);
     });
 
-    additionalButtonsDiv.find("button.delete").bind("click", function (e) {
-        additionalButtonsDiv.hide();
+    additionalButtons.find("button.delete").bind("click", function (e) {
+        additionalButtons.hide();
         onDeleteClick(e);
     });
 
-    additionalButtonsDiv.find("button.clone").bind("click", function () {
-        additionalButtonsDiv.hide();
+    additionalButtons.find("button.clone").bind("click", function () {
+        additionalButtons.hide();
         onCloneClick(rule);
     });
 
-    buttonsDiv.find("a.url").bind("click", function () {
+    buttons.find("a.url").bind("click", function () {
         chrome.tabs.create({url: rule.url});
     });
 
-    return ruleControlDiv;
+    return ruleControl;
 }
 
 function onDeleteClick(e) {
