@@ -52,7 +52,7 @@ function markRuleAsEditable(rule) {
 function saveRule() {
     var newRule = getRule();
 
-    storage.get('rules', function (data) {
+   storage.get('rules', function (data) {
         var rules = data.rules;
         var existingRule = _.find(rules, function (r) {
             return r.id == newRule.id;
@@ -96,7 +96,7 @@ function createRule(newRule) {
     storage.get('rules', function (data) {
         var rules = data.rules;
         if (rules instanceof Array) {
-            rules.push(newRule);
+            newRule.unshift(rules);
         } else {
             storage.set({'counter': 0});
             rules = [];

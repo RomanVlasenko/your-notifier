@@ -26,9 +26,7 @@ function checkAndUpdate(rule) {
 
 function updateRuleValue(rule) {
     storage.get('rules', function (data) {
-
         var rules = data.rules;
-
         var oldRule = _.find(rules, function (r) {
             return r.id == rule.id;
         });
