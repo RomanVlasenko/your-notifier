@@ -13,7 +13,7 @@
     <script type="text/javascript" src="state.js"></script>
     <script type="text/javascript" src="popup.js"></script>
     <script type="text/javascript" src="editRule.js"></script>
-    <script type="text/javascript" src="sourceChecker.js"></script>
+    <script type="text/javascript" src="urlChecker.js"></script>
 </head>
 <body>
 <div id="container">
@@ -52,8 +52,8 @@
 <div id="controls" style="display: none">
     <div class='rule-control'>
         <div class="row">
-            <div class='title col-xs-7'></div>
-            <div class='value col-xs-3'></div>
+            <div class='title col-xs-7'><a class="url" href="#"></a></div>
+            <div class='value col-xs-3'><span></span></div>
             <div class='buttons col-xs-2'></div>
         </div>
     </div>
@@ -66,8 +66,12 @@
     <div class='row rule-buttons-more'>
         <div class='title col-xs-12'>
             <div class="pull-right">
-                <button type='button' class='clone btn btn-small'><span class='glyphicon glyphicon-upload'></span> Clone</button>
-                <button type='button' class='delete btn btn-small'><span class='glyphicon glyphicon-trash'></span> Delete </button>
+                <button type='button' class='clone btn btn-small'>
+                    <span class='glyphicon glyphicon-upload'></span> Clone
+                </button>
+                <button type='button' class='delete btn btn-small'>
+                    <span class='glyphicon glyphicon-trash'></span> Delete
+                </button>
             </div>
         </div>
     </div>

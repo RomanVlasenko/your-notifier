@@ -15,6 +15,13 @@ $(document).ready(function () {
     additionalButtonsDiv = controls.find(".rule-buttons-more");
 });
 
+chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
+        if (request.msg == "refreshList") {
+            refreshRuleControls();
+        }
+    });
+
 //Initializing storage structure when app starts first time
 function initExtension() {
     storage.get('rules', function (data) {
@@ -58,8 +65,8 @@ function createRuleControlDOM(rule) {
     var additionalButtons = additionalButtonsDiv.clone();
 
     ruleControl.attr("id", rule.id);
-    ruleControl.find(".title").html("<a class='url' href=''#' title='" + rule.title + "'>" + rule.title + "</a>");
-    ruleControl.find(".value").html("<span title='" + rule.value + "'>" + rule.value + "</span>");
+    ruleControl.find(".title a").attr("title", rule.title).text(rule.title);
+    ruleControl.find(".value span").text(rule.value);
     ruleControl.find(".buttons").append(buttons);
 
     ruleControl.append(additionalButtons.attr("id", rule.id));
@@ -125,5 +132,11 @@ function onMoreSettingsClick(additionalButtonsDiv) {
         } else {
             btnDiv.slideUp("fast");
         }
+    });
+}
+
+function closeAdditionalButtons() {
+    $(".rule-buttons-more").each(function (i, e) {
+        $(e).hide();
     });
 }

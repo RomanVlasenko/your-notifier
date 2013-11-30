@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Your notifier",
-    "description": "This notificates you when selected data changes.",
+    "description": "Notifies you when something's changing",
     "version": "1.0",
     "browser_action": {
         "default_icon": "icon.png",
