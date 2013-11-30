@@ -7,7 +7,7 @@ alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
 alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name = 'CheckRulesSchedule') {
         performScheduledChecking(function () {
-//            runtime.sendMessage({msg: "refreshList"});
+            runtime.sendMessage({msg: "refreshList"});
         });
     }
 });
