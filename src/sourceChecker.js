@@ -3,7 +3,7 @@ var storage = chrome.storage.sync;
 $(document).ready(function () {
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
-            if (request.msg == "timeToCheck") {
+            if (request.msg == "onRulesUpdated") {
                 refreshRuleControls();
             }
         });

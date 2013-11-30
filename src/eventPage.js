@@ -36,6 +36,6 @@ function performScheduledChecking() {
 
 function sync(rules) {
     storage.set({'rules': rules}, function () {
-        chrome.runtime.sendMessage({msg: "rulesUpdated"});
+        chrome.runtime.sendMessage({msg: "onRulesUpdated"});
     });
 }
