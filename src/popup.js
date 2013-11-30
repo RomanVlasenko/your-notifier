@@ -62,37 +62,39 @@ function createRuleControlDOM(rule) {
 //    Build DOM
     var ruleControl = ruleControlDiv.clone();
     var buttons = buttonsDiv.clone();
-    var additionalButtons = additionalButtonsDiv.clone();
+    var $additionalButtons = additionalButtonsDiv.clone();
 
     ruleControl.attr("id", rule.id);
     ruleControl.find(".title a").attr("title", rule.title).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
     ruleControl.find(".buttons").append(buttons);
 
-    ruleControl.append(additionalButtons.attr("id", rule.id));
+    ruleControl.append($additionalButtons.attr("id", rule.id));
 
 //    Add click listeners
-    buttons.find("button.edit").bind("click", function (e) {
+    buttons.on("click", ".edit", function (e) {
         onEditClick(rule);
     });
 
-    buttons.find("button.settings").bind("click", function () {
-        onMoreSettingsClick(additionalButtons);
+    buttons.on("click", ".settings", function () {
+        onMoreSettingsClick($additionalButtons);
     });
 
-    additionalButtons.find("button.delete").bind("click", function (e) {
-        additionalButtons.hide();
+    $additionalButtons.on("click", ".delete", function (e) {
+        $additionalButtons.hide();
         onDeleteClick(e);
     });
 
-    additionalButtons.find("button.clone").bind("click", function () {
-        additionalButtons.hide();
+    $additionalButtons.on("click", ".clone", function () {
+        $additionalButtons.hide();
         onCloneClick(rule);
     });
 
-    ruleControl.find("a.url").bind("click", function () {
+    ruleControl.on("click", ".url", function () {
         tabs.create({url: rule.url});
     });
+
+    ruleControl.drags();
 
     return ruleControl;
 }
