@@ -3,12 +3,7 @@ Your notifier
 
 <b>Your notifier</b> is a Chrome extension that helps to gather and monitor data from different online sources
 
-####TODO####
-- Save history of data changes for every rule 
-- Add preview of web-page in popup or a link to it as a simpler solution
-- Notify user when data changes
-
-###How to Use###
+###HOWTO###
 - Press "Create rule"
 - Add some title for a page which you'd like to monitor
 - Add URL of that page
