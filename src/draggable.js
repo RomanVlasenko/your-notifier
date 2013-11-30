@@ -45,9 +45,26 @@ $(document).ready(function () {
                           .find(opt.handle).removeClass(opt.activeHandleClass);
                   }
 
-                  var $neighbour = getNewNeighbour(e.clientY, $selected);
+                  //Setting element to new place
+                  var n;
+                  var parent = $selected.parent();
+                  $selected = $selected.detach();
+
+                  $.each(parent.find(".rule-control"), function (i, el) {
+                      var y = $(el).offset().top + $(el).height() / 2;
+                      if (y < e.clientY) {
+                          n = el;
+                      } else if (y > e.clientY) {
+                          if (i == 0) {
+                              $selected.prependTo(parent);
+                          } else {
+                              $selected.insertAfter($(n));
+                          }
+                          return false;
+                      }
+                      return true;
+                  });
                   $selected.css({"left": "auto", "top": "auto"});
-                  $selected.detach().insertAfter($neighbour);
                   $selected = null;
               });
 
@@ -55,18 +72,20 @@ $(document).ready(function () {
 
     };
 
-    function getNewNeighbour(clientY, $selected) {
-        var $children = $selected.parent().children();
-        var n = $children[0];
 
-        $.each($children, function (i, e) {
-            var mid = $(e).offset().top;
-            if (clientY > mid) {
-                if ($(e).index() != $selected.index()) {
-                    n = e;
-                }
-            }
-        });
-        return n;
-    }
+
+//    function getNewIndex(clientY, $selected) {
+//        var i = 0;
+//        var $children = $selected.parent().children();
+//
+//        $.each($children, function (i, e) {
+//            var mid = $(e).offset().top;
+//            if (clientY > mid) {
+//                if ($(e).index() != $selected.index()) {
+//                    n = e;
+//                }
+//            }
+//        });
+//        return n;
+//    }
 });
