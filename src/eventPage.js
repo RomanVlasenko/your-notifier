@@ -2,6 +2,8 @@ var alarms = chrome.alarms;
 var runtime = chrome.runtime;
 var storage = chrome.storage.sync;
 
+var NOT_AVAILABLE = "Not available";
+
 alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
 
 alarms.onAlarm.addListener(function (alarm) {

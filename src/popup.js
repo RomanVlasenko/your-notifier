@@ -1,21 +1,24 @@
 var storage = chrome.storage.sync;
 var tabs = chrome.tabs;
+var runtime = chrome.runtime;
 
 var ruleControlDiv;
 var buttonsDiv;
 var additionalButtonsDiv;
+var $existingRulesContainer;
 
 $(document).ready(function () {
     initExtension();
     refreshRuleControls();
 
+    $existingRulesContainer = $("#existing-rules");
     var controls = $("#controls");
     ruleControlDiv = controls.find(".rule-control");
     buttonsDiv = controls.find(".rule-buttons");
     additionalButtonsDiv = controls.find(".rule-buttons-more");
 });
 
-chrome.runtime.onMessage.addListener(
+runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.msg == "refreshList") {
             refreshRuleControls();
@@ -43,8 +46,15 @@ function refreshRuleControls() {
         var rules = data.rules;
         if (rules && rules.length > 0) {
             _.each(rules, function (rule) {
-                var control = createRuleControlDOM(rule);
-                refreshedRuleList.append(control);
+                var $ruleControl = $existingRulesContainer.find(".rule-control[id=" + rule.id + "]");
+
+                if ($ruleControl.length > 0) {
+                    updateRuleControlDOM(rule, $ruleControl);
+                } else {
+                    var control = createRuleControlDOM(rule);
+                    refreshedRuleList.append(control);
+                }
+
             });
         } else {
             refreshedRuleList.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
@@ -68,11 +78,11 @@ function createRuleControlDOM(rule) {
     ruleControl.append($additionalButtons.attr("id", rule.id));
 
 //    Add click listeners
-    buttons.on("click", ".edit", function (e) {
+    buttons.on("click", ".edit", function () {
         onEditClick(rule);
     });
 
-    buttons.on("click", ".settings", function (e) {
+    buttons.on("click", ".settings", function () {
         onMoreSettingsClick($additionalButtons);
     });
 
@@ -91,6 +101,13 @@ function createRuleControlDOM(rule) {
     });
 
     ruleControl.drags();
+
+    return ruleControl;
+}
+
+function updateRuleControlDOM(rule, ruleControl) {
+    ruleControl.find(".title a").attr("title", rule.title).text(rule.title);
+    ruleControl.find(".value span").text(rule.value);
 
     return ruleControl;
 }
