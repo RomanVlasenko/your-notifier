@@ -41,7 +41,7 @@ function refreshRuleControls() {
 
     storage.get('rules', function (data) {
         var rules = data.rules;
-        if (rules.length > 0) {
+        if (rules && rules.length > 0) {
             _.each(rules, function (rule) {
                 var control = createRuleControlDOM(rule);
                 refreshedRuleList.append(control);
