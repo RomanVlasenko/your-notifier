@@ -113,13 +113,12 @@ function createRule(newRule) {
 }
 
 function getRule() {
-    var rule = {
+    return {
         id: $('#ruleId').val(),
         title: $('#title').val(),
         url: $('#url').val(),
         selector: $('#selector').val()
     };
-    return rule;
 }
 
 function setRule(rule) {

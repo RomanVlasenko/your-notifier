@@ -76,7 +76,7 @@ function createRuleControlDOM(rule) {
         onEditClick(rule);
     });
 
-    buttons.on("click", ".settings", function () {
+    buttons.on("click", ".settings", function (e) {
         onMoreSettingsClick($additionalButtons);
     });
 
