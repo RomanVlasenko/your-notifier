@@ -45,6 +45,10 @@ function refreshRuleControls() {
     storage.get('rules', function (data) {
         var rules = data.rules;
         if (rules && rules.length > 0) {
+            //Clearing out "no rules" message
+            if ($existingRulesContainer.find(".rule-control").length == 0) {
+                $existingRulesContainer.empty();
+            }
             _.each(rules, function (rule) {
                 var $ruleControl = $existingRulesContainer.find(".rule-control[id=" + rule.id + "]");
 
@@ -90,7 +94,7 @@ function createRuleControlDOM(rule) {
 
     $additionalButtons.on("click", ".delete", function (e) {
         $additionalButtons.hide();
-        onDeleteClick(e);
+        onDeleteClick(rule.id);
         e.preventDefault();
     });
 
@@ -127,15 +131,15 @@ function updateRuleControlDOM(rule, ruleControl) {
     return ruleControl;
 }
 
-function onDeleteClick(e) {
-    var ruleId = $(e.target).closest('.rule-control').attr('id');
-
+function onDeleteClick(ruleId) {
     storage.get('rules', function (data) {
         var rules = data.rules;
         rules = _.reject(rules, function (r) {
             return r.id == ruleId
         });
-        storage.set({'rules': rules});
+        storage.set({'rules': rules}, function () {
+            rulesArray = rules;
+        });
 
         refreshRuleControls();
     });
