@@ -46,24 +46,15 @@ $(document).ready(function () {
                   }
 
                   //Setting element to new place
-                  var n;
                   var parent = $selected.parent();
                   $selected = $selected.detach();
-
-                  $.each(parent.find(".rule-control"), function (i, el) {
-                      var y = $(el).offset().top + $(el).height() / 2;
-                      if (y < e.clientY) {
-                          n = el;
-                      } else if (y > e.clientY) {
-                          if (i == 0) {
-                              $selected.prependTo(parent);
-                          } else {
-                              $selected.insertAfter($(n));
-                          }
-                          return false;
-                      }
-                      return true;
-                  });
+                  var children = parent.find(".rule-control");
+                  var newIndex = index(children, $selected, e.clientY);
+                  if (newIndex == -1) {
+                      $selected.prependTo(parent);
+                  } else {
+                      $selected.insertAfter(children[newIndex]);
+                  }
                   $selected.css({"left": "auto", "top": "auto"});
                   $selected = null;
               });
@@ -72,20 +63,21 @@ $(document).ready(function () {
 
     };
 
+    function index(children, selected, mouseY) {
+        var index = -1;
 
-
-//    function getNewIndex(clientY, $selected) {
-//        var i = 0;
-//        var $children = $selected.parent().children();
-//
-//        $.each($children, function (i, e) {
-//            var mid = $(e).offset().top;
-//            if (clientY > mid) {
-//                if ($(e).index() != $selected.index()) {
-//                    n = e;
-//                }
-//            }
-//        });
-//        return n;
-//    }
+        for (var i = 0; i < children.length; i++) {
+            if (i == selected.index()) {
+                continue;
+            }
+            var e = children[i];
+            var y = $(e).offset().top + $(e).height() / 2;
+            if (y < mouseY) {
+                index = i;
+            } else {
+                return index;
+            }
+        }
+        return children.length - 1;
+    }
 });
