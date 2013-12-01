@@ -2,11 +2,11 @@ var storage = chrome.storage.sync;
 
 $(document).ready(function () {
 
-    $('#create').click(function (e) {
+    $('#create').click(function () {
         openRuleEditor();
     });
 
-    $('#cancel').click(function (e) {
+    $('#cancel').click(function () {
         closeRuleEditor();
     });
 
@@ -19,7 +19,6 @@ function openRuleEditor() {
     closeAdditionalButtons();
     $('#edit-rule-div').slideDown("fast");
     $('#create').hide();
-    persistStateEdit();
 }
 
 function closeRuleEditor() {

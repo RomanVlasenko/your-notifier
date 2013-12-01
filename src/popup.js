@@ -7,7 +7,10 @@ var buttonsDiv;
 var additionalButtonsDiv;
 var $existingRulesContainer;
 
+var rulesArray;
+
 $(document).ready(function () {
+
     initExtension();
     refreshRuleControls();
 
@@ -16,14 +19,14 @@ $(document).ready(function () {
     ruleControlDiv = controls.find(".rule-control");
     buttonsDiv = controls.find(".rule-buttons");
     additionalButtonsDiv = controls.find(".rule-buttons-more");
-});
 
-runtime.onMessage.addListener(
-    function (request, sender, sendResponse) {
-        if (request.msg == "refreshList") {
-            refreshRuleControls();
-        }
-    });
+    runtime.onMessage.addListener(
+        function (request, sender, sendResponse) {
+            if (request.msg == "refreshList") {
+                refreshRuleControls();
+            }
+        });
+});
 
 //Initializing storage structure when app starts first time
 function initExtension() {
@@ -39,9 +42,6 @@ function initExtension() {
 }
 
 function refreshRuleControls() {
-    var oldRuleList = $('#existing-rules');
-    var refreshedRuleList = oldRuleList.clone().empty();
-
     storage.get('rules', function (data) {
         var rules = data.rules;
         if (rules && rules.length > 0) {
@@ -51,16 +51,14 @@ function refreshRuleControls() {
                 if ($ruleControl.length > 0) {
                     updateRuleControlDOM(rule, $ruleControl);
                 } else {
-                    var control = createRuleControlDOM(rule);
-                    refreshedRuleList.append(control);
+                    createRuleControlDOM(rule);
                 }
 
             });
         } else {
-            refreshedRuleList.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
+            $existingRulesContainer.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
         }
-
-        oldRuleList.replaceWith(refreshedRuleList);
+        rulesArray = rules;
     });
 }
 
@@ -69,40 +67,57 @@ function createRuleControlDOM(rule) {
     var ruleControl = ruleControlDiv.clone();
     var buttons = buttonsDiv.clone();
     var $additionalButtons = additionalButtonsDiv.clone();
+    $additionalButtons.attr("id", rule.id);
 
     ruleControl.attr("id", rule.id);
     ruleControl.find(".title a").attr("title", rule.title).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
     ruleControl.find(".buttons").append(buttons);
 
-    ruleControl.append($additionalButtons.attr("id", rule.id));
+    $existingRulesContainer.append(ruleControl);
+    $additionalButtons.insertAfter(ruleControl);
 
 //    Add click listeners
-    buttons.on("click", ".edit", function () {
-        onEditClick(rule);
+    buttons.on("click", ".edit", function (e) {
+        onEditClick(rule.id);
+        e.preventDefault();
     });
 
-    buttons.on("click", ".settings", function () {
+    buttons.on("click", ".settings", function (e) {
         onMoreSettingsClick($additionalButtons);
+        e.preventDefault();
     });
 
     $additionalButtons.on("click", ".delete", function (e) {
         $additionalButtons.hide();
         onDeleteClick(e);
+        e.preventDefault();
     });
 
-    $additionalButtons.on("click", ".clone", function () {
+    $additionalButtons.on("click", ".clone", function (e) {
         $additionalButtons.hide();
-        onCloneClick(rule);
+        onCloneClick(rule.id);
+        e.preventDefault();
     });
 
-    ruleControl.on("click", ".url", function () {
+    ruleControl.on("click", ".url", function (e) {
         tabs.create({url: rule.url});
+        e.preventDefault();
     });
 
-    ruleControl.drags();
+    function onDragStart() {
+        closeAdditionalButtons();
+    }
 
-    return ruleControl;
+    function onDragEnd() {
+        onMoreSettingsClick(additionalButtonsDiv);
+    }
+
+    ruleControl.drags({onDragStart: function () {
+        onDragStart();
+    }, onDragEnd: function () {
+        onDragEnd();
+    }});
 }
 
 function updateRuleControlDOM(rule, ruleControl) {
@@ -126,14 +141,22 @@ function onDeleteClick(e) {
     });
 }
 
-function onCloneClick(rule) {
+function onCloneClick(ruleId) {
+    var rule = _.find(rulesArray, function (r) {
+        return r.id == ruleId
+    });
+
     var clonedRule = _.clone(rule);
     clonedRule.id = '';
     setRule(clonedRule);
     openRuleEditor();
 }
 
-function onEditClick(rule) {
+function onEditClick(ruleId) {
+    var rule = _.find(rulesArray, function (r) {
+        return r.id == ruleId
+    });
+
     setRule(rule);
     openRuleEditor();
     markRuleAsEditable(rule);

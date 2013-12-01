@@ -4,7 +4,11 @@ $(document).ready(function () {
         opt = $.extend({
                            handle: "",
                            draggableClass: "draggable",
-                           activeHandleClass: "active-handle"
+                           activeHandleClass: "active-handle",
+                           onDragStart: function () {
+                           },
+                           onDragEnd: function () {
+                           }
                        }, opt);
 
         var $selected = null;
@@ -27,6 +31,7 @@ $(document).ready(function () {
                 $(document).on("mousemove",function (e) {
                     if (!inDragMode) {
                         $selected.addClass(opt.draggableClass);
+                        opt.onDragStart();
                         inDragMode = true;
                     } else {
                         $selected.offset({
@@ -40,6 +45,8 @@ $(document).ready(function () {
                           inDragMode = false;
                           if ($selected !== null) {
                               $selected.removeClass(opt.draggableClass);
+                              opt.onDragEnd();
+
                               $selected = null;
                           }
 
@@ -57,17 +64,24 @@ $(document).ready(function () {
                   //Setting element to new place
                   if (inDragMode) {
                       var parent = $selected.parent();
+                      var $additionalPanel = $selected.nextUntil(".rule-control");
+
+                      $additionalPanel = $additionalPanel.detach();
                       $selected = $selected.detach();
+
                       var children = parent.find(".rule-control");
                       var newIndex = index(children, $selected, e.clientY);
                       if (newIndex == -1) {
                           $selected.prependTo(parent);
                       } else {
-                          $selected.insertAfter(children[newIndex]);
+                          var newSibling = $(children[newIndex]).nextUntil(".rule-control").last();
+                          $selected.insertAfter(newSibling);
                       }
+                      $additionalPanel.insertAfter($selected);
                   }
-                  $selected.css({"left": "auto", "top": "auto"});
+                  $selected.css("top", "").css("left", "");
                   $selected = null;
+                  $additionalPanel = null;
                   inDragMode = false;
               });
 
