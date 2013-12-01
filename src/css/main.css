@@ -23,11 +23,19 @@ a, a:hover {
 }
 
 .rule-buttons > button.btn:hover {
-    background-color: transparent;
+    background-color: #ccc;
 }
 
 .rule-buttons > button.btn {
     margin-left: 1px !important;
+}
+
+.rule-buttons > button.btn, button.clone, button#create:hover {
+    background-color: #ccc;
+}
+
+.rule-buttons > button.btn, button.clone, button#create {
+    background-color: rgb(221, 221, 221);
 }
 
 .rule-buttons {
