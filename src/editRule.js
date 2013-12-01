@@ -52,7 +52,7 @@ function markRuleAsEditable(rule) {
 function saveRule() {
     var newRule = getRule();
 
-   storage.get('rules', function (data) {
+    storage.get('rules', function (data) {
         var rules = data.rules;
         var existingRule = _.find(rules, function (r) {
             return r.id == newRule.id;
@@ -88,24 +88,17 @@ function updateRule(newRule) {
 }
 
 function createRule(newRule) {
-    storage.get('counter', function (data) {
-        newRule.id = data.counter;
-    });
+    newRule.id = new Date().getTime();
 
     storage.get('rules', function (data) {
         var rules = data.rules;
         if (rules instanceof Array) {
             rules.unshift(newRule);
         } else {
-            storage.set({'counter': 0});
             rules = [];
         }
 
-        //Save rules and increment counter
         storage.set({'rules': rules}, function () {
-            storage.get('counter', function (data) {
-                storage.set({'counter': data.counter + 1});
-            });
             persistStatePopup();
             checkAndUpdate(newRule);
         });

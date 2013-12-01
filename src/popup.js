@@ -27,13 +27,9 @@ function initExtension() {
     storage.get('rules', function (data) {
         var rules = data.rules;
         if (!(rules instanceof Array)) {
-            storage.set({'counter': 0});
             rules = [];
 
             storage.set({'rules': rules}, function () {
-                storage.get('counter', function (data) {
-                    storage.set({'counter': data.counter});
-                });
             });
         }
     });
