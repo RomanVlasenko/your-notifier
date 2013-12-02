@@ -221,11 +221,41 @@ function onMoreSettingsClick(additionalButtonsDiv) {
     $(".rule-buttons-more").each(function (i, e) {
         var btnDiv = $(e);
         if (btnDiv.attr("id") == additionalButtonsDiv.attr("id")) {
-            additionalButtonsDiv.slideToggle("fast");
+
+            if (additionalButtonsDiv.is(":hidden")) {
+
+                var historyTable = additionalButtonsDiv.find("table.history").empty();
+                storageLocal.get("rules", function (data) {
+                    var rule = _.find(data.rules, function (r) {
+                        return r.id == additionalButtonsDiv.attr("id");
+                    });
+                    _.each(rule.history, function (h) {
+                        historyTable.append("<tr><td>" + h.value + "</td><td>" + formatDate(new Date(h.date))
+                                                + "</td></tr>");
+                    });
+                    additionalButtonsDiv.slideDown("fast");
+
+                });
+            }
+
+            additionalButtonsDiv.slideUp("fast");
         } else {
             btnDiv.slideUp("fast");
         }
     });
+}
+
+var monthNames = [ "January", "February", "March", "April", "May", "June",
+                   "July", "August", "September", "October", "November", "December" ];
+function formatDate(d) {
+    var day = d.getUTCDay();
+    var month = d.getUTCMonth();
+    var year = d.getFullYear();
+
+    var h = d.getHours()
+    var m = d.getMinutes()
+
+    return h + ":" + m + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
 }
 
 function closeAdditionalButtons() {
