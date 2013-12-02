@@ -5,7 +5,7 @@ function checkAndUpdate(rule) {
     $.ajax({url: rule.url,
                success: function (srcHtml) {
                    var newVal = $(srcHtml).find(rule.selector).text().trim();
-                   if (newVal != 'undefined' && newVal != rule.value) {
+                   if (newVal) {
                        rule.value = newVal;
                        updateRuleValue(rule);
                    }
@@ -23,10 +23,18 @@ function updateRuleValue(rule) {
             return r.id == rule.id;
         });
 
-        oldRule.value = rule.value;
+        if (oldRule.value != rule.value) {
+            oldRule.value = rule.value;
 
-        storage.set({'rules': rules}, function () {
-            refreshRuleControls();
-        });
+            if (!oldRule.history) {
+                oldRule.history = [];
+            }
+
+            oldRule.history.push({"value": oldRule.value, "date": new Date().getTime()});
+
+            storage.set({'rules': rules}, function () {
+                refreshRuleControls();
+            });
+        }
     });
 }

@@ -108,7 +108,7 @@ function createRuleControlDOM(rule) {
 
     ruleControl.attr("id", rule.id);
     ruleControl.find(".title a").attr("title", rule.title).text(rule.title);
-    ruleControl.find(".value span").text(rule.value);
+    ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
     ruleControl.find(".buttons").append(buttons);
 
     $existingRulesContainer.append(ruleControl);
