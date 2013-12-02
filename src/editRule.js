@@ -1,4 +1,5 @@
 var storage = chrome.storage.sync;
+var storageLocal = chrome.storage.local;
 
 $(document).ready(function () {
 
@@ -51,7 +52,7 @@ function markRuleAsEditable(rule) {
 function saveRule() {
     var newRule = getRule();
 
-    storage.get('rules', function (data) {
+    storage.get("rules", function (data) {
         var rules = data.rules;
         var existingRule = _.find(rules, function (r) {
             return r.id == newRule.id;
@@ -67,7 +68,7 @@ function saveRule() {
 }
 
 function updateRule(newRule) {
-    storage.get('rules', function (data) {
+    storage.get("rules", function (data) {
         var rules = data.rules;
 
         var oldRule = _.find(rules, function (r) {
@@ -79,7 +80,7 @@ function updateRule(newRule) {
         oldRule.selector = newRule.selector;
         oldRule.value = newRule.value;
 
-        storage.set({'rules': rules}, function () {
+        storage.set({"rules": rules}, function () {
             persistStatePopup();
             checkAndUpdate(newRule);
         });
@@ -87,18 +88,21 @@ function updateRule(newRule) {
 }
 
 function createRule(newRule) {
-    newRule.id = new Date().getTime();
+    newRule.id = String(new Date().getTime());
 
-    storage.get('rules', function (data) {
+    storage.get("rules", function (data) {
         var rules = data.rules;
-        if (rules instanceof Array) {
-            rules.unshift(newRule);
-        } else {
-            rules = [];
-        }
 
-        storage.set({'rules': rules}, function () {
+        rules.unshift(newRule);
+
+        storage.set({"rules": rules}, function () {
             persistStatePopup();
+            storageLocal.get("rules", function (data) {
+                var ruleIndexes = data.rules;
+                newRule.index = ruleIndexes.length;
+                ruleIndexes.unshift(newRule);
+                storageLocal.set({"rules": ruleIndexes});
+            });
             checkAndUpdate(newRule);
         });
     });

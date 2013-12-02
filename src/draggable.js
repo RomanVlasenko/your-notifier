@@ -46,7 +46,6 @@ $(document).ready(function () {
                           if ($selected !== null) {
                               $selected.removeClass(opt.draggableClass);
                               opt.onDragEnd();
-
                               $selected = null;
                           }
 
@@ -82,6 +81,7 @@ $(document).ready(function () {
                   $selected.css("top", "").css("left", "");
                   $selected = null;
                   $additionalPanel = null;
+                  opt.onDragEnd();
                   inDragMode = false;
               });
 
