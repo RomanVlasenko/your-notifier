@@ -41,15 +41,16 @@ function checkAndUpdate(rule, onValueChanged) {
     }
 }
 
-function updateRuleValue(rule, onValueChanged) {
+function updateRuleValue(newRule, onValueChanged) {
     storage.get('rules', function (data) {
         var rules = data.rules;
         var oldRule = _.find(rules, function (r) {
-            return r.id == rule.id;
+            return r.id == newRule.id;
         });
 
-        if (oldRule.value != rule.value) {
-            oldRule.value = rule.value;
+        if (oldRule.value != newRule.value) {
+
+            oldRule.value = newRule.value;
 
             if (oldRule.value != NOT_AVAILABLE) {
                 addHistory(oldRule, {"value": oldRule.value, "date": new Date().getTime()});

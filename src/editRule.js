@@ -87,7 +87,6 @@ function updateRule(newRule) {
         oldRule.title = newRule.title;
         oldRule.url = newRule.url;
         oldRule.selector = newRule.selector;
-        oldRule.value = newRule.value;
 
         storage.set({"rules": rules}, function () {
             persistStatePopup();
