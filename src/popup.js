@@ -73,8 +73,11 @@ function refreshRuleControls() {
                 }
             });
 
+            $existingRulesContainer.find(".rule-control:odd").addClass("odd");
+            $existingRulesContainer.find(".rule-control:even").addClass("even");
+
         } else {
-            $existingRulesContainer.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
+            $existingRulesContainer.html("<h5 class='text-center'>You don't have any items to watch yet.</h5>");
         }
     });
 }
@@ -84,6 +87,7 @@ function createRuleControlDOM(rule) {
     var ruleControl = ruleControlDiv.clone();
     var buttons = buttonsDiv.clone();
     var $additionalButtons = additionalButtonsDiv.clone();
+    $additionalButtons.find(".settings").addClass("active");
     $additionalButtons.attr("id", rule.id);
 
     ruleControl.attr("id", rule.id);
@@ -137,6 +141,10 @@ function createRuleControlDOM(rule) {
             });
             storage.set({'rules': rules});
         });
+
+        $existingRulesContainer.find(".rule-control").removeClass("odd, even");
+        $existingRulesContainer.find(".rule-control:odd").addClass("odd");
+        $existingRulesContainer.find(".rule-control:even").addClass("even");
     }
 
     ruleControl.drags({onDragStart: function () {
@@ -191,8 +199,8 @@ function onEditClick(ruleId) {
 
 function onMoreSettingsClick($additionalPanel) {
     $(".rule-buttons-more").each(function (i, e) {
-        var btnDiv = $(e);
-        if (btnDiv.attr("id") == $additionalPanel.attr("id")) {
+        var buttonsMoreDiv = $(e);
+        if (buttonsMoreDiv.attr("id") == $additionalPanel.attr("id")) {
 
             if ($additionalPanel.is(":hidden")) {
 
@@ -211,7 +219,6 @@ function onMoreSettingsClick($additionalPanel) {
                     } else {
                         historyTable.append("<p class='text-center'>" + NO_HISTORY + "</p>");
                     }
-
                     $additionalPanel.slideDown("fast");
 
                 });
@@ -219,7 +226,7 @@ function onMoreSettingsClick($additionalPanel) {
 
             $additionalPanel.slideUp("fast");
         } else {
-            btnDiv.slideUp("fast");
+            buttonsMoreDiv.slideUp("fast");
         }
     });
 }

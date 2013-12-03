@@ -116,3 +116,27 @@ button.delete {
     margin-left: 0;
     margin-right: 0;
 }
+
+.rule-control {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.rule-control.odd {
+    background: rgb(238, 238, 238);
+}
+
+.rule-control.even {
+    background: rgb(226, 226, 226);
+}
+
+.table.history tbody {
+    font-size: 13px;
+}
+
+.badge.new {
+    font-size: 9px;
+    background-color: #428bca;
+}
