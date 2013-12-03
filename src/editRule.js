@@ -1,5 +1,3 @@
-var storage = chrome.storage.local;
-
 $(document).ready(function () {
 
     $('#create').click(function () {

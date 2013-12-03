@@ -1,14 +1,7 @@
-var storage = chrome.storage.local;
-
-var tabs = chrome.tabs;
-var runtime = chrome.runtime;
-
 var ruleControlDiv;
 var buttonsDiv;
 var additionalButtonsDiv;
 var $existingRulesContainer;
-
-var NO_HISTORY = "No history available";
 
 $(document).ready(function () {
 
@@ -237,8 +230,8 @@ function formatDate(d) {
     var month = d.getUTCMonth();
     var year = d.getFullYear();
 
-    var h = d.getHours()
-    var m = d.getMinutes()
+    var h = d.getHours();
+    var m = d.getMinutes();
 
     return h + ":" + m + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
 }

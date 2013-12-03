@@ -1,29 +1,30 @@
-var storage = chrome.storage.local;
-var NOT_AVAILABLE = "Not available";
-
 function checkAndUpdate(rule) {
-    $.ajax({url: rule.url,
-               success: function (srcHtml) {
-                   var foundData = $(srcHtml).find(rule.selector);
+    if (rule.url.length == 0) {
+        onError();
+    } else {
+        $.ajax({url: rule.url,
+                   success: function (srcHtml) {
+                       var foundData = $(srcHtml).find(rule.selector);
 
-                   if (foundData.length != 0) {
-                       var newVal = foundData.first().text().trim();
-                       if (newVal) {
-                           rule.value = newVal;
-                           updateRuleValue(rule);
+                       if (foundData.length != 0) {
+                           var newVal = foundData.first().text().trim();
+                           if (newVal) {
+                               rule.value = newVal;
+                               updateRuleValue(rule);
+                           }
+                       } else {
+                           onError();
                        }
-                   } else {
+
+                   },
+                   error: function () {
                        onError();
-                   }
+                   }});
 
-               },
-               error: function () {
-                   onError();
-               }});
-
-    function onError() {
-        rule.value = NOT_AVAILABLE;
-        updateRuleValue(rule);
+        function onError() {
+            rule.value = NOT_AVAILABLE;
+            updateRuleValue(rule);
+        }
     }
 }
 
@@ -34,18 +35,27 @@ function updateRuleValue(rule) {
             return r.id == rule.id;
         });
 
-        if (rule.value != NOT_AVAILABLE && oldRule.value != rule.value) {
+        if (oldRule.value != rule.value) {
             oldRule.value = rule.value;
 
-            if (!oldRule.history) {
-                oldRule.history = [];
+            if (oldRule.value != NOT_AVAILABLE) {
+                addHistory(oldRule, {"value": oldRule.value, "date": new Date().getTime()});
             }
 
-            oldRule.history.unshift({"value": oldRule.value, "date": new Date().getTime()});
+            storage.set({'rules': rules}, function () {
+                refreshRuleControls();
+            });
+
         }
 
-        storage.set({'rules': rules}, function () {
-            refreshRuleControls();
-        });
     });
+}
+
+function addHistory(rule, record) {
+    if (!rule.history) {
+        rule.history = [];
+    } else if (rule.history.length >= HISTORY_MAX - 1) {
+        rule.history = rule.history.slice(0, HISTORY_MAX - 1);
+    }
+    rule.history.unshift(record);
 }
