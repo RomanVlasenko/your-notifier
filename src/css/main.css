@@ -81,6 +81,10 @@ button.delete {
     background-color: rgb(255, 231, 231);
 }
 
+.editor-buttons button {
+    width: 60px;
+}
+
 .rule-buttons-more {
     display: none;
     margin-top: 2px;

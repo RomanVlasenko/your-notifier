@@ -1,30 +1,43 @@
+function check(rule, onComplete) {
+    $.ajax({url: rule.url,
+               success: function (srcHtml) {
+                   var foundData = $(srcHtml).find(rule.selector);
+                   if (foundData.length != 0) {
+                       var newVal = foundData.first().text().trim();
+                       onComplete(newVal);
+                   } else {
+                       onComplete("");
+                   }
+
+               },
+               error: function () {
+                   onComplete("");
+               }});
+}
+
 function checkAndUpdate(rule, onValueChanged) {
-    if (rule.url.length == 0) {
-        onError();
-    } else {
-        $.ajax({url: rule.url,
-                   success: function (srcHtml) {
-                       var foundData = $(srcHtml).find(rule.selector);
+    $.ajax({url: rule.url,
+               success: function (srcHtml) {
+                   var foundData = $(srcHtml).find(rule.selector);
 
-                       if (foundData.length != 0) {
-                           var newVal = foundData.first().text().trim();
-                           if (newVal) {
-                               rule.value = newVal;
-                               updateRuleValue(rule);
-                           }
-                       } else {
-                           onError();
+                   if (foundData.length != 0) {
+                       var newVal = foundData.first().text().trim();
+                       if (newVal) {
+                           rule.value = newVal;
+                           updateRuleValue(rule, onValueChanged);
                        }
-
-                   },
-                   error: function () {
+                   } else {
                        onError();
-                   }});
+                   }
 
-        function onError() {
-            rule.value = NOT_AVAILABLE;
-            updateRuleValue(rule);
-        }
+               },
+               error: function () {
+                   onError();
+               }});
+
+    function onError() {
+        rule.value = NOT_AVAILABLE;
+        updateRuleValue(rule, onValueChanged);
     }
 }
 

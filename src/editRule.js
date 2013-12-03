@@ -1,4 +1,10 @@
+var $testValue;
+var $testLabel;
+
 $(document).ready(function () {
+
+    $testValue = $(".test .test-value");
+    $testLabel = $(".test .test-label");
 
     $('#create').click(function () {
         openRuleEditor();
@@ -10,6 +16,10 @@ $(document).ready(function () {
 
     $('#save').click(function () {
         onSaveClick();
+    });
+
+    $('#test').click(function () {
+        onTestClick();
     });
 });
 
@@ -133,4 +143,26 @@ function validateFields() {
     $selector.toggleClass("input-error", isEmpty($selector.val()));
 
     return valid;
+}
+
+function onTestClick() {
+    var r = getRule();
+    if (isEmpty(r.url)) {
+        test();
+    } else {
+        check(getRule(), test);
+    }
+}
+
+function test(value) {
+    if (isEmpty(value)) {
+        $testValue.text("");
+        $testLabel.text(NOT_AVAILABLE);
+    } else {
+        $testValue.text(value);
+        $testLabel.text("OK");
+    }
+
+    $testLabel.toggleClass("label-primary", !isEmpty(value));
+    $testLabel.toggleClass("label-danger", isEmpty(value));
 }
