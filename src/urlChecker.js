@@ -15,7 +15,7 @@ function check(rule, onComplete) {
                }});
 }
 
-function checkAndUpdate(rule, onValueChanged) {
+function checkAndUpdate(rule, onRuleUpdated) {
     $.ajax({url: rule.url,
                success: function (srcHtml) {
                    var foundData = $(srcHtml).find(rule.selector);
@@ -24,7 +24,7 @@ function checkAndUpdate(rule, onValueChanged) {
                        var newVal = foundData.first().text().trim();
                        if (newVal) {
                            rule.value = newVal;
-                           updateRuleValue(rule, onValueChanged);
+                           updateRuleValue(rule, onRuleUpdated);
                        }
                    } else {
                        onError();
@@ -37,11 +37,11 @@ function checkAndUpdate(rule, onValueChanged) {
 
     function onError() {
         rule.value = NOT_AVAILABLE;
-        updateRuleValue(rule, onValueChanged);
+        updateRuleValue(rule, onRuleUpdated);
     }
 }
 
-function updateRuleValue(newRule, onValueChanged) {
+function updateRuleValue(newRule, onRuleUpdated) {
     storage.get('rules', function (data) {
         var rules = data.rules;
         var oldRule = _.find(rules, function (r) {
@@ -51,24 +51,25 @@ function updateRuleValue(newRule, onValueChanged) {
         if (oldRule.value != newRule.value) {
 
             oldRule.value = newRule.value;
+            oldRule.new = true;
 
             if (oldRule.value != NOT_AVAILABLE) {
-                addHistory(oldRule, {"value": oldRule.value, "date": new Date().getTime()});
+                appendHistoryRecord(oldRule, {"value": oldRule.value, "date": new Date().getTime()});
             }
 
             storage.set({'rules': rules}, function () {
-                refreshRuleControls();
-                onValueChanged(true);
+                runtime.sendMessage({msg: "refreshList"});
+                onRuleUpdated(oldRule);
             });
 
         } else {
-            onValueChanged(false);
+            onRuleUpdated(oldRule);
         }
 
     });
 }
 
-function addHistory(rule, record) {
+function appendHistoryRecord(rule, record) {
     if (!rule.history) {
         rule.history = [];
     } else if (rule.history.length >= HISTORY_MAX - 1) {
