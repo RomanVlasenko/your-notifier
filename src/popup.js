@@ -223,19 +223,6 @@ function onMoreSettingsClick($additionalPanel) {
     });
 }
 
-var monthNames = [ "January", "February", "March", "April", "May", "June",
-                   "July", "August", "September", "October", "November", "December" ];
-function formatDate(d) {
-    var day = d.getUTCDay();
-    var month = d.getUTCMonth();
-    var year = d.getFullYear();
-
-    var h = d.getHours();
-    var m = d.getMinutes();
-
-    return h + ":" + m + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
-}
-
 function closeAdditionalButtons() {
     $(".rule-buttons-more").each(function (i, e) {
         $(e).hide();
