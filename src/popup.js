@@ -11,6 +11,8 @@ var $existingRulesContainer;
 
 var rulesArray;
 
+var NO_HISTORY = "No history available";
+
 $(document).ready(function () {
 
     initExtension();
@@ -224,15 +226,22 @@ function onMoreSettingsClick(additionalButtonsDiv) {
 
             if (additionalButtonsDiv.is(":hidden")) {
 
+                //Show value change history
                 var historyTable = additionalButtonsDiv.find("table.history").empty();
                 storageLocal.get("rules", function (data) {
                     var rule = _.find(data.rules, function (r) {
                         return r.id == additionalButtonsDiv.attr("id");
                     });
-                    _.each(rule.history, function (h) {
-                        historyTable.append("<tr><td>" + h.value + "</td><td>" + formatDate(new Date(h.date))
-                                                + "</td></tr>");
-                    });
+
+                    if (rule.history && rule.history.length > 0) {
+                        _.each(rule.history, function (h) {
+                            historyTable.append("<tr><td>" + h.value + "</td><td>" + formatDate(new Date(h.date))
+                                                    + "</td></tr>");
+                        });
+                    } else {
+                        historyTable.append("<p class='text-center'>" + NO_HISTORY + "</p>");
+                    }
+
                     additionalButtonsDiv.slideDown("fast");
 
                 });

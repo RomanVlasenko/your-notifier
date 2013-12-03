@@ -23,14 +23,14 @@ function updateRuleValue(rule) {
             return r.id == rule.id;
         });
 
-        if (oldRule.value != rule.value) {
+        if (rule.value != NOT_AVAILABLE && oldRule.value != rule.value) {
             oldRule.value = rule.value;
 
             if (!oldRule.history) {
                 oldRule.history = [];
             }
 
-            oldRule.history.push({"value": oldRule.value, "date": new Date().getTime()});
+            oldRule.history.unshift({"value": oldRule.value, "date": new Date().getTime()});
 
             storage.set({'rules': rules}, function () {
                 refreshRuleControls();
