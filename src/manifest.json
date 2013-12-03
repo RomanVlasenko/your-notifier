@@ -5,12 +5,17 @@
     "description": "Notifies you when something's changing",
     "version": "1.0",
     "browser_action": {
-        "default_icon": "icon.png",
+        "default_icon": "img/icon32x32.png",
         "default_popup": "popup.html"
     },
     "background": {
         "scripts": ["lib/jquery-2.0.3.min.js", "lib/underscore-min.js", "common.js", "urlChecker.js", "eventPage.js"],
         "persistent": false
+    },
+    "icons": {
+        "16": "img/icon16x16.png",
+        "48": "img/icon48x48.png",
+        "128": "img/icon256x256.png"
     },
     "permissions": [ "<all_urls>" , "storage", "alarms", "tabs"],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"

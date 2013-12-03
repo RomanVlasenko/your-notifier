@@ -20,6 +20,7 @@ $(document).ready(function () {
                 refreshRuleControls();
             }
         });
+
 });
 
 //Initializing storage structure when app starts first time
