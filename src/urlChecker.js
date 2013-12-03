@@ -4,16 +4,27 @@ var NOT_AVAILABLE = "Not available";
 function checkAndUpdate(rule) {
     $.ajax({url: rule.url,
                success: function (srcHtml) {
-                   var newVal = $(srcHtml).find(rule.selector).text().trim();
-                   if (newVal) {
-                       rule.value = newVal;
-                       updateRuleValue(rule);
+                   var foundData = $(srcHtml).find(rule.selector);
+
+                   if (foundData.length != 0) {
+                       var newVal = foundData.first().text().trim();
+                       if (newVal) {
+                           rule.value = newVal;
+                           updateRuleValue(rule);
+                       }
+                   } else {
+                       onError();
                    }
+
                },
                error: function () {
-                   rule.value = NOT_AVAILABLE;
-                   updateRuleValue(rule);
+                   onError();
                }});
+
+    function onError() {
+        rule.value = NOT_AVAILABLE;
+        updateRuleValue(rule);
+    }
 }
 
 function updateRuleValue(rule) {

@@ -75,14 +75,13 @@ function refreshRuleControls() {
                 });
 
                 if (!ruleExists) {
-                    $existingRulesContainer.remove(e);
+                    $(e).remove();
                 }
             });
 
         } else {
             $existingRulesContainer.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
         }
-        rulesArray = rules;
     });
 }
 
