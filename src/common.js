@@ -9,6 +9,10 @@ var NO_HISTORY = "No history available";
 
 var HISTORY_MAX = 5;
 
+function isEmpty(str) {
+    return !str || str.trim().length == 0;
+}
+
 //Date/Time formatting
 var monthNames = [ "January", "February", "March", "April", "May", "June",
                    "July", "August", "September", "October", "November", "December" ];

@@ -1,4 +1,4 @@
-function checkAndUpdate(rule) {
+function checkAndUpdate(rule, onValueChanged) {
     if (rule.url.length == 0) {
         onError();
     } else {
@@ -28,7 +28,7 @@ function checkAndUpdate(rule) {
     }
 }
 
-function updateRuleValue(rule) {
+function updateRuleValue(rule, onValueChanged) {
     storage.get('rules', function (data) {
         var rules = data.rules;
         var oldRule = _.find(rules, function (r) {
@@ -44,8 +44,11 @@ function updateRuleValue(rule) {
 
             storage.set({'rules': rules}, function () {
                 refreshRuleControls();
+                onValueChanged(true);
             });
 
+        } else {
+            onValueChanged(false);
         }
 
     });

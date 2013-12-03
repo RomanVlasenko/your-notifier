@@ -77,6 +77,10 @@ button.delete {
     background-color: rgb(221, 204, 204);
 }
 
+.input-error {
+    background-color: rgb(255, 231, 231);
+}
+
 .rule-buttons-more {
     display: none;
     margin-top: 2px;

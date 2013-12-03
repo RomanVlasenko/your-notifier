@@ -28,9 +28,11 @@ function closeRuleEditor() {
 }
 
 function onSaveClick() {
-    saveRule();
-    $('#edit-rule-div').hide();
-    closeRuleEditor()
+    if (validateFields()) {
+        saveRule();
+        $('#edit-rule-div').hide();
+        closeRuleEditor()
+    }
 }
 
 function clearEditor() {
@@ -113,4 +115,22 @@ function setRule(rule) {
     $('#title').val(rule.title);
     $('#url').val(rule.url);
     $('#selector').val(rule.selector);
+}
+
+function validateFields() {
+    var valid = true;
+
+    var $title = $('#title');
+    var $url = $('#url');
+    var $selector = $('#selector');
+
+    if (isEmpty($title.val()) || isEmpty($url.val()) || isEmpty($selector.val())) {
+        valid = false;
+    }
+
+    $title.toggleClass("input-error", isEmpty($title.val()));
+    $url.toggleClass("input-error", isEmpty($url.val()));
+    $selector.toggleClass("input-error", isEmpty($selector.val()));
+
+    return valid;
 }
