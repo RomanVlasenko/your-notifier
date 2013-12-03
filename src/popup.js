@@ -73,6 +73,14 @@ function refreshRuleControls() {
                 }
             });
 
+            //Update rules flag NEW to 'false'
+            storage.get("rules", function (data) {
+                _.each(data.rules, function (r) {
+                    r.new = false;
+                });
+                storage.set({"rules": data.rules});
+            });
+
             $existingRulesContainer.find(".rule-control:odd").addClass("odd");
             $existingRulesContainer.find(".rule-control:even").addClass("even");
 
@@ -97,6 +105,10 @@ function createRuleControlDOM(rule) {
 
     $existingRulesContainer.append(ruleControl);
     $additionalButtons.insertAfter(ruleControl);
+
+    if (rule.new == true) {
+        ruleControl.find(".badge.new").show();
+    }
 
 //    Add click listeners
     buttons.on("click", ".edit", function (e) {
@@ -157,7 +169,6 @@ function createRuleControlDOM(rule) {
 function updateRuleControlDOM(rule, ruleControl) {
     ruleControl.find(".title a").attr("title", rule.title).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
-
     return ruleControl;
 }
 

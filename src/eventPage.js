@@ -40,5 +40,6 @@ function showPopupBadge(rules) {
     if (newValuesCount > 0) {
         browser.setBadgeBackgroundColor({color: "#428bca"});
         browser.setBadgeText({text: String(newValuesCount)});
+        browser.setTitle({title: newValuesCount + " items updated"});
     }
 }

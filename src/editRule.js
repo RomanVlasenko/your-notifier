@@ -68,7 +68,10 @@ function saveRule() {
         });
 
         if (existingRule) {
-            updateRule(newRule)
+            persistRule(newRule, function (rule) {
+                persistStatePopup();
+                checkAndUpdate(rule);
+            });
         } else {
             createRule(newRule)
         }
@@ -76,7 +79,7 @@ function saveRule() {
 
 }
 
-function updateRule(newRule) {
+function persistRule(newRule, onComplete) {
     storage.get("rules", function (data) {
         var rules = data.rules;
 
@@ -88,10 +91,7 @@ function updateRule(newRule) {
         oldRule.url = newRule.url;
         oldRule.selector = newRule.selector;
 
-        storage.set({"rules": rules}, function () {
-            persistStatePopup();
-            checkAndUpdate(newRule);
-        });
+        storage.set({"rules": rules}, onComplete(oldRule));
     });
 }
 
