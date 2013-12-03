@@ -1,5 +1,4 @@
-var storage = chrome.storage.sync;
-var storageLocal = chrome.storage.local;
+var storage = chrome.storage.local;
 
 $(document).ready(function () {
 
@@ -92,17 +91,11 @@ function createRule(newRule) {
 
     storage.get("rules", function (data) {
         var rules = data.rules;
-
-        rules.unshift(newRule);
+        newRule.index = rules.length;
+        rules.push(newRule);
 
         storage.set({"rules": rules}, function () {
             persistStatePopup();
-            storageLocal.get("rules", function (data) {
-                var ruleIndexes = data.rules;
-                newRule.index = ruleIndexes.length;
-                ruleIndexes.unshift(newRule);
-                storageLocal.set({"rules": ruleIndexes});
-            });
             checkAndUpdate(newRule);
         });
     });

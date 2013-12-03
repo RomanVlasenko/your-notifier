@@ -1,6 +1,6 @@
 var alarms = chrome.alarms;
 var runtime = chrome.runtime;
-var storage = chrome.storage.sync;
+var storage = chrome.storage.local;
 
 var NOT_AVAILABLE = "Not available";
 
@@ -9,12 +9,12 @@ alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
 alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name = 'CheckRulesSchedule') {
         performScheduledChecking(function () {
-            runtime.sendMessage({msg: "refreshList"});
+//            runtime.sendMessage({msg: "refreshList"});
         });
     }
 });
 
-function performScheduledChecking(callback) {
+function performScheduledChecking(onCheckComplete) {
     var somethingChanged = false;
     var rulesChecked = [];
 
@@ -25,17 +25,28 @@ function performScheduledChecking(callback) {
 
             $.ajax({url: rule.url,
                        success: function (srcHtml) {
-                           var newVal = $(srcHtml).find(rule.selector).text().trim();
+                           var newVal;
+
+                           var foundData = $(srcHtml).find(rule.selector)
+                           if (foundData) {
+                               newVal = foundData.text().trim();
+                           }
 
                            if (newVal && newVal != rule.value) {
                                rule.value = newVal;
+
+                               if (!rule.history) {
+                                   rule.history = [];
+                               }
+                               rule.history.unshift({"value": rule.value, "date": new Date().getTime()});
+
                                somethingChanged = true;
                            }
 
                            rulesChecked.push(rule);
                            if (rulesChecked.length == rules.length && somethingChanged) {
                                storage.set({'rules': rules}, function () {
-                                   callback();
+                                   onCheckComplete();
                                });
                            }
                        },
@@ -43,7 +54,7 @@ function performScheduledChecking(callback) {
                            rule.value = NOT_AVAILABLE;
                            rulesChecked.push(rule);
                            if (rulesChecked.length == rules.length && somethingChanged) {
-                               callback();
+                               onCheckComplete();
                            }
                        }});
         });

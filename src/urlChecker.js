@@ -1,4 +1,4 @@
-var storage = chrome.storage.sync;
+var storage = chrome.storage.local;
 var NOT_AVAILABLE = "Not available";
 
 function checkAndUpdate(rule) {
@@ -31,10 +31,10 @@ function updateRuleValue(rule) {
             }
 
             oldRule.history.unshift({"value": oldRule.value, "date": new Date().getTime()});
-
-            storage.set({'rules': rules}, function () {
-                refreshRuleControls();
-            });
         }
+
+        storage.set({'rules': rules}, function () {
+            refreshRuleControls();
+        });
     });
 }

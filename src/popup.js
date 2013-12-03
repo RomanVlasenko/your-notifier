@@ -1,5 +1,4 @@
-var storage = chrome.storage.sync;
-var storageLocal = chrome.storage.local;
+var storage = chrome.storage.local;
 
 var tabs = chrome.tabs;
 var runtime = chrome.runtime;
@@ -8,8 +7,6 @@ var ruleControlDiv;
 var buttonsDiv;
 var additionalButtonsDiv;
 var $existingRulesContainer;
-
-var rulesArray;
 
 var NO_HISTORY = "No history available";
 
@@ -32,20 +29,12 @@ $(document).ready(function () {
         });
 });
 
-//Initializing storages structure when app starts first time
+//Initializing storage structure when app starts first time
 function initExtension() {
     storage.get('rules', function (data) {
         var rules = data.rules;
         if (!(rules instanceof Array)) {
             storage.set({'rules': []}, function () {
-            });
-        }
-    });
-
-    storageLocal.get('rules', function (data) {
-        var rules = data.rules;
-        if (!(rules instanceof Array)) {
-            storageLocal.set({'rules': []}, function () {
             });
         }
     });
@@ -61,43 +50,39 @@ function refreshRuleControls() {
                 $existingRulesContainer.empty();
             }
 
-            sortRules(rules, function (sortedRules) {
-                _.each(sortedRules, function (rule) {
-                    var $ruleControl = $existingRulesContainer.find(".rule-control[id=" + rule.id + "]");
+            var $ruleControls = $existingRulesContainer.find(".rule-control");
 
-                    if ($ruleControl.length > 0) {
-                        updateRuleControlDOM(rule, $ruleControl);
-                    } else {
-                        createRuleControlDOM(rule);
-                    }
+            var sortedRules = _.sortBy(data.rules, function (r) {
+                return r.index;
+            });
+
+            //Create/Update elements
+            _.each(sortedRules, function (rule) {
+                var $ruleControl = $ruleControls.filter("[id=" + rule.id + "]");
+
+                if ($ruleControl.length > 0) {
+                    updateRuleControlDOM(rule, $ruleControl);
+                } else {
+                    createRuleControlDOM(rule);
+                }
+            });
+
+            //Remove deleted elements
+            _.each($ruleControls, function (e) {
+                var ruleId = $(e).attr("id");
+                var ruleExists = _.any(rules, function (r) {
+                    return r.id == ruleId;
                 });
+
+                if (!ruleExists) {
+                    $existingRulesContainer.remove(e);
+                }
             });
 
         } else {
             $existingRulesContainer.html("<h5 class='text-center'>You don't have any rules yet.</h5>");
         }
         rulesArray = rules;
-    });
-}
-
-//Load rules and create controls in proper order
-function sortRules(rules, onRulesSorted) {
-    var sortedRules = [];
-
-    storageLocal.get("rules", function (data) {
-        var ruleControlIndexes = _.sortBy(data.rules, function (r) {
-            return r.index;
-        });
-
-        _.each(ruleControlIndexes, function (ruleControlIndex) {
-            var rule = _.find(rules, function (r) {
-                return ruleControlIndex.id == r.id;
-            });
-
-            sortedRules.push(rule)
-        });
-
-        onRulesSorted(sortedRules);
     });
 }
 
@@ -149,14 +134,16 @@ function createRuleControlDOM(rule) {
     }
 
     function onDragEnd() {
-        $existingRulesContainer.find(".rule-control").each(function (i, e) {
-            var rule = _.find(rulesArray, function (r) {
-                return r.id == $(e).attr("id");
+        storage.get("rules", function (data) {
+            var rules = data.rules;
+            $existingRulesContainer.find(".rule-control").each(function (i, e) {
+                var rule = _.find(rules, function (r) {
+                    return r.id == $(e).attr("id");
+                });
+                rule.index = i;
             });
-            rule.index = i;
+            storage.set({'rules': rules});
         });
-
-        storageLocal.set({'rules': rulesArray});
     }
 
     ruleControl.drags({onDragStart: function () {
@@ -174,63 +161,53 @@ function updateRuleControlDOM(rule, ruleControl) {
 }
 
 function onDeleteClick(ruleId) {
-    //Remove rule from cloud storage
     storage.get('rules', function (data) {
-        var rules = data.rules;
-        rules = _.reject(rules, function (r) {
+        var rules = _.reject(data.rules, function (r) {
             return r.id == ruleId
         });
         storage.set({'rules': rules}, function () {
-            rulesArray = rules;
-
-            //Remove rule from local storage
-            storageLocal.get('rules', function (data) {
-                var rules = data.rules;
-                rules = _.reject(rules, function (r) {
-                    return r.id == ruleId
-                });
-                storageLocal.set({'rules': rules}, function () {
-                    rulesArray = rules;
-                    refreshRuleControls();
-                });
-            });
+            refreshRuleControls();
         });
     });
 }
 
 function onCloneClick(ruleId) {
-    var rule = _.find(rulesArray, function (r) {
-        return r.id == ruleId
-    });
+    storage.get('rules', function (data) {
+        var rule = _.find(data.rules, function (r) {
+            return r.id == ruleId
+        });
 
-    var clonedRule = _.clone(rule);
-    clonedRule.id = '';
-    setRule(clonedRule);
-    openRuleEditor();
+        var clonedRule = _.clone(rule);
+        clonedRule.id = '';
+        setRule(clonedRule);
+        openRuleEditor();
+    });
 }
 
 function onEditClick(ruleId) {
-    var rule = _.find(rulesArray, function (r) {
-        return r.id == ruleId
-    });
+    storage.get('rules', function (data) {
+        var rule = _.find(data.rules, function (r) {
+            return r.id == ruleId
+        });
 
-    setRule(rule);
-    openRuleEditor();
-    markRuleAsEditable(rule);
+        setRule(rule);
+        openRuleEditor();
+        markRuleAsEditable(rule);
+    });
 }
 
-function onMoreSettingsClick(additionalButtonsDiv) {
+function onMoreSettingsClick($additionalPanel) {
     $(".rule-buttons-more").each(function (i, e) {
         var btnDiv = $(e);
-        if (btnDiv.attr("id") == additionalButtonsDiv.attr("id")) {
+        if (btnDiv.attr("id") == $additionalPanel.attr("id")) {
 
-            if (additionalButtonsDiv.is(":hidden")) {
+            if ($additionalPanel.is(":hidden")) {
 
                 //Show value change history
-                var historyTable = additionalButtonsDiv.find("table.history").empty();
-                storageLocal.get("rules", function (data) {
+                var historyTable = $additionalPanel.find("table.history").empty();
+                storage.get("rules", function (data) {
                     var rule = _.find(data.rules, function (r) {
-                        return r.id == additionalButtonsDiv.attr("id");
+                        return r.id == $additionalPanel.attr("id");
                     });
 
                     if (rule.history && rule.history.length > 0) {
@@ -242,12 +219,12 @@ function onMoreSettingsClick(additionalButtonsDiv) {
                         historyTable.append("<p class='text-center'>" + NO_HISTORY + "</p>");
                     }
 
-                    additionalButtonsDiv.slideDown("fast");
+                    $additionalPanel.slideDown("fast");
 
                 });
             }
 
-            additionalButtonsDiv.slideUp("fast");
+            $additionalPanel.slideUp("fast");
         } else {
             btnDiv.slideUp("fast");
         }
