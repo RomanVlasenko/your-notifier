@@ -1,8 +1,9 @@
 var $testValue;
 var $testLabel;
+var $test;
 
 $(document).ready(function () {
-
+    $test = $(".test");
     $testValue = $(".test .test-value");
     $testLabel = $(".test .test-label");
 
@@ -35,6 +36,7 @@ function closeRuleEditor() {
     $('#create').show();
     persistStatePopup();
     clearEditor();
+    $test.hide();
 }
 
 function onSaveClick() {
@@ -68,8 +70,9 @@ function saveRule() {
         });
 
         if (existingRule) {
-            persistRule(newRule, function (rule) {
+            updateRule(newRule, function (rule) {
                 persistStatePopup();
+                refreshRuleControls();
                 checkAndUpdate(rule);
             });
         } else {
@@ -79,7 +82,7 @@ function saveRule() {
 
 }
 
-function persistRule(newRule, onComplete) {
+function updateRule(newRule, onComplete) {
     storage.get("rules", function (data) {
         var rules = data.rules;
 
@@ -91,7 +94,9 @@ function persistRule(newRule, onComplete) {
         oldRule.url = newRule.url;
         oldRule.selector = newRule.selector;
 
-        storage.set({"rules": rules}, onComplete(oldRule));
+        storage.set({"rules": rules}, function () {
+            onComplete(oldRule)
+        });
     });
 }
 
@@ -105,6 +110,7 @@ function createRule(newRule) {
 
         storage.set({"rules": rules}, function () {
             persistStatePopup();
+            refreshRuleControls();
             checkAndUpdate(newRule);
         });
     });
@@ -164,4 +170,6 @@ function test(value) {
 
     $testLabel.toggleClass("label-primary", !isEmpty(value));
     $testLabel.toggleClass("label-danger", isEmpty(value));
+
+    $test.show();
 }

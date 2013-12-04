@@ -15,7 +15,7 @@ function check(rule, onComplete) {
                }});
 }
 
-function checkAndUpdate(rule, onRuleUpdated) {
+function checkAndUpdate(rule) {
     $.ajax({url: rule.url,
                success: function (srcHtml) {
                    var foundData = $(srcHtml).find(rule.selector);
@@ -24,7 +24,7 @@ function checkAndUpdate(rule, onRuleUpdated) {
                        var newVal = foundData.first().text().trim();
                        if (newVal) {
                            rule.value = newVal;
-                           updateRuleValue(rule, onRuleUpdated);
+                           updateRuleValue(rule);
                        }
                    } else {
                        onError();
@@ -37,11 +37,11 @@ function checkAndUpdate(rule, onRuleUpdated) {
 
     function onError() {
         rule.value = NOT_AVAILABLE;
-        updateRuleValue(rule, onRuleUpdated);
+        updateRuleValue(rule);
     }
 }
 
-function updateRuleValue(newRule, onRuleUpdated) {
+function updateRuleValue(newRule) {
     storage.get('rules', function (data) {
         var rules = data.rules;
         var oldRule = _.find(rules, function (r) {
@@ -59,11 +59,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
 
             storage.set({'rules': rules}, function () {
                 runtime.sendMessage({msg: "refreshList"});
-                onRuleUpdated(oldRule);
             });
-
-        } else {
-            onRuleUpdated(oldRule);
         }
 
     });
