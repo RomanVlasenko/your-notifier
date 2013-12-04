@@ -58,9 +58,10 @@ function updateRuleValue(newRule, onRuleUpdated) {
             }
 
             storage.set({'rules': rules}, function () {
-                runtime.sendMessage({msg: "refreshList"});
                 if (onRuleUpdated) {
                     onRuleUpdated(oldRule);
+                } else {
+                    runtime.sendMessage({msg: "refreshList"});
                 }
             });
         } else {

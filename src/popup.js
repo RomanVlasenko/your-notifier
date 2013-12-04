@@ -54,6 +54,10 @@ function refreshRuleControls() {
             _.each(sortedRules, function (rule) {
                 var $ruleControl = $ruleControls.filter("[id=" + rule.id + "]");
 
+                if (rule.new == true) {
+                    $ruleControl.find(".badge.new").fadeIn(1000);
+                }
+
                 if ($ruleControl.length > 0) {
                     updateRuleControlDOM(rule, $ruleControl);
                 } else {
@@ -105,10 +109,6 @@ function createRuleControlDOM(rule) {
 
     $existingRulesContainer.append(ruleControl);
     $additionalButtons.insertAfter(ruleControl);
-
-    if (rule.new == true) {
-        ruleControl.find(".badge.new").fadeIn(1000);
-    }
 
 //    Add click listeners
     buttons.on("click", ".edit", function (e) {
