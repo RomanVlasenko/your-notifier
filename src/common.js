@@ -35,3 +35,13 @@ function twoDigits(d) {
     }
     return d;
 }
+
+function isNetworkAvailable(handler) {
+    $.ajax({url: "http://google.com",
+               success: function () {
+                   handler.success();
+               },
+               error: function () {
+                   handler.error();
+               }});
+}

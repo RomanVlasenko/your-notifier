@@ -2,7 +2,9 @@ alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
 
 alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name = 'CheckRulesSchedule') {
-        performScheduledChecking();
+        isNetworkAvailable({success: function () {
+            performScheduledChecking();
+        }});
     }
 });
 
