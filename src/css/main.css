@@ -140,3 +140,16 @@ button.delete {
     font-size: 9px;
     background-color: #428bca;
 }
+
+.history-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (-webkit-min-device-pixel-ratio: 0) {
+    .history-cell {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+}
