@@ -99,7 +99,7 @@ function createRuleControlDOM(rule) {
     $additionalButtons.attr("id", rule.id);
 
     ruleControl.attr("id", rule.id);
-    ruleControl.find(".title a").attr("title", rule.title).text(rule.title);
+    ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
     ruleControl.find(".buttons").append(buttons);
 
@@ -107,7 +107,7 @@ function createRuleControlDOM(rule) {
     $additionalButtons.insertAfter(ruleControl);
 
     if (rule.new == true) {
-        ruleControl.find(".badge.new").show();
+        ruleControl.find(".badge.new").fadeIn(1000);
     }
 
 //    Add click listeners
@@ -167,7 +167,7 @@ function createRuleControlDOM(rule) {
 }
 
 function updateRuleControlDOM(rule, ruleControl) {
-    ruleControl.find(".title a").attr("title", rule.title).text(rule.title);
+    ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
     return ruleControl;
 }
