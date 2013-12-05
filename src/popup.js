@@ -235,7 +235,7 @@ function onMoreSettingsClick($additionalPanel) {
 
                     if (rule.history && rule.history.length > 0) {
                         _.each(rule.history, function (h) {
-                            historyTable.append("<tr><td><div class='history-cell'>" + h.value + "</div></td><td>"
+                            historyTable.append("<tr><td><div class='history-cell'>" + h.value + "</div></td><td class='date-cell'>"
                                                     + formatDate(new Date(h.date))
                                                     + "</td></tr>");
                         });

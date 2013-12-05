@@ -146,6 +146,10 @@ button.delete {
     text-overflow: ellipsis;
 }
 
+.date-cell {
+    white-space: nowrap;
+}
+
 @media (-webkit-min-device-pixel-ratio: 0) {
     .history-cell {
         display: -webkit-box;
