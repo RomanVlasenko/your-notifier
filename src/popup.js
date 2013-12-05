@@ -25,6 +25,8 @@ $(document).ready(function () {
 
 //Initializing storage structure when app starts first time
 function initExtension() {
+    browser.setTitle({title: "Your notifier"});
+
     storage.get('rules', function (data) {
         var rules = data.rules;
         if (!(rules instanceof Array)) {
@@ -103,6 +105,7 @@ function createRuleControlDOM(rule) {
     $additionalButtons.attr("id", rule.id);
 
     ruleControl.attr("id", rule.id);
+    ruleControl.find(".favicon").attr("src", getFavicon(rule.url));
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
     ruleControl.find(".buttons").append(buttons);
@@ -138,6 +141,13 @@ function createRuleControlDOM(rule) {
         e.preventDefault();
     });
 
+    var $favicon = ruleControl.find(".favicon");
+    ruleControl.find(".url").hover(function () {
+        $favicon.addClass("hover");
+    }, function () {
+        $favicon.removeClass("hover");
+    });
+
     function onDragStart() {
         closeAdditionalButtons();
     }
@@ -167,6 +177,7 @@ function createRuleControlDOM(rule) {
 }
 
 function updateRuleControlDOM(rule, ruleControl) {
+    ruleControl.find(".favicon").attr("src", getFavicon(rule.url));
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
     return ruleControl;
