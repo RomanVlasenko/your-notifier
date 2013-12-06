@@ -6,7 +6,13 @@ var $existingRulesContainer;
 $(document).ready(function () {
 
     initExtension();
-    refreshRuleControls();
+
+    var $container = $("#container");
+
+    $container.hide();
+    refreshRuleControls(function () {
+        $container.show();
+    });
 
     $existingRulesContainer = $("#existing-rules");
     var $ruleControls = $("#controls");
@@ -37,7 +43,11 @@ function initExtension() {
 }
 
 function refreshRuleControls() {
-    console.log("refreshRuleControls");
+    var onComplete;
+    if (arguments[0]) {
+        onComplete = arguments[0];
+    }
+
     storage.get("rules", function (data) {
         var rules = data.rules;
         if (rules && rules.length > 0) {
@@ -76,7 +86,11 @@ function refreshRuleControls() {
                 _.each(data.rules, function (r) {
                     r.new = false;
                 });
-                storage.set({"rules": data.rules});
+                storage.set({"rules": data.rules}, function() {
+                    if (onComplete) {
+                        onComplete();
+                    }
+                });
             });
 
             $existingRulesContainer.find(".rule-control:odd").addClass("odd");
@@ -105,9 +119,10 @@ function createRuleControlDOM(rule) {
     ruleControl.find(".buttons").append(buttons);
 
     $existingRulesContainer.append(ruleControl);
+
     $additionalButtons.insertAfter(ruleControl);
 
-//    Add click listeners
+//    Add listeners
     buttons.on("click", ".edit", function (e) {
         onEditClick(rule.id);
         e.preventDefault();
