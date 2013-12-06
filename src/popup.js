@@ -9,10 +9,10 @@ $(document).ready(function () {
     refreshRuleControls();
 
     $existingRulesContainer = $("#existing-rules");
-    var controls = $("#controls");
-    ruleControlDiv = controls.find(".rule-control");
-    buttonsDiv = controls.find(".rule-buttons");
-    additionalButtonsDiv = controls.find(".rule-buttons-more");
+    var $ruleControls = $("#controls");
+    ruleControlDiv = $ruleControls.find(".rule-control");
+    buttonsDiv = $ruleControls.find(".rule-buttons");
+    additionalButtonsDiv = $ruleControls.find(".rule-buttons-more");
 
     runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
@@ -37,14 +37,10 @@ function initExtension() {
 }
 
 function refreshRuleControls() {
+    console.log("refreshRuleControls");
     storage.get("rules", function (data) {
         var rules = data.rules;
         if (rules && rules.length > 0) {
-
-            //Clearing out "no rules" message
-            if ($existingRulesContainer.find(".rule-control").length == 0) {
-                $existingRulesContainer.empty();
-            }
 
             var $ruleControls = $existingRulesContainer.find(".rule-control");
 
@@ -55,10 +51,6 @@ function refreshRuleControls() {
             //Create/Update elements
             _.each(sortedRules, function (rule) {
                 var $ruleControl = $ruleControls.filter("[id=" + rule.id + "]");
-
-                if (rule.new == true) {
-                    $ruleControl.find(".badge.new").fadeIn(1000);
-                }
 
                 if ($ruleControl.length > 0) {
                     updateRuleControlDOM(rule, $ruleControl);
@@ -103,6 +95,8 @@ function createRuleControlDOM(rule) {
     var $additionalButtons = additionalButtonsDiv.clone();
     $additionalButtons.find(".settings").addClass("active");
     $additionalButtons.attr("id", rule.id);
+
+    showNewBadge(ruleControl, rule);
 
     ruleControl.attr("id", rule.id);
     ruleControl.find(".favicon").attr("src", getFavicon(rule.url));
@@ -182,6 +176,7 @@ function createRuleControlDOM(rule) {
 }
 
 function updateRuleControlDOM(rule, ruleControl) {
+    showNewBadge(ruleControl, rule);
     ruleControl.find(".favicon").attr("src", getFavicon(rule.url));
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
@@ -282,4 +277,10 @@ function closeAdditionalButtons() {
     $(".rule-buttons-more").each(function (i, e) {
         $(e).hide();
     });
+}
+
+function showNewBadge($ruleControl, rule) {
+    if (rule.new == true) {
+        $ruleControl.find(".badge.new").fadeIn(1000);
+    }
 }

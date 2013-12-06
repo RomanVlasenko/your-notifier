@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Your notifier",
-    "description": "Notifies you when something's changing",
+    "description": "Helps to gather and monitor data from different online sources",
     "version": "1.0",
     "browser_action": {
         "default_icon": "img/icon32x32.png",
