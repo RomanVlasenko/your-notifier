@@ -3,6 +3,7 @@ var alarms = chrome.alarms;
 var runtime = chrome.runtime;
 var tabs = chrome.tabs;
 var browser = chrome.browserAction;
+var notifications = chrome.notifications;
 
 //Constants
 var NOT_AVAILABLE = "Not available";

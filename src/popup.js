@@ -136,6 +136,11 @@ function createRuleControlDOM(rule) {
         e.preventDefault();
     });
 
+    $additionalButtons.on("click", ".clear-history", function (e) {
+        onClearHistoryClick($additionalButtons, rule);
+        e.preventDefault();
+    });
+
     ruleControl.on("click", ".url", function (e) {
         tabs.create({url: rule.url});
         e.preventDefault();
@@ -233,15 +238,7 @@ function onMoreSettingsClick($additionalPanel) {
                         return r.id == $additionalPanel.attr("id");
                     });
 
-                    if (rule.history && rule.history.length > 0) {
-                        _.each(rule.history, function (h) {
-                            historyTable.append("<tr><td><div class='history-cell'>" + h.value + "</div></td><td class='date-cell'>"
-                                                    + formatDate(new Date(h.date))
-                                                    + "</td></tr>");
-                        });
-                    } else {
-                        historyTable.append("<p class='text-center'>" + NO_HISTORY + "</p>");
-                    }
+                    updateHistory(historyTable, rule);
                     $additionalPanel.slideDown("fast");
 
                 });
@@ -252,6 +249,33 @@ function onMoreSettingsClick($additionalPanel) {
             buttonsMoreDiv.slideUp("fast");
         }
     });
+}
+
+function onClearHistoryClick($additionalPanel, ruleWithHistory) {
+    storage.get("rules", function (data) {
+        var rules = data.rules;
+        var rule = _.find(rules, function (r) {
+            return r.id == ruleWithHistory.id;
+        });
+
+        rule.history = [];
+        storage.set({"rules": rules}, function () {
+            updateHistory($additionalPanel.find("table.history"), rule)
+        });
+    });
+}
+
+function updateHistory($historyTable, rule) {
+    $historyTable.empty();
+    if (rule.history && rule.history.length > 0) {
+        _.each(rule.history, function (h) {
+            $historyTable.append("<tr><td><div class='history-cell'>" + h.value + "</div></td><td class='date-cell'>"
+                                     + "<span class='pull-right'>" + formatDate(new Date(h.date))
+                                     + "</span></td></tr>");
+        });
+    } else {
+        $historyTable.append("<p class='text-center'>" + NO_HISTORY + "</p>");
+    }
 }
 
 function closeAdditionalButtons() {

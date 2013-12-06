@@ -136,6 +136,10 @@ button.delete {
     font-size: 13px;
 }
 
+.table.history p {
+    margin: 10px 0 10px 0;
+}
+
 .badge.new {
     font-size: 9px;
     background-color: #428bca;
