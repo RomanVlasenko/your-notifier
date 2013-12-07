@@ -53,8 +53,10 @@ function updateRuleValue(newRule, onRuleUpdated) {
             oldRule.value = newRule.value;
             oldRule.new = true;
 
-            if (oldRule.value != NOT_AVAILABLE) {
-                appendHistoryRecord(oldRule, {"value": oldRule.value, "date": new Date().getTime()});
+            if (newRule.value != NOT_AVAILABLE) {
+                if (_.isEmpty(oldRule.history) || newRule.value != oldRule.history[0].value) {
+                    appendHistoryRecord(oldRule, {"value": oldRule.value, "date": new Date().getTime()});
+                }
             }
 
             storage.set({'rules': rules}, function () {

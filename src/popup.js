@@ -11,7 +11,7 @@ $(document).ready(function () {
 
     $container.hide();
     refreshRuleControls(function () {
-        $container.show();
+        $container.slideDown(300);
     });
 
     $existingRulesContainer = $("#existing-rules");
@@ -86,7 +86,7 @@ function refreshRuleControls() {
                 _.each(data.rules, function (r) {
                     r.new = false;
                 });
-                storage.set({"rules": data.rules}, function() {
+                storage.set({"rules": data.rules}, function () {
                     if (onComplete) {
                         onComplete();
                     }
@@ -148,6 +148,27 @@ function createRuleControlDOM(rule) {
     $additionalButtons.on("click", ".clear-history", function (e) {
         onClearHistoryClick($additionalButtons, rule);
         e.preventDefault();
+    });
+
+    $additionalButtons.on("click", ".popup-notification", function (e) {
+//        var opt = {
+//            type: "basic",
+//            title: "Primary Title",
+//            message: "Primary message to display",
+//            iconUrl: getFavicon(rule.url)
+//        }
+        var opt = {
+            type: "list",
+            title: "Primary Title",
+            message: "Primary message to display",
+            iconUrl: getFavicon(rule.url),
+            items: [{ title: "Item1", message: "This is item 1."},
+                    { title: "Item2", message: "This is item 2."},
+                    { title: "Item3", message: "This is item 3."}]
+        };
+        notifications.create("1", opt, function () {
+
+        });
     });
 
     ruleControl.on("click", ".url", function (e) {
@@ -279,9 +300,9 @@ function updateHistory($historyTable, rule) {
     $historyTable.empty();
     if (rule.history && rule.history.length > 0) {
         _.each(rule.history, function (h) {
-            $historyTable.append("<tr><td><div class='history-cell'>" + h.value + "</div></td><td class='date-cell'>"
-                                     + "<span class='pull-right'>" + formatDate(new Date(h.date))
-                                     + "</span></td></tr>");
+            $historyTable.append("<tr><td><div class='history-cell'>" + h.value + "</div></td><td>"
+                                     + "<div class='date-cell pull-right'>" + formatDate(new Date(h.date))
+                                     + "</div></td></tr>");
         });
     } else {
         $historyTable.append("<p class='text-center'>" + NO_HISTORY + "</p>");
