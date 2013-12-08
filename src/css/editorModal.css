@@ -1,4 +1,6 @@
 .yon-dialog {
+    position: absolute;
+    z-index: 999999999;
     overflow: auto;
     background-color: rgb(238, 238, 238);
     padding: 5px;
@@ -13,6 +15,7 @@
 }
 
 .yon-dialog .ui-dialog-titlebar {
+    cursor: move;
     background-color: #ccc;
     border-radius: 3px;
     border: solid 1px #E9E9E9;
@@ -21,6 +24,105 @@
 
 .yon-dialog .row {
     width: 100%;
+}
+
+.yon-dialog .editor-buttons {
+    padding-top: 5px;
+}
+
+.yon-dialog input[type=text] {
+    -webkit-appearance: none;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0 1px 1px 0 inset;
+    -webkit-rtl-ordering: logical;
+    -webkit-transition-delay: 0s, 0s;
+    -webkit-transition-duration: 0.15s, 0.15s;
+    -webkit-transition-property: border-color, box-shadow;
+    -webkit-transition-timing-function: ease-in-out, ease-in-out;
+    -webkit-user-select: text;
+    -webkit-writing-mode: horizontal-tb;
+    background-color: rgb(255, 255, 255);
+    background-image: none;
+    border-collapse: separate;
+    border-image-outset: 0;
+    border-image-repeat: stretch;
+    border-image-slice: 100%;
+    border-image-source: none;
+    border-image-width: 1;
+    border-radius: 0 3px 3px 0;
+    border: 1px solid rgb(204, 204, 204);
+    box-shadow: rgba(0, 0, 0, 0.0745098) 0 1px 1px 0 inset;
+    box-sizing: border-box;
+    color: rgb(85, 85, 85);
+    cursor: auto;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    height: 30px;
+    letter-spacing: normal;
+    line-height: 18px;
+    margin: 0;
+    padding: 5px 10px;
+    text-align: start;
+    text-indent: 0;
+    text-shadow: none;
+    text-transform: none;
+    transition-delay: 0s, 0s;
+    transition-duration: 0.15s, 0.15s;
+    transition-property: border-color, box-shadow;
+    transition-timing-function: ease-in-out, ease-in-out;
+    vertical-align: middle;
+    width: 300px;
+    word-spacing: 0;
+    writing-mode: lr-tb;
+}
+
+.yon-dialog button {
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    -webkit-writing-mode: horizontal-tb;
+    align-items: flex-start;
+    border-image-outset: 0;
+    border-image-repeat: stretch;
+    border-image-slice: 100%;
+    border-image-source: none;
+    border-image-width: 1;
+    border-radius: 3px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    height: 30px;
+    letter-spacing: normal;
+    line-height: 18px;
+    margin: 0;
+    padding: 5px 10px;
+    text-align: center;
+    text-indent: 0;
+    text-transform: none;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: 60px;
+    word-spacing: 0;
+}
+
+.yon-dialog button#save {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.14902) 0 1px 0 0 inset, rgba(0, 0, 0, 0.0745098) 0 1px 1px 0;
+    background: rgb(66, 139, 202) linear-gradient(rgb(66, 139, 202) 0, rgb(45, 108, 162) 100%) repeat-x;
+    border: 1px solid rgb(43, 102, 154);
+    box-shadow: rgba(255, 255, 255, 0.14902) 0 1px 0 0 inset, rgba(0, 0, 0, 0.0745098) 0 1px 1px 0;
+    color: rgb(255, 255, 255);
+    text-shadow: rgba(0, 0, 0, 0.2) 0 -1px 0;
+}
+
+.yon-dialog #cancel, #test {
+    -webkit-box-shadow: rgba(255, 255, 255, 0.14902) 0 1px 0 0 inset, rgba(0, 0, 0, 0.0745098) 0 1px 1px 0;
+    background: rgb(255, 255, 255) linear-gradient(rgb(255, 255, 255) 0, rgb(224, 224, 224) 100%) repeat-x;
+    border: 1px solid rgb(204, 204, 204);
+    box-shadow: rgba(255, 255, 255, 0.14902) 0 1px 0 0 inset, rgba(0, 0, 0, 0.0745098) 0 1px 1px 0;
+    color: rgb(51, 51, 51);
+    text-shadow: rgb(255, 255, 255) 0 1px 0;
 }
 
 .yon-title {
