@@ -18,8 +18,10 @@ function restoreState() {
 
     storage.get(STATE, function (data) {
         var state = data.state;
-        if (state.page == EDIT_MODE) {
-            restoreEdit();
+        if (state) {
+            if (state.page == EDIT_MODE) {
+                restoreEdit();
+            }
         }
     });
 }

@@ -4,6 +4,7 @@ var runtime = chrome.runtime;
 var tabs = chrome.tabs;
 var browser = chrome.browserAction;
 var notifications = chrome.notifications;
+var menu = chrome.contextMenus;
 
 //Constants
 var NOT_AVAILABLE = "Not available";
@@ -42,6 +43,11 @@ function twoDigits(d) {
 }
 
 function isNetworkAvailable(handler) {
+    if (!handler.error) {
+        handler.error = function () {
+        };
+    }
+
     $.ajax({url: "http://google.com",
                success: function () {
                    handler.success();

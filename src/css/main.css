@@ -3,6 +3,7 @@ body {
 }
 
 #container {
+    display: none;
     max-width: 100%;
     min-width: 600px;
     background-color: #eee;
