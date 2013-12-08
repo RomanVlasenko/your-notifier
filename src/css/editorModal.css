@@ -1,0 +1,55 @@
+.yon-dialog {
+    overflow: auto;
+    background-color: rgb(238, 238, 238);
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px dashed #ccc;
+
+    text-align: center;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #333;
+}
+
+.yon-dialog .ui-dialog-titlebar {
+    background-color: #ccc;
+    border-radius: 3px;
+    border: solid 1px #E9E9E9;
+    padding-left: 5px;
+}
+
+.yon-dialog .row {
+    width: 100%;
+}
+
+.yon-title {
+    color: #6B6B6B;
+}
+
+.yon-dialog-container {
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.yon-dialog .ui-dialog-titlebar-close {
+    display: none
+}
+
+.yon-input-group-addon {
+    display: inline-block;
+    width: 70px;
+    text-align: left;
+}
+
+.yon-form-control {
+    width: 300px;
+}
+
+.yon-pull-right {
+    float: right !important
+}
+
+.yon-pull-left {
+    float: left !important
+}

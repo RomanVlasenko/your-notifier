@@ -10,8 +10,8 @@
         "default_title": "Your notifier"
     },
     "background": {
-        "scripts": ["lib/jquery-2.0.3.min.js", "lib/underscore-min.js", "js/common.js", "js/urlChecker.js", "js/schedule.js",
-                    "background.js"],
+        "scripts": ["lib/jquery-2.0.3.min.js", "lib/jquery-2.0.3.min.map",
+                    "lib/underscore-min.js", "js/common.js", "js/urlChecker.js", "js/schedule.js", "js/editorDialog.js"],
         "persistent": false
     },
     "icons": {
@@ -22,10 +22,11 @@
     "content_scripts": [
         {
             "matches": ["http://*/*"],
-            "js": ["lib/jquery-2.0.3.min.js", "lib/selectorator.min.js", "js/common.js", "js/selector.js"]
+            "js": ["lib/jquery-2.0.3.min.js", "lib/jquery-ui-1.10.3.min.js", "lib/selectorator.min.js", "js/common.js",
+                   "js/selector.js"]
         }
     ],
-    "web_accessible_resources": ["lib/jquery-2.0.3.min.map"],
+    "web_accessible_resources": ["css/editorModal.css", "css/bootstrap.min.yon.css", "editorModal.html"],
     "permissions": [ "<all_urls>" , "storage", "alarms", "tabs", "notifications", "contextMenus"],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
