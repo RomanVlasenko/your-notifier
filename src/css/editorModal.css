@@ -5,9 +5,9 @@
     background-color: rgb(238, 238, 238);
     padding: 5px;
     border-radius: 5px;
-    border: 1px dashed #ccc;
+    border: 1px solid rgb(204, 204, 204);
+    box-shadow: rgb(238, 238, 238) 1px 2px 3px;
 
-    text-align: center;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.428571429;
@@ -20,10 +20,7 @@
     border-radius: 3px;
     border: solid 1px #E9E9E9;
     padding-left: 5px;
-}
-
-.yon-dialog .row {
-    width: 100%;
+    text-align: center;
 }
 
 .yon-dialog .editor-buttons {
@@ -74,6 +71,7 @@
     width: 300px;
     word-spacing: 0;
     writing-mode: lr-tb;
+    width: 300px !important;
 }
 
 .yon-dialog button {
@@ -131,7 +129,18 @@
 
 .yon-dialog-container {
     border-radius: 5px;
+    color: rgb(51, 51, 51);
+    cursor: auto;
+    display: block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    height: 90px;
+    line-height: 20px;
+    max-height: none;
+    min-height: 0;
     padding: 5px;
+    text-align: center;
+    width: 390px;
 }
 
 .yon-dialog .ui-dialog-titlebar-close {
@@ -139,13 +148,15 @@
 }
 
 .yon-input-group-addon {
+    color: rgb(51, 51, 51);
+    cursor: auto;
     display: inline-block;
-    width: 70px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    height: 20px;
+    line-height: 20px;
     text-align: left;
-}
-
-.yon-form-control {
-    width: 300px;
+    width: 70px;
 }
 
 .yon-pull-right {
