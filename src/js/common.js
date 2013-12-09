@@ -13,7 +13,7 @@ var NO_HISTORY = "No history available";
 var HISTORY_MAX = 5;
 
 function getFavicon(url) {
-    return url.replace(/^(http:\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
+    return url.replace(/^((http|https):\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
 }
 
 function isEmpty(str) {

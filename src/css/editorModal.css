@@ -116,7 +116,7 @@
     text-shadow: rgba(0, 0, 0, 0.2) 0 -1px 0;
 }
 
-.yon-dialog #cancel, #test {
+.yon-dialog #cancel, .yon-dialog #test {
     -webkit-box-shadow: rgba(255, 255, 255, 0.14902) 0 1px 0 0 inset, rgba(0, 0, 0, 0.0745098) 0 1px 1px 0;
     background: rgb(255, 255, 255) linear-gradient(rgb(255, 255, 255) 0, rgb(224, 224, 224) 100%) repeat-x;
     border: 1px solid rgb(204, 204, 204);

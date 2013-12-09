@@ -1,15 +1,5 @@
 $(document).ready(function () {
 
-    var head = $("head");
-
-    var ext = chrome.extension;
-
-    $("<link>").attr({rel: "stylesheet", type: "text/css", href: ext.getURL("/css/editorModal.css")}).appendTo(head);
-
-    $("<script>").attr({type: "text/javascript", href: ext.getURL("lib/jquery-2.0.3.min.js")}).appendTo(head);
-    $("<script>").attr({type: "text/javascript", href: ext.getURL("lib/jquery-ui-1.10.3.min.js")}).appendTo(head);
-    $("<script>").attr({type: "text/javascript", href: ext.getURL("js/selector.js")}).appendTo(head);
-
     $(document).mousedown(function (e) {
         if (e.button == 2) {
             selector = $(e.target).getSelector().join("\n");
