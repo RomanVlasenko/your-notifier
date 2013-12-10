@@ -8,7 +8,7 @@ $(document).ready(function () {
     $testLabel = $(".test .test-label");
 
     $('#create').click(function () {
-        openRuleEditor();
+        onCreateClick();
     });
 
     $('#cancel').click(function () {
@@ -23,6 +23,20 @@ $(document).ready(function () {
         onTestClick();
     });
 });
+
+function onCreateClick() {
+    tabs.query({active: true}, function (activeTabs) {
+        if (activeTabs && activeTabs.length > 0) {
+            var currentTab = activeTabs[0];
+            $("#title").val(currentTab.title);
+            $("#url").val(currentTab.url);
+
+            persistStateEdit();
+        }
+    });
+
+    openRuleEditor();
+}
 
 function openRuleEditor() {
     closeAdditionalButtons();

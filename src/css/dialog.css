@@ -166,3 +166,44 @@
 .yon-pull-left {
     float: left !important
 }
+
+.yon-badge {
+    border-radius: 2.625px;
+    box-sizing: border-box;
+    display: inline;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    height: auto;
+    line-height: 10px;
+    padding: 2px 6px 3px;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+    width: auto;
+}
+
+.yon-badge.not-available {
+    background-color: rgb(217, 83, 79);
+    color: rgb(255, 255, 255);
+}
+
+.yon-badge.ok {
+    background-color: rgb(66, 139, 202);
+    color: rgb(255, 255, 255);
+}
+
+.yon-test {
+    width: 300px;
+    display: table-cell;
+    border-radius: 3px;
+    border: 1px dashed #ccc;
+    vertical-align: middle;
+    height: 80px;
+    vertical-align: middle;
+}
+
+.yon-test-inner {
+    margin-top: 10px;
+    height: 25px;
+}

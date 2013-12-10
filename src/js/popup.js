@@ -7,19 +7,26 @@ $(document).ready(function () {
 
     $existingRulesContainer = $("#existing-rules");
 
-    initExtension(function () {
-        var $container = $("#container");
+    browser.setBadgeText({text: ""});
+    browser.setTitle({title: "Your notifier"});
 
-        refreshRuleControls(function () {
-            $container.slideDown(300);
+    var $container = $("#container");
+
+    refreshRuleControls(function () {
+        persistence.readState(function (state) {
+            if (state.page == NORMAL_MODE) {
+                $container.slideDown(300);
+            } else {
+                restoreEdit();
+                $container.show();
+            }
         });
-
-        var $ruleControls = $("#controls");
-        ruleControlDiv = $ruleControls.find(".rule-control");
-        buttonsDiv = $ruleControls.find(".rule-buttons");
-        additionalButtonsDiv = $ruleControls.find(".rule-buttons-more");
-
     });
+
+    var $ruleControls = $("#controls");
+    ruleControlDiv = $ruleControls.find(".rule-control");
+    buttonsDiv = $ruleControls.find(".rule-buttons");
+    additionalButtonsDiv = $ruleControls.find(".rule-buttons-more");
 
     runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
@@ -29,22 +36,6 @@ $(document).ready(function () {
         });
 
 });
-
-//Initializing storage structure when app starts first time
-function initExtension(whenDone) {
-    browser.setTitle({title: "Your notifier"});
-
-    storage.get('rules', function (data) {
-
-        if (data.rules instanceof Array) {
-            whenDone();
-        } else {
-            storage.set({'rules': []}, function () {
-                whenDone();
-            });
-        }
-    });
-}
 
 function refreshRuleControls() {
     var onComplete;

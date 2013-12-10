@@ -30,6 +30,13 @@ $(document).ready(function () {
             $editor.on("click", "#test", function () {
                 check({url: url, selector: selector}, function (val) {
                     $editor.find(".test-label").html(val);
+                    $editor.find(".yon-test").slideDown(200);
+
+                    if (isEmpty(val)) {
+                        $editor.find(".not-available").show();
+                    } else {
+                        $editor.find(".ok").show();
+                    }
                 });
             });
 
