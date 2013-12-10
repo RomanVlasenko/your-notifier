@@ -5,7 +5,7 @@ var persistence = {
 
     readState: function (result) {
         storage.get("state", function (data) {
-            if (data.state) {
+            if (data && data.state) {
                 result(data.state);
             } else {
                 storage.set({"state": initialState}, function () {
@@ -28,15 +28,46 @@ var persistence = {
         });
     },
 
-    loadRules: function (result) {
+    readRules: function (result) {
         storage.get("rules", function (data) {
-            if (data.rules) {
+            if (data && data.rules) {
                 result(data.rules);
             } else {
                 storage.set({"rules": initialRules}, function () {
                     result(initialRules);
                 });
             }
+        });
+    },
+
+    saveRules: function (rules) {
+        var callback;
+        if (arguments && arguments.length > 1) {
+            callback = arguments[1];
+        }
+
+        storage.set({"rules": rules}, function () {
+            if (callback) {
+                callback();
+            }
+        });
+    },
+
+    deleteRule: function (ruleId) {
+        var callback;
+        if (arguments && arguments.length > 1) {
+            callback = arguments[1];
+        }
+
+        storage.get("rules", function (data) {
+            var rules = _.reject(data.rules, function (r) {
+                return r.id == ruleId
+            });
+            storage.set({'rules': rules}, function () {
+                if (callback) {
+                    callback();
+                }
+            });
         });
     }
 };

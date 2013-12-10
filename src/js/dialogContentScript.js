@@ -20,7 +20,7 @@ $(document).ready(function () {
         });
 
     function openDialog(title, url, selector) {
-        $.get(chrome.extension.getURL("editorModal.html"), function (data) {
+        $.get(chrome.extension.getURL("dialog.html"), function (data) {
             var $editor = $(data);
 
             $editor.on("click", "#cancel", function () {

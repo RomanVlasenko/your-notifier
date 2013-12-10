@@ -43,13 +43,12 @@ function refreshRuleControls() {
         onComplete = arguments[0];
     }
 
-    storage.get("rules", function (data) {
-        var rules = data.rules;
-        if (rules && rules.length > 0) {
+    persistence.readRules(function (rules) {
+        if (rules.length > 0) {
 
             var $ruleControls = $existingRulesContainer.find(".rule-control");
 
-            var sortedRules = _.sortBy(data.rules, function (r) {
+            var sortedRules = _.sortBy(rules, function (r) {
                 return r.index;
             });
 
@@ -77,11 +76,11 @@ function refreshRuleControls() {
             });
 
             //Update rules flag NEW to 'false'
-            storage.get("rules", function (data) {
-                _.each(data.rules, function (r) {
+            persistence.readRules(function (rules) {
+                _.each(rules, function (r) {
                     r.new = false;
                 });
-                storage.set({"rules": data.rules}, function () {
+                persistence.saveRules(rules, function () {
                     if (onComplete) {
                         onComplete();
                     }
@@ -220,19 +219,14 @@ function updateRuleControlDOM(rule, ruleControl) {
 }
 
 function onDeleteClick(ruleId) {
-    storage.get('rules', function (data) {
-        var rules = _.reject(data.rules, function (r) {
-            return r.id == ruleId
-        });
-        storage.set({'rules': rules}, function () {
-            refreshRuleControls();
-        });
+    persistence.deleteRule(ruleId, function () {
+        refreshRuleControls();
     });
 }
 
 function onCloneClick(ruleId) {
-    storage.get('rules', function (data) {
-        var rule = _.find(data.rules, function (r) {
+    persistence.readRules(function (rules) {
+        var rule = _.find(rules, function (r) {
             return r.id == ruleId
         });
 
@@ -283,8 +277,7 @@ function onMoreSettingsClick($additionalPanel) {
 }
 
 function onClearHistoryClick($additionalPanel, ruleWithHistory) {
-    storage.get("rules", function (data) {
-        var rules = data.rules;
+    persistence.readRules(function (rules) {
         var rule = _.find(rules, function (r) {
             return r.id == ruleWithHistory.id;
         });
