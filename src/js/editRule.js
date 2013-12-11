@@ -77,13 +77,8 @@ function markRuleAsEditable(rule) {
 function saveRule() {
     var newRule = getRule();
 
-    storage.get("rules", function (data) {
-        var rules = data.rules;
-        var existingRule = _.find(rules, function (r) {
-            return r.id == newRule.id;
-        });
-
-        if (existingRule) {
+    persistence.findRule(newRule.id, function(oldRule) {
+        if (oldRule) {
             updateRule(newRule, function (rule) {
                 persistStatePopup();
                 refreshRuleControls();

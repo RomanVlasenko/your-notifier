@@ -3,6 +3,8 @@ var initialRules = {rules: []};
 
 var persistence = {
 
+    //State operations
+
     readState: function (result) {
         storage.get("state", function (data) {
             if (data && data.state) {
@@ -28,6 +30,8 @@ var persistence = {
         });
     },
 
+    //Rules operations
+
     readRules: function (result) {
         storage.get("rules", function (data) {
             if (data && data.rules) {
@@ -37,6 +41,14 @@ var persistence = {
                     result(initialRules);
                 });
             }
+        });
+    },
+
+    findRule: function (ruleId, result) {
+        storage.get('rules', function (data) {
+            result(_.find(data.rules, function (r) {
+                return r.id == ruleId
+            }));
         });
     },
 

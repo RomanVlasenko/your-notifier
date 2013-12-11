@@ -238,11 +238,7 @@ function onCloneClick(ruleId) {
 }
 
 function onEditClick(ruleId) {
-    storage.get('rules', function (data) {
-        var rule = _.find(data.rules, function (r) {
-            return r.id == ruleId
-        });
-
+    persistence.findRule(ruleId, function (rule) {
         setRule(rule);
         openRuleEditor();
         markRuleAsEditable(rule);
