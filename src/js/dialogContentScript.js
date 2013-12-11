@@ -1,13 +1,12 @@
 $(document).ready(function () {
 
+    var selector;
     $(document).mousedown(function (e) {
         if (e.button == 2) {
             selector = $(e.target).getSelector().join("\n");
             console.log(selector);
         }
     });
-
-    var selector;
 
     runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
@@ -24,6 +23,14 @@ $(document).ready(function () {
             var $editor = $(data);
 
             $editor.on("click", "#cancel", function () {
+                $editor.find("#title").val();
+                $editor.find("#url").val();
+                $editor.find("#selector").val();
+
+                url = "";
+                title = "";
+                selector = "";
+
                 $editor.dialog("close");
             });
 
