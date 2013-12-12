@@ -1,5 +1,5 @@
 menu.removeAll();
-menu.create({id: "createItem", contexts: ["page", "selection", "link"], title: "Add item"});
+menu.create({id: "createItem", contexts: ["page", "selection", "link"], title: "Watch this item"});
 
 menu.onClicked.addListener(function (e) {
     if (e.menuItemId == "createItem") {
