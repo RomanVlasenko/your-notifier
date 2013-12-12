@@ -53,7 +53,14 @@
 }
 
 .yon-dialog .editor-buttons {
+    width: 100%;
     padding-top: 5px;
+}
+
+.yon-dialog .editor-buttons .inner {
+    width: auto;
+    display: table;
+    margin: 0 auto;
 }
 
 .yon-dialog input[type=text] {
@@ -205,8 +212,9 @@
 }
 
 .yon-test {
+    margin: 5px auto 5px auto;
+    display: table;
     width: 300px;
-    display: table-cell;
     border-radius: 3px;
     border: 1px dashed #ccc;
     vertical-align: middle;
@@ -214,6 +222,17 @@
 }
 
 .yon-test-inner {
+    vertical-align: middle;
+    display: table-cell;
     margin-top: 10px;
     height: 25px;
+}
+
+.test-label-container {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 280px;
+    text-align: center;
+    margin: 0 auto;
 }

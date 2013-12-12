@@ -16,9 +16,7 @@ $(document).ready(function () {
             $editor.find("#url").val();
             $editor.find("#selector").val();
 
-            url = "";
-            title = "";
-            $clickedElement = null;
+            clearDialog();
 
             $editor.dialog("close");
         });
@@ -69,6 +67,14 @@ $(document).ready(function () {
                 url: $editor.find('#url').val(),
                 selector: $editor.find('#selector').val()
             };
+        }
+
+        function clearDialog() {
+            url = "";
+            title = "";
+            $clickedElement = null;
+            $editor.find(".yon-badge").hide();
+            $editor.find(".yon-test").hide();
         }
     });
 
