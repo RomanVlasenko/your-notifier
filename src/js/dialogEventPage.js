@@ -14,6 +14,22 @@ menu.onClicked.addListener(function (e) {
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
+        if (request.method == "testRule") {
+
+            common.checkUrl(request.rule, function (val) {
+                if (isEmpty(val)) {
+                    sendResponse({value: ""});
+                } else {
+                    sendResponse({value: val});
+                }
+            });
+            return true;
+        }
+        return false;
+    });
+
+chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
         if (request.method == "saveRule") {
 
             storage.get("rules", function (data) {

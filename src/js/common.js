@@ -57,19 +57,22 @@ function isNetworkAvailable(handler) {
                }});
 }
 
-function check(rule, onComplete) {
-    $.ajax({url: rule.url,
-               success: function (srcHtml) {
-                   var foundData = $(srcHtml).find(rule.selector);
-                   if (foundData.length != 0) {
-                       var newVal = foundData.first().text().trim();
-                       onComplete(newVal);
-                   } else {
-                       onComplete("");
-                   }
+var common = {
+    checkUrl: function check(rule, onComplete) {
+        $.ajax({url: rule.url,
+                   success: function (srcHtml) {
+                       var foundData = $(srcHtml).find(rule.selector);
+                       if (foundData.length != 0) {
+                           var newVal = foundData.first().text().trim();
+                           onComplete(newVal);
+                       } else {
+                           onComplete("");
+                       }
 
-               },
-               error: function () {
-                   onComplete("");
-               }});
-}
+                   },
+                   error: function () {
+                       onComplete("");
+                   }});
+    }
+};
+

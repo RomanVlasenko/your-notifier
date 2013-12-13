@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     var $clickedElement;
     var selector;
     $(document).mousedown(function (e) {
@@ -12,17 +11,13 @@ $(document).ready(function () {
         var $editor = $(data);
 
         $editor.on("click", "#cancel", function () {
-            $editor.find("#title").val();
-            $editor.find("#url").val();
-            $editor.find("#selector").val();
-
             clearDialog();
 
             $editor.dialog("close");
         });
 
         $editor.on("click", "#test", function () {
-            check({url: url, selector: selector}, function (val) {
+            common.checkUrl(getRule($editor), function (val) {
                 $editor.find(".test-label").html(val);
                 $editor.find(".yon-test").slideDown(200);
 
@@ -70,11 +65,17 @@ $(document).ready(function () {
         }
 
         function clearDialog() {
-            url = "";
-            title = "";
-            $clickedElement = null;
+            $editor.find("#title").val("");
+            $editor.find("#url").val("");
+            $editor.find("#selector").val("");
+
             $editor.find(".yon-badge").hide();
             $editor.find(".yon-test").hide();
+
+            url = "";
+            title = "";
+            selector = "";
+            $clickedElement = null;
         }
     });
 
