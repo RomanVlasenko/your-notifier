@@ -7,8 +7,8 @@ $(document).ready(function () {
 
     $existingRulesContainer = $("#existing-rules");
 
-    browser.setBadgeText({text: ""});
-    browser.setTitle({title: "Your notifier"});
+    chromeAPI.browser.setBadgeText({text: ""});
+    chromeAPI.browser.setTitle({title: "Your notifier"});
 
     var $container = $("#container");
 
@@ -28,7 +28,7 @@ $(document).ready(function () {
     buttonsDiv = $ruleControls.find(".rule-buttons");
     additionalButtonsDiv = $ruleControls.find(".rule-buttons-more");
 
-    runtime.onMessage.addListener(
+    chromeAPI.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
             if (request.msg == "refreshList") {
                 refreshRuleControls();
@@ -38,9 +38,12 @@ $(document).ready(function () {
 });
 
 function refreshRuleControls() {
-    var onComplete;
+    var callbackHandler;
     if (arguments[0]) {
-        onComplete = arguments[0];
+        callbackHandler = arguments[0];
+    } else {
+        callbackHandler = function () {
+        };
     }
 
     persistence.readRules(function (rules) {
@@ -81,9 +84,7 @@ function refreshRuleControls() {
                     r.new = false;
                 });
                 persistence.saveRules(rules, function () {
-                    if (onComplete) {
-                        onComplete();
-                    }
+                    callbackHandler();
                 });
             });
 
@@ -92,9 +93,7 @@ function refreshRuleControls() {
 
         } else {
             $existingRulesContainer.html("<h5 class='text-center'>You don't have any items to watch yet.</h5>");
-            if (onComplete) {
-                onComplete();
-            }
+            callbackHandler();
         }
     });
 }
@@ -110,7 +109,7 @@ function createRuleControlDOM(rule) {
     showNewBadge(ruleControl, rule);
 
     ruleControl.attr("id", rule.id);
-    ruleControl.find(".favicon").attr("src", getFavicon(rule.url));
+    ruleControl.find(".favicon").attr("src", common.getFavicon(rule.url));
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
     ruleControl.find(".buttons").append(buttons);
@@ -158,20 +157,20 @@ function createRuleControlDOM(rule) {
             type: "list",
             title: "Primary Title",
             message: "Primary message to display",
-            iconUrl: getFavicon(rule.url),
+            iconUrl: common.getFavicon(rule.url),
             items: [
                 { title: "Item1", message: "This is item 1."},
                 { title: "Item2", message: "This is item 2."},
                 { title: "Item3", message: "This is item 3."}
             ]
         };
-        notifications.create("1", opt, function () {
+        chromeAPI.notifications.create("1", opt, function () {
 
         });
     });
 
     ruleControl.on("click", ".url", function (e) {
-        tabs.create({url: rule.url});
+        chromeAPI.tabs.create({url: rule.url});
         e.preventDefault();
     });
 
@@ -187,15 +186,15 @@ function createRuleControlDOM(rule) {
     }
 
     function onDragEnd() {
-        storage.get("rules", function (data) {
-            var rules = data.rules;
+        persistence.readRules(function (rules) {
             $existingRulesContainer.find(".rule-control").each(function (i, e) {
                 var rule = _.find(rules, function (r) {
                     return r.id == $(e).attr("id");
                 });
                 rule.index = i;
             });
-            storage.set({'rules': rules});
+
+            persistence.saveRules(rules);
         });
 
         $existingRulesContainer.find(".rule-control").removeClass("odd, even");
@@ -212,7 +211,7 @@ function createRuleControlDOM(rule) {
 
 function updateRuleControlDOM(rule, ruleControl) {
     showNewBadge(ruleControl, rule);
-    ruleControl.find(".favicon").attr("src", getFavicon(rule.url));
+    ruleControl.find(".favicon").attr("src", common.getFavicon(rule.url));
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
     return ruleControl;
@@ -225,11 +224,7 @@ function onDeleteClick(ruleId) {
 }
 
 function onCloneClick(ruleId) {
-    persistence.readRules(function (rules) {
-        var rule = _.find(rules, function (r) {
-            return r.id == ruleId
-        });
-
+    persistence.findRule(ruleId, function (rule) {
         var clonedRule = _.clone(rule);
         clonedRule.id = '';
         setRule(clonedRule);
@@ -254,14 +249,11 @@ function onMoreSettingsClick($additionalPanel) {
 
                 //Show value change history
                 var historyTable = $additionalPanel.find("table.history").empty();
-                storage.get("rules", function (data) {
-                    var rule = _.find(data.rules, function (r) {
-                        return r.id == $additionalPanel.attr("id");
-                    });
 
+                var ruleId = $additionalPanel.attr("id");
+                persistence.findRule(ruleId, function (rule) {
                     updateHistory(historyTable, rule);
                     $additionalPanel.slideDown("fast");
-
                 });
             }
 
@@ -273,13 +265,11 @@ function onMoreSettingsClick($additionalPanel) {
 }
 
 function onClearHistoryClick($additionalPanel, ruleWithHistory) {
-    persistence.readRules(function (rules) {
-        var rule = _.find(rules, function (r) {
-            return r.id == ruleWithHistory.id;
-        });
 
+    persistence.findRule(ruleWithHistory.id, function(rule) {
         rule.history = [];
-        storage.set({"rules": rules}, function () {
+
+        persistence.saveRule(rule, function(){
             updateHistory($additionalPanel.find("table.history"), rule)
         });
     });
@@ -290,7 +280,7 @@ function updateHistory($historyTable, rule) {
     if (rule.history && rule.history.length > 0) {
         _.each(rule.history, function (h) {
             $historyTable.append("<tr><td><div class='history-cell'>" + h.value + "</div></td><td>"
-                                     + "<div class='date-cell pull-right'>" + formatDate(new Date(h.date))
+                                     + "<div class='date-cell pull-right'>" + common.formatDate(new Date(h.date))
                                      + "</div></td></tr>");
         });
     } else {

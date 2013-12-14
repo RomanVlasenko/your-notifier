@@ -7,7 +7,7 @@ $(document).ready(function () {
         }
     });
 
-    $.get(chrome.extension.getURL("dialog.html"), function (data) {
+    $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
         var $editor = $(data);
 
         $editor.on("click", "#cancel", function () {
@@ -30,11 +30,11 @@ $(document).ready(function () {
         });
 
         $editor.on("click", "#save", function () {
-            runtime.sendMessage({method: "saveRule", rule: getRule($editor)});
+            chromeAPI.runtime.sendMessage({method: "saveRule", rule: getRule($editor)});
             $editor.dialog("close");
         });
 
-        runtime.onMessage.addListener(
+        chromeAPI.runtime.onMessage.addListener(
             function (request, sender, sendResponse) {
                 if (request.method == "createRule") {
                     if ($clickedElement) {

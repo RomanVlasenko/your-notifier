@@ -11,7 +11,8 @@
     },
     "background": {
         "scripts": ["lib/jquery-2.0.3.min.js", "lib/jquery-2.0.3.min.map",
-                    "lib/underscore-min.js", "js/common.js", "js/urlChecker.js", "js/schedule.js", "js/dialogEventPage.js"],
+                    "lib/underscore-min.js", "js/common.js", "js/urlChecker.js", "js/schedule.js",
+                    "js/dialogEventPage.js", "js/persistence.js"],
         "persistent": false
     },
     "icons": {

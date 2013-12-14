@@ -1,4 +1,13 @@
-function checkAndUpdate(rule, onRuleUpdated) {
+function checkAndUpdate(rule) {
+
+    var callbackHandler;
+    if (arguments && arguments.length > 1) {
+        callbackHandler = arguments[1];
+    } else {
+        callbackHandler = function (o) {
+        }
+    }
+
     $.ajax({url: rule.url,
                success: function (srcHtml) {
                    var foundData = $(srcHtml).find(rule.selector);
@@ -7,7 +16,7 @@ function checkAndUpdate(rule, onRuleUpdated) {
                        var newVal = foundData.first().text().trim();
                        if (newVal) {
                            rule.value = newVal;
-                           updateRuleValue(rule, onRuleUpdated);
+                           updateRuleValue(rule, callbackHandler);
                        }
                    } else {
                        onError();
@@ -20,41 +29,34 @@ function checkAndUpdate(rule, onRuleUpdated) {
 
     function onError() {
         rule.value = NOT_AVAILABLE;
-        updateRuleValue(rule, onRuleUpdated);
+        updateRuleValue(rule, callbackHandler);
     }
 }
 
 function updateRuleValue(newRule, onRuleUpdated) {
-    storage.get('rules', function (data) {
-        var rules = data.rules;
-        var oldRule = _.find(rules, function (r) {
-            return r.id == newRule.id;
-        });
+    if (!onRuleUpdated) {
+        onRuleUpdated = function () {
+        };
+    }
 
-        if (oldRule.value != newRule.value) {
-
-            oldRule.value = newRule.value;
-            oldRule.new = true;
+    persistence.findRule(newRule.id, function (exRule) {
+        if (exRule.value != newRule.value) {
+            exRule.value = newRule.value;
+            exRule.new = true;
 
             if (newRule.value != NOT_AVAILABLE) {
-                if (_.isEmpty(oldRule.history) || newRule.value != oldRule.history[0].value) {
-                    appendHistoryRecord(oldRule, {"value": oldRule.value, "date": new Date().getTime()});
+                if (_.isEmpty(exRule.history) || newRule.value != exRule.history[0].value) {
+                    appendHistoryRecord(exRule, {"value": exRule.value, "date": new Date().getTime()});
                 }
             }
 
-            storage.set({'rules': rules}, function () {
-                if (onRuleUpdated) {
-                    onRuleUpdated(oldRule);
-                } else {
-                    runtime.sendMessage({msg: "refreshList"});
-                }
+            persistence.saveRule(exRule, function () {
+                chromeAPI.runtime.sendMessage({msg: "refreshList"});
+                onRuleUpdated(exRule);
             });
         } else {
-            if (onRuleUpdated) {
-                onRuleUpdated(oldRule);
-            }
+            onRuleUpdated(exRule);
         }
-
     });
 }
 

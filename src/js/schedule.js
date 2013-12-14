@@ -1,16 +1,14 @@
-alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
-alarms.onAlarm.addListener(function (alarm) {
+chromeAPI.alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
+chromeAPI.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name = 'CheckRulesSchedule') {
-        isNetworkAvailable({success: function () {
+        common.isNetworkAvailable({success: function () {
             performScheduledChecking();
         }});
     }
 });
 
 function performScheduledChecking() {
-    storage.get('rules', function (data) {
-        var rules = data.rules;
-
+    persistence.readRules(function (rules) {
         _.each(rules, function (rule) {
             checkAndUpdate(rule, onRuleUpdated);
         });
@@ -25,7 +23,6 @@ function performScheduledChecking() {
                 showPopupBadge(updatedRules);
             }
         }
-
     });
 }
 
@@ -39,9 +36,9 @@ function showPopupBadge(rules) {
     });
 
     if (newValuesCount > 0) {
-        browser.setBadgeBackgroundColor({color: "#428bca"});
-        browser.setBadgeText({text: String(newValuesCount)});
-        browser.setTitle({title: newValuesCount + " items updated"});
-        runtime.sendMessage({msg: "refreshList"});
+        chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
+        chromeAPI.browser.setBadgeText({text: String(newValuesCount)});
+        chromeAPI.browser.setTitle({title: newValuesCount + " items updated"});
+        chromeAPI.runtime.sendMessage({msg: "refreshList"});
     }
 }

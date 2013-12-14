@@ -25,7 +25,7 @@ $(document).ready(function () {
 });
 
 function onCreateClick() {
-    tabs.query({active: true}, function (activeTabs) {
+    chromeAPI.tabs.query({active: true}, function (activeTabs) {
         if (activeTabs && activeTabs.length > 0) {
             var currentTab = activeTabs[0];
             $("#title").val(currentTab.title);
@@ -77,47 +77,30 @@ function markRuleAsEditable(rule) {
 function saveRule() {
     var newRule = getRule();
 
-    persistence.findRule(newRule.id, function(oldRule) {
-        if (oldRule) {
-            updateRule(newRule, function (rule) {
+    persistence.findRule(newRule.id, function (exRule) {
+        if (exRule) {
+            exRule.title = newRule.title;
+            exRule.url = newRule.url;
+            exRule.selector = newRule.selector;
+
+            persistence.saveRule(exRule, function () {
                 persistStatePopup();
                 refreshRuleControls();
-                checkAndUpdate(rule);
+                checkAndUpdate(exRule);
             });
         } else {
             createRule(newRule)
         }
-    });
-
-}
-
-function updateRule(newRule, onComplete) {
-    storage.get("rules", function (data) {
-        var rules = data.rules;
-
-        var oldRule = _.find(rules, function (r) {
-            return r.id == newRule.id;
-        });
-
-        oldRule.title = newRule.title;
-        oldRule.url = newRule.url;
-        oldRule.selector = newRule.selector;
-
-        storage.set({"rules": rules}, function () {
-            onComplete(oldRule)
-        });
     });
 }
 
 function createRule(newRule) {
     newRule.id = String(new Date().getTime());
 
-    storage.get("rules", function (data) {
-        var rules = data.rules;
+    persistence.readRules(function (rules) {
         newRule.index = rules.length;
-        rules.push(newRule);
 
-        storage.set({"rules": rules}, function () {
+        persistence.saveRule(newRule, function () {
             persistStatePopup();
             refreshRuleControls();
             checkAndUpdate(newRule);
@@ -161,14 +144,16 @@ function validateFields() {
 
 function onTestClick() {
     var r = getRule();
-    if (isEmpty(r.url)) {
-        test();
+    if (isEmpty(r.url) || r.url.indexOf("http") != 0) {
+        showTestResult("");
     } else {
-        check(getRule(), test);
+        common.checkUrl(getRule(), function (value) {
+            showTestResult(value);
+        });
     }
 }
 
-function test(value) {
+function showTestResult(value) {
     if (isEmpty(value)) {
         $testValue.text("");
         $testLabel.text(NOT_AVAILABLE);

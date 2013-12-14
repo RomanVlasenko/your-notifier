@@ -6,11 +6,11 @@ var persistence = {
     //State operations
 
     readState: function (result) {
-        storage.get("state", function (data) {
+        chromeAPI.storage.get("state", function (data) {
             if (data && data.state) {
                 result(data.state);
             } else {
-                storage.set({"state": initialState}, function () {
+                chromeAPI.storage.set({"state": initialState}, function () {
                     result(initialState);
                 });
             }
@@ -21,31 +21,24 @@ var persistence = {
         var callback;
         if (arguments && arguments.length > 1) {
             callback = arguments[1];
+        } else {
+            callback = function () {
+            };
         }
 
-        storage.set({"state": state}, function () {
-            if (callback) {
-                callback();
-            }
+        chromeAPI.storage.set({"state": state}, function () {
+            callback();
         });
     },
 
     //Rules operations
 
-    readRules: function (result) {
-        storage.get("rules", function (data) {
-            if (data && data.rules) {
-                result(data.rules);
-            } else {
-                storage.set({"rules": initialRules}, function () {
-                    result(initialRules);
-                });
-            }
-        });
+    readRules: function (callbackHandler) {
+        readRules(callbackHandler);
     },
 
     findRule: function (ruleId, result) {
-        storage.get('rules', function (data) {
+        chromeAPI.storage.get('rules', function (data) {
             result(_.find(data.rules, function (r) {
                 return r.id == ruleId
             }));
@@ -53,15 +46,33 @@ var persistence = {
     },
 
     saveRules: function (rules) {
-        var callback;
-        if (arguments && arguments.length > 1) {
-            callback = arguments[1];
+        var callbackHandler;
+        if (arguments.length > 1) {
+            callbackHandler = arguments[1];
         }
 
-        storage.set({"rules": rules}, function () {
-            if (callback) {
-                callback();
-            }
+        saveRules(rules, callbackHandler);
+    },
+
+    saveRule: function (rule) {
+        var callbackHandler;
+        if (arguments.length > 1) {
+            callbackHandler = arguments[1];
+        } else {
+            callbackHandler = function () {
+            };
+        }
+
+        readRules(function (rules) {
+            var rulesArr = _.reject(rules, function (r) {
+                return r.id == rule.id;
+            });
+
+            rulesArr.push(rule);
+
+            saveRules(rulesArr, function () {
+                callbackHandler();
+            });
         });
     },
 
@@ -71,11 +82,11 @@ var persistence = {
             callback = arguments[1];
         }
 
-        storage.get("rules", function (data) {
+        chromeAPI.storage.get("rules", function (data) {
             var rules = _.reject(data.rules, function (r) {
                 return r.id == ruleId
             });
-            storage.set({'rules': rules}, function () {
+            chromeAPI.storage.set({'rules': rules}, function () {
                 if (callback) {
                     callback();
                 }
@@ -83,3 +94,21 @@ var persistence = {
         });
     }
 };
+
+function readRules(callbackHandler) {
+    chromeAPI.storage.get("rules", function (data) {
+        if (data && data.rules) {
+            callbackHandler(data.rules);
+        } else {
+            chromeAPI.storage.set({"rules": initialRules}, function () {
+                callbackHandler(initialRules);
+            });
+        }
+    });
+}
+
+function saveRules(rules, callbackHandler) {
+    chromeAPI.storage.set({"rules": rules}, function () {
+        callbackHandler();
+    });
+}
