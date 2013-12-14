@@ -20,25 +20,14 @@ function performScheduledChecking() {
             updatedRules.push(rule);
 
             if (updatedRules.length == rules.length) {
-                showPopupBadge(updatedRules);
+
+                var newRules = _.filter(updatedRules, function (r) {
+                    return r.new;
+                });
+
+                chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: newRules});
+                chromeAPI.runtime.sendMessage({msg: "refreshList"});
             }
         }
     });
-}
-
-function showPopupBadge(rules) {
-    var newValuesCount = 0;
-
-    _.each(rules, function (r) {
-        if (r.new == true) {
-            newValuesCount = newValuesCount + 1;
-        }
-    });
-
-    if (newValuesCount > 0) {
-        chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
-        chromeAPI.browser.setBadgeText({text: String(newValuesCount)});
-        chromeAPI.browser.setTitle({title: newValuesCount + " items updated"});
-        chromeAPI.runtime.sendMessage({msg: "refreshList"});
-    }
 }

@@ -9,14 +9,15 @@
     <script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="lib/underscore-min.js"></script>
     <script type="text/javascript" src="lib/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/draggable.js"></script>
 
     <script type="text/javascript" src="js/common.js"></script>
-    <script type="text/javascript" src="js/state.js"></script>
-    <script type="text/javascript" src="js/popup.js"></script>
-    <script type="text/javascript" src="js/editRule.js"></script>
     <script type="text/javascript" src="js/urlChecker.js"></script>
     <script type="text/javascript" src="js/persistence.js"></script>
+
+    <script type="text/javascript" src="js/popupState.js"></script>
+    <script type="text/javascript" src="js/popup.js"></script>
+    <script type="text/javascript" src="js/popupEditRule.js"></script>
+    <script type="text/javascript" src="js/popupDraggable.js"></script>
 </head>
 <body>
 <div id="container">
@@ -89,17 +90,17 @@
         </div>
         <div class='additional col-xs-4'>
             <div class="pull-right">
-                <div style="display:none" class="checkbox popup-notification">
-                    <label>
-                        <input type="checkbox"> Popup notification
-                    </label>
-                </div>
                 <button type='button' class='clone btn btn-small btn-default'>
                     <span class='glyphicon glyphicon-upload'></span> Clone
                 </button>
                 <button type='button' class='delete btn btn-small btn-default'>
                     <span class='glyphicon glyphicon-trash'></span> Delete
                 </button>
+                <div class="checkbox popup-notification">
+                    <label>
+                        <input type="checkbox"> Popup notifications
+                    </label>
+                </div>
             </div>
         </div>
     </div>

@@ -7,8 +7,7 @@ $(document).ready(function () {
 
     $existingRulesContainer = $("#existing-rules");
 
-    chromeAPI.browser.setBadgeText({text: ""});
-    chromeAPI.browser.setTitle({title: "Your notifier"});
+    chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: []});
 
     var $container = $("#container");
 
@@ -82,6 +81,7 @@ function refreshRuleControls() {
             persistence.readRules(function (rules) {
                 _.each(rules, function (r) {
                     r.new = false;
+                    r.notificationShown = true;
                 });
                 persistence.saveRules(rules, function () {
                     callbackHandler();
@@ -103,8 +103,8 @@ function createRuleControlDOM(rule) {
     var ruleControl = ruleControlDiv.clone();
     var buttons = buttonsDiv.clone();
     var $additionalButtons = additionalButtonsDiv.clone();
-    $additionalButtons.find(".settings").addClass("active");
     $additionalButtons.attr("id", rule.id);
+    $additionalButtons.find(".popup-notification input").attr("checked", rule.showNotifications);
 
     showNewBadge(ruleControl, rule);
 
@@ -146,26 +146,11 @@ function createRuleControlDOM(rule) {
         e.preventDefault();
     });
 
-    $additionalButtons.on("click", ".popup-notification", function (e) {
-//        var opt = {
-//            type: "basic",
-//            title: "Primary Title",
-//            message: "Primary message to display",
-//            iconUrl: getFavicon(rule.url)
-//        }
-        var opt = {
-            type: "list",
-            title: "Primary Title",
-            message: "Primary message to display",
-            iconUrl: common.getFavicon(rule.url),
-            items: [
-                { title: "Item1", message: "This is item 1."},
-                { title: "Item2", message: "This is item 2."},
-                { title: "Item3", message: "This is item 3."}
-            ]
-        };
-        chromeAPI.notifications.create("1", opt, function () {
-
+    $additionalButtons.on("change", ".popup-notification input[type=checkbox]", function () {
+        var $checkBox = $(this);
+        persistence.findRule(rule.id, function (r) {
+            r.showNotifications = $checkBox.val();
+            persistence.saveRule(r);
         });
     });
 
@@ -266,10 +251,10 @@ function onMoreSettingsClick($additionalPanel) {
 
 function onClearHistoryClick($additionalPanel, ruleWithHistory) {
 
-    persistence.findRule(ruleWithHistory.id, function(rule) {
+    persistence.findRule(ruleWithHistory.id, function (rule) {
         rule.history = [];
 
-        persistence.saveRule(rule, function(){
+        persistence.saveRule(rule, function () {
             updateHistory($additionalPanel.find("table.history"), rule)
         });
     });
@@ -279,7 +264,8 @@ function updateHistory($historyTable, rule) {
     $historyTable.empty();
     if (rule.history && rule.history.length > 0) {
         _.each(rule.history, function (h) {
-            $historyTable.append("<tr><td><div class='history-cell'>" + h.value + "</div></td><td>"
+            $historyTable.append("<tr><td><div class='history-cell' title='" + h.value + "'>" + h.value
+                                     + "</div></td><td>"
                                      + "<div class='date-cell pull-right'>" + common.formatDate(new Date(h.date))
                                      + "</div></td></tr>");
         });

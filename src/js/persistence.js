@@ -37,11 +37,12 @@ var persistence = {
         readRules(callbackHandler);
     },
 
-    findRule: function (ruleId, result) {
+    findRule: function (ruleId, callbackHandler) {
         chromeAPI.storage.get('rules', function (data) {
-            result(_.find(data.rules, function (r) {
-                return r.id == ruleId
-            }));
+            var rule = _.find(data.rules, function (r) {
+                return r.id == ruleId;
+            });
+            callbackHandler(rule);
         });
     },
 
@@ -49,6 +50,9 @@ var persistence = {
         var callbackHandler;
         if (arguments.length > 1) {
             callbackHandler = arguments[1];
+        } else {
+            callbackHandler = function () {
+            };
         }
 
         saveRules(rules, callbackHandler);

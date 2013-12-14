@@ -43,6 +43,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
         if (exRule.value != newRule.value) {
             exRule.value = newRule.value;
             exRule.new = true;
+            exRule.notificationShown = false;
 
             if (newRule.value != NOT_AVAILABLE) {
                 if (_.isEmpty(exRule.history) || newRule.value != exRule.history[0].value) {

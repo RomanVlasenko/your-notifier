@@ -4,7 +4,7 @@ body {
 
 #container {
     display: none;
-    max-width: 100%;
+    max-width: 700px;
     min-width: 600px;
     background-color: #eee;
     padding: 1px;
@@ -156,6 +156,7 @@ button.delete {
     padding-left: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 200px;
 }
 
 .date-cell {
