@@ -1,5 +1,5 @@
 var initialState = {page: "popup"};
-var initialRules = {rules: []};
+var initialRules = [];
 
 var persistence = {
 
