@@ -7,7 +7,7 @@ $(document).ready(function () {
 
     $existingRulesContainer = $("#existing-rules");
 
-    chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: []});
+    chromeAPI.runtime.sendMessage({msg: "resetUpdates"});
 
     var $container = $("#container");
 

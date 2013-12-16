@@ -40,8 +40,9 @@ chromeAPI.runtime.onMessage.addListener(
                 newRule.index = rules.length;
 
                 persistence.saveRule(newRule, function () {
-                    checkAndUpdate(newRule);
-                    chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
+                    checkAndUpdate(newRule, function(){
+                        chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
+                    });
                 })
             });
         }

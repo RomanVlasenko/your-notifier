@@ -5,17 +5,38 @@ chromeAPI.runtime.onMessage.addListener(
         if (request.msg == "rulesUpdated") {
             var updatedRules = request.rules;
 
-            if (updatedRules.length == 0) {
-                showBadge("", "Your notifier");
-            } else {
-                showBadge("" + updatedRules.length, updatedRules.length + " items updated");
-            }
+            updateBadge();
 
             showPopupNotifications(_.filter(updatedRules, function (rule) {
                 return rule.showNotifications && !rule.notificationShown;
             }));
+        } else if (request.msg == "resetUpdates") {
+            persistence.readRules(function (rules) {
+                _.each(rules, function (r) {
+                    r.new = false;
+                    chromeAPI.notifications.clear(r.id, function(){});
+                });
+
+                persistence.saveRules(rules, function () {
+                    showBadge("", "Your notifier");
+                });
+            });
         }
     });
+
+function updateBadge() {
+    persistence.readRules(function (rules) {
+        var newRulesCount = _.filter(rules,function (rule) {
+            return rule.new;
+        }).length;
+
+        if (newRulesCount == 0) {
+            showBadge("", "Your notifier");
+        } else {
+            showBadge("" + newRulesCount, newRulesCount + " items updated");
+        }
+    });
+}
 
 function showBadge(text, title) {
     chromeAPI.browser.setBadgeText({text: text});
@@ -23,39 +44,47 @@ function showBadge(text, title) {
 }
 
 function showPopupNotifications(rules) {
+    //TODO if popup not open
     if (rules == 0) {
         return;
     }
 
-    var opt;
-    if (rules.length == 1) {
-        opt = {
-            type: "basic",
-            title: rules[0].title,
-            message: "Now: " + rules[0].value,
-            iconUrl: common.getFavicon(rules[0].url)
-        };
-    } else {
+    chromeAPI.notifications.getAll(function (notifications) {
 
-        var items = [];
         _.each(rules, function (rule) {
-            items.push({ title: rule.title, message: "Now: " + rule.value});
+            var opt = {
+                type: "basic",
+                title: rule.title,
+                message: "Now: " + rule.value,
+                iconUrl: common.getFavicon(rule.url)
+            };
+
+            var notificationExists = _.any(notifications, function (n) {
+                return n == rule.id
+            });
+
+            if (notificationExists) {
+                chromeAPI.notifications.update(rule.id, opt, function () {
+                    rule.notificationShown = true;
+                    persistence.saveRule(rule);
+                });
+            } else {
+                chromeAPI.notifications.create(rule.id, opt, function () {
+                    rule.notificationShown = true;
+                    persistence.saveRule(rule);
+                });
+            }
         });
-
-        opt = {
-            type: "list",
-            title: "Hey, look! Something changed...",
-            message: rules.length + " values have been changed",
-            iconUrl: common.getFavicon(rule.url),
-            items: items
-        };
-    }
-
-    chromeAPI.notifications.create(String(_.uniqueId()), opt, function () {
-    });
-
-    _.each(rules, function (rule) {
-        rule.notificationShown = true;
-        persistence.saveRule(rule);
     });
 }
+
+chromeAPI.notifications.onClosed.addListener(function (notificationId, closedByUser) {
+    if (closedByUser) {
+        persistence.findRule(notificationId, function (rule) {
+            rule.new = false;
+            persistence.saveRule(rule, function () {
+                updateBadge();
+            });
+        });
+    }
+});
