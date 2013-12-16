@@ -14,7 +14,8 @@ chromeAPI.runtime.onMessage.addListener(
             persistence.readRules(function (rules) {
                 _.each(rules, function (r) {
                     r.new = false;
-                    chromeAPI.notifications.clear(r.id, function(){});
+                    chromeAPI.notifications.clear(r.id, function () {
+                    });
                 });
 
                 persistence.saveRules(rules, function () {
@@ -44,7 +45,6 @@ function showBadge(text, title) {
 }
 
 function showPopupNotifications(rules) {
-    //TODO if popup not open
     if (rules == 0) {
         return;
     }

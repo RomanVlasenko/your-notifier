@@ -57,8 +57,8 @@ var common = {
     },
 
     formatDate: function (d) {
-        var day = d.getUTCDay();
-        var month = d.getUTCMonth();
+        var day = d.getUTCDate();
+        var month = d.getUTCMonth() + 1;
         var year = d.getFullYear();
 
         var h = d.getHours();
