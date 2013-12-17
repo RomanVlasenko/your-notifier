@@ -7,6 +7,13 @@ var HISTORY_MAX = 5;
 var monthNames = [ "January", "February", "March", "April", "May", "June",
                    "July", "August", "September", "October", "November", "December" ];
 
+var validation = {
+    TITLE_MAX_LENGTH: 70,
+    VALUE_MAX_LENGTH: 35,
+    URL_MAX_LENGTH: 300,
+    SELECTOR_MAX_LENGTH: 500
+};
+
 var chromeAPI = {
     storage: chrome.storage.local,
     alarms: chrome.alarms,
@@ -16,7 +23,7 @@ var chromeAPI = {
     notifications: chrome.notifications,
     menu: chrome.contextMenus,
     extension: chrome.extension
-}
+};
 
 var common = {
 
@@ -65,9 +72,14 @@ var common = {
         var m = d.getMinutes();
 
         return h + ":" + twoDigits(m) + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
+    },
+
+    shortenStr: function (str, maxLength) {
+        if (str.length >= maxLength) {
+            return str.substring(0, maxLength) + "...";
+        }
+        return str;
     }
-
-
 };
 
 function isEmpty(str) {

@@ -67,6 +67,9 @@ var persistence = {
             };
         }
 
+        rule.title = common.shortenStr(rule.title, validation.VALUE_MAX_LENGTH);
+        rule.value = common.shortenStr(rule.value, validation.VALUE_MAX_LENGTH);
+
         readRules(function (rules) {
             var rulesArr = _.reject(rules, function (r) {
                 return r.id == rule.id;

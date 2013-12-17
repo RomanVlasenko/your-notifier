@@ -125,31 +125,31 @@ function setRule(rule) {
 }
 
 function validateFields() {
-    var valid = true;
-
     var $title = $('#title');
     var $url = $('#url');
     var $selector = $('#selector');
 
-    if (isEmpty($title.val()) || isEmpty($url.val()) || isEmpty($selector.val())) {
-        valid = false;
-    }
+    var titleValid = !isEmpty($title.val());
+    var urlValid = !isEmpty($url.val()) && $url.val().length <= validation.URL_MAX_LENGTH;
+    var selectorValid = !isEmpty($selector.val()) && $selector.val().length <= validation.SELECTOR_MAX_LENGTH;
 
-    $title.toggleClass("input-error", isEmpty($title.val()));
-    $url.toggleClass("input-error", isEmpty($url.val()));
-    $selector.toggleClass("input-error", isEmpty($selector.val()));
+    $title.toggleClass("input-error", !titleValid);
+    $url.toggleClass("input-error", !urlValid);
+    $selector.toggleClass("input-error", !selectorValid);
 
-    return valid;
+    return titleValid && urlValid && selectorValid;
 }
 
 function onTestClick() {
-    var r = getRule();
-    if (isEmpty(r.url) || r.url.indexOf("http") != 0) {
-        showTestResult("");
-    } else {
-        common.checkUrl(getRule(), function (value) {
-            showTestResult(value);
-        });
+    if (validateFields()) {
+        var r = getRule();
+        if (isEmpty(r.url) || r.url.indexOf("http") != 0) {
+            showTestResult("");
+        } else {
+            common.checkUrl(getRule(), function (value) {
+                showTestResult(value);
+            });
+        }
     }
 }
 
