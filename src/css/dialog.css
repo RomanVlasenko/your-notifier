@@ -160,6 +160,10 @@
     width: 390px;
 }
 
+.yon-btn {
+    margin: 0 5px 0 5px !important;
+}
+
 .yon-dialog .ui-dialog-titlebar-close {
     display: none
 }
@@ -175,6 +179,10 @@
     line-height: 20px;
     text-align: left;
     width: 70px;
+}
+
+.yon-input-group {
+    display: table;
 }
 
 .yon-pull-right {
@@ -235,4 +243,8 @@
     width: 280px;
     text-align: center;
     margin: 0 auto;
+}
+
+.ui-widget-content .ui-icon {
+    background-image: none !important;
 }

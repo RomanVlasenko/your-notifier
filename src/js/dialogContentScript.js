@@ -1,4 +1,3 @@
-$(document).ready(function () {
     var $clickedElement;
     var selector;
     $(document).mousedown(function (e) {
@@ -78,5 +77,3 @@ $(document).ready(function () {
             $clickedElement = null;
         }
     });
-
-});
