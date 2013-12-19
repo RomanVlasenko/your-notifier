@@ -1,3 +1,5 @@
+var NOTIFICATION_AUTOCLOSE_TIME = 10000;
+
 chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
 
 chromeAPI.runtime.onMessage.addListener(
@@ -49,42 +51,26 @@ function showPopupNotifications(rules) {
         return;
     }
 
-    chromeAPI.notifications.getAll(function (notifications) {
+    _.each(rules, function (rule) {
+        var opt = {
+            type: "basic",
+            title: rule.title,
+            message: "Now: " + rule.value,
+            iconUrl: common.getFavicon(rule.url)
+        };
 
-        _.each(rules, function (rule) {
-            var opt = {
-                type: "basic",
-                title: rule.title,
-                message: "Now: " + rule.value,
-                iconUrl: common.getFavicon(rule.url)
-            };
+        chromeAPI.notifications.create(rule.id, opt, function () {
+            rule.notificationShown = true;
+            persistence.saveRule(rule);
 
-            var notificationExists = _.any(notifications, function (n) {
-                return n == rule.id
-            });
-
-            if (notificationExists) {
-                chromeAPI.notifications.update(rule.id, opt, function () {
-                    rule.notificationShown = true;
-                    persistence.saveRule(rule);
-                });
-            } else {
-                chromeAPI.notifications.create(rule.id, opt, function () {
-                    rule.notificationShown = true;
-                    persistence.saveRule(rule);
-                });
-            }
+            setTimeout(function () {
+                closeNotification(rule.id);
+            }, NOTIFICATION_AUTOCLOSE_TIME);
         });
     });
 }
 
-chromeAPI.notifications.onClosed.addListener(function (notificationId, closedByUser) {
-    if (closedByUser) {
-        persistence.findRule(notificationId, function (rule) {
-            rule.new = false;
-            persistence.saveRule(rule, function () {
-                updateBadge();
-            });
-        });
-    }
-});
+function closeNotification(notificationId) {
+    chromeAPI.notifications.clear(notificationId, function () {
+    });
+}
