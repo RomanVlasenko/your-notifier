@@ -248,3 +248,7 @@
 .ui-widget-content .ui-icon {
     background-image: none !important;
 }
+
+.yon-input-error {
+    background-color: rgb(255, 231, 231) !important;
+}
