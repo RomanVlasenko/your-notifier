@@ -43,8 +43,11 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
         function (request, sender, sendResponse) {
             if (request.method == "createRule") {
                 if ($clickedElement) {
-                    selector = $clickedElement.getSelector().join("\n");
-                    console.log(selector);
+                    try {
+                        selector = $clickedElement.getSelector().join("\n");
+                    } catch (e) {
+                        console.log("Unable to generate selector: " + e);
+                    }
                 }
                 openDialog($(document).attr('title'), document.URL, selector);
             }
