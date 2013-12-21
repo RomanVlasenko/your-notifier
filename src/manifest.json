@@ -13,7 +13,7 @@
     "background": {
         "scripts": ["lib/jquery-2.0.3.min.js", "lib/jquery-2.0.3.min.map",
                     "lib/underscore-min.js", "js/common.js", "js/urlChecker.js", "js/schedule.js",
-                    "js/dialogEventPage.js", "js/persistence.js", "js/notification.js"],
+                    "js/dialogEventPage.js", "js/persistence.js", "js/notification.js", "js/sync.js"],
         "persistent": false
     },
     "icons": {

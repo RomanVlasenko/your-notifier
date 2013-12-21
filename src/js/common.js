@@ -15,6 +15,7 @@ var validation = {
 };
 
 var chromeAPI = {
+    sync: chrome.storage.sync,
     storage: chrome.storage.local,
     alarms: chrome.alarms,
     runtime: chrome.runtime,
