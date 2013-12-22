@@ -40,16 +40,15 @@ var persistence;
         },
 
         findRule: function (ruleId, callbackHandler) {
-            chromeAPI.storage.get('rules', function (data) {
-                var rule = _.find(data.rules, function (r) {
+            readRules(function (rules) {
+                var rule = _.find(rules, function (r) {
                     return r.id == ruleId;
                 });
                 callbackHandler(rule);
             });
         },
 
-        saveRules: function (rules) {
-            //TODO increase version of each rule
+        saveRules: function (newRules) {
             var callbackHandler;
             if (arguments.length > 1) {
                 callbackHandler = arguments[1];
@@ -58,12 +57,23 @@ var persistence;
                 };
             }
 
-            saveRules(rules, callbackHandler);
+            readRules(function (exRules) {
+                exRules = _.reject(exRules, function (exRule) {
+                    return _.any(newRules, function (newRule) {
+                        return exRule.id == newRule.id;
+                    });
+                });
+
+                exRules = exRules.concat(newRules);
+
+                saveRules(exRules, callbackHandler);
+                console.log(exRules);
+
+            });
+
         },
 
         saveRule: function (rule) {
-            //TODO increase version of rule
-
             var callbackHandler;
             if (arguments.length > 1) {
                 callbackHandler = arguments[1];
@@ -88,6 +98,10 @@ var persistence;
             });
         },
 
+        incVersion: function (obj) {
+            increaseVersion(obj);
+        },
+
         deleteRule: function (ruleId) {
             var callback;
             if (arguments && arguments.length > 1) {
@@ -95,10 +109,14 @@ var persistence;
             }
 
             chromeAPI.storage.get("rules", function (data) {
-                var rules = _.reject(data.rules, function (r) {
-                    return r.id == ruleId
+                var rules = data.rules;
+                var rule = _.find(rules, function (r) {
+                    return r.id == ruleId;
                 });
-                chromeAPI.storage.set({'rules': rules}, function () {
+
+                rule.deleted = true;
+
+                chromeAPI.storage.set({"rules": rules}, function () {
                     if (callback) {
                         callback();
                     }
@@ -110,7 +128,10 @@ var persistence;
     function readRules(callbackHandler) {
         chromeAPI.storage.get("rules", function (data) {
             if (data && data.rules) {
-                callbackHandler(data.rules);
+                var rules = _.reject(data.rules, function (r) {
+                    return r.deleted == true;
+                });
+                callbackHandler(rules);
             } else {
                 chromeAPI.storage.set({"rules": initialRules}, function () {
                     callbackHandler(initialRules);
@@ -123,5 +144,14 @@ var persistence;
         chromeAPI.storage.set({"rules": rules}, function () {
             callbackHandler();
         });
+    }
+
+    function increaseVersion(obj) {
+        if (obj.ver) {
+            obj.ver = obj.ver + 1;
+        } else {
+            obj.ver = 0;
+        }
+        return obj;
     }
 }

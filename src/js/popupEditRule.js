@@ -83,6 +83,7 @@ function saveRule() {
             exRule.url = newRule.url;
             exRule.selector = newRule.selector;
 
+            exRule = persistence.incVersion(exRule);
             persistence.saveRule(exRule, function () {
                 persistStatePopup();
                 refreshRuleControls();
@@ -99,7 +100,7 @@ function createRule(newRule) {
 
     persistence.readRules(function (rules) {
         newRule.index = rules.length;
-
+        newRule = persistence.incVersion(newRule);
         persistence.saveRule(newRule, function () {
             persistStatePopup();
             refreshRuleControls();

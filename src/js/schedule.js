@@ -1,6 +1,6 @@
 chromeAPI.alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
 chromeAPI.alarms.onAlarm.addListener(function (alarm) {
-    if (alarm.name = 'CheckRulesSchedule') {
+    if (alarm.name == 'CheckRulesSchedule') {
         common.isNetworkAvailable({success: function () {
             performScheduledChecking();
         }});
