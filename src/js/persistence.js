@@ -39,6 +39,10 @@ var persistence;
             readRules(callbackHandler);
         },
 
+        readRulesAll: function (callbackHandler) {
+            readRulesAll(callbackHandler);
+        },
+
         findRule: function (ruleId, callbackHandler) {
             readRules(function (rules) {
                 var rule = _.find(rules, function (r) {
@@ -67,8 +71,6 @@ var persistence;
                 exRules = exRules.concat(newRules);
 
                 saveRules(exRules, callbackHandler);
-                console.log(exRules);
-
             });
 
         },
@@ -106,15 +108,17 @@ var persistence;
             var callback;
             if (arguments && arguments.length > 1) {
                 callback = arguments[1];
+            } else {
+                callback = function () {
+                };
             }
 
             chromeAPI.storage.get("rules", function (data) {
-                var rules = data.rules;
-                var rule = _.find(rules, function (r) {
+                var rules = _.reject(data.rules, function (r) {
                     return r.id == ruleId;
                 });
 
-                rule.deleted = true;
+                rules.push({id: ruleId, deleted: true});
 
                 chromeAPI.storage.set({"rules": rules}, function () {
                     if (callback) {
@@ -136,6 +140,16 @@ var persistence;
                 chromeAPI.storage.set({"rules": initialRules}, function () {
                     callbackHandler(initialRules);
                 });
+            }
+        });
+    }
+
+    function readRulesAll(callbackHandler) {
+        chromeAPI.storage.get("rules", function (data) {
+            if (data && data.rules) {
+                callbackHandler(data.rules);
+            } else {
+                callbackHandler([]);
             }
         });
     }

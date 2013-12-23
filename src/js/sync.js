@@ -27,12 +27,20 @@ var sync;
                         //Adding fake rule with state 'deleted' to keep common approach
                         if (deleted) {
                             var rule = {};
-                            rule[key] = {deleted: true};
+                            rule[key] = {id: key, deleted: true};
                             rules.push(rule);
                         }
                     });
 
-                    callbackHandler(rules);
+                    if (!rules) {
+                        rules = {};
+                    }
+
+                    var rulesArr = [];
+                    _.each(ruleKeys, function (key) {
+                        rulesArr.push(rules[key]);
+                    });
+                    callbackHandler(rulesArr);
                 });
             });
         },
@@ -44,26 +52,28 @@ var sync;
         },
 
         saveRules: function (rules) {
-            var rulesJSON = {};
-            var ruleKeys = [];
-            _.each(rules, function (rule) {
-                if (rule.deleted) {
-                    existsInRemoteStorage(function (existsInRemoteStorage) {
-                        if (existsInRemoteStorage) {
-                            chromeAPI.sync.remove(rule.id);
-                        }
-                    });
-                } else {
-                    var ruleJSON = {};
-                    ruleJSON[rule.id] = rule;
-                    $.extend(rulesJSON, ruleJSON);
+            var rulesCollection = {};
 
-                    ruleKeys.push(rule.id);
-                }
-            });
+            readRuleKeys(function (ruleKeys) {
+                _.each(rules, function (rule) {
+                    if (rule.deleted) {
+                        existsInRemoteStorage(function (existsInRemoteStorage) {
+                            if (existsInRemoteStorage) {
+                                chromeAPI.sync.remove(rule.id);
+                            }
+                        });
+                    } else {
+                        var ruleObj = {};
+                        ruleObj[rule.id] = rule;
+                        $.extend(rulesCollection, ruleObj);
 
-            chromeAPI.sync.set(rulesJSON, function () {
-                saveRuleKeys(ruleKeys);
+                        ruleKeys.push(rule.id);
+                    }
+                });
+
+                chromeAPI.sync.set(rulesCollection, function () {
+                    chromeAPI.sync.set({"ruleKeys": _.uniq(ruleKeys)});
+                });
             });
         }
     };
@@ -74,7 +84,7 @@ var sync;
             if (alarm.name == 'syncSchedule') {
 
                 sync.readRules(function (remoteRules) {
-                    persistence.readRules(function (localRules) {
+                    persistence.readRulesAll(function (localRules) {
                         synchronizeRules(localRules, remoteRules);
                     });
                 });
@@ -83,39 +93,34 @@ var sync;
     });
 
     function synchronizeRules(localRules, remoteRules) {
-        //New rules came from storage.sync
-        var newRemoteRules = getRulesDiff(remoteRules, localRules);
-        console.log({"newRemoteRules": newRemoteRules});
 
-        //New rules in storage.local
-        var newLocalRules = getRulesDiff(localRules, remoteRules);
-        console.log({"newLocalRules": newLocalRules});
+        var mergedRules = merge(localRules, remoteRules);
 
-        persistence.saveRules(newRemoteRules);
-        sync.saveRules(newLocalRules);
+        if (mergedRules.length > 0) {
+            var newRulesFromLocal = getRulesDiff(remoteRules, mergedRules);
+            console.log({"newRulesFromLocal": newRulesFromLocal});
+
+            var newRulesFromSync = getRulesDiff(localRules, mergedRules);
+            console.log({"newRulesFromSync": newRulesFromSync});
+
+            sync.saveRules(newRulesFromLocal);
+            persistence.saveRules(newRulesFromSync);
+        }
     }
 
-    function getRulesDiff(array, diffArray) {
-        //Return rules from array which:
-        // - do not exist in diffArray
-        // - whose version is higher than version from diffArray
-        // - who was deleted
-        return _.filter(array, function (r) {
-            var rCmp = _.find(diffArray, function (rCmp) {
-                return rCmp.id == r.id;
+    function getRulesDiff(array, fullArray) {
+        //Return rules that need to be synched diffArray -> array
+        return _.filter(fullArray, function (newRule) {
+            var exRule = _.find(array, function (exRule) {
+                return newRule.id == exRule.id;
             });
 
-            return !rCmp || rCmp.deleted || rCmp.ver < r.ver;
-        });
-    }
+            console.log("!exRule " + Boolean(!exRule));
+            console.log("newRule.deleted && !exRule.deleted " + Boolean(newRule.deleted && !exRule.deleted));
+            console.log("newRule.ver > exRule.ver " + Boolean(newRule.ver && exRule.ver && newRule.ver > exRule.ver));
 
-    function saveRuleKeys(ruleKeys) {
-        chromeAPI.sync.get("ruleKeys", function (data) {
-            var exRuleKeys = data.ruleKeys;
-            exRuleKeys = exRuleKeys.concat(ruleKeys);
-            exRuleKeys = _.uniq(exRuleKeys);
-
-            chromeAPI.sync.set({"ruleKeys": exRuleKeys});
+            return !exRule || newRule.deleted && !exRule.deleted ||
+                   newRule.ver && exRule.ver && newRule.ver > exRule.ver;
         });
     }
 
@@ -141,4 +146,38 @@ var sync;
             }
         });
     }
+
+    function merge(exRules, newRules) {
+        var allRules = _.groupBy(exRules.concat(newRules), "id");
+
+        return _.reduce(allRules, function (ruleMemo, rule) {
+
+            var ruleToSave;
+
+            if (ruleMemo.deleted || rule.deleted) {
+                ruleToSave = ruleMemo.deleted ? ruleMemo : rule;
+            } else {
+                ruleToSave = ruleMemo.ver > rule.ver ? ruleMemo : rule;
+            }
+
+            return ruleToSave;
+        }, {ver: -1});
+    }
+
+//    function merge(exRules, newRules) {
+//        return _.map(_.groupBy(exRules.concat(newRules), "id"), function (rulesToMerge, id) {
+//            return _.reduce(rulesToMerge, function (ruleMemo, rule) {
+//
+//                var ruleToSave;
+//
+//                if (ruleMemo.deleted || rule.deleted) {
+//                    ruleToSave = ruleMemo.deleted ? ruleMemo : rule;
+//                } else {
+//                    ruleToSave = ruleMemo.ver > rule.ver ? ruleMemo : rule;
+//                }
+//
+//                return ruleToSave;
+//            }, {ver: -1});
+//        });
+//    }
 }
