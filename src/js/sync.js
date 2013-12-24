@@ -110,8 +110,11 @@ var sync;
                 return newRule.id == exRule.id;
             });
 
-            return !exRule && !newRule.deleted || newRule.deleted && !exRule.deleted ||
-                   newRule.ver > exRule.ver;
+            if (exRule) {
+                return newRule.deleted && !exRule.deleted || newRule.ver > exRule.ver;
+            } else {
+                return !newRule.deleted;
+            }
         });
     }
 
