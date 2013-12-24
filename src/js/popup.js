@@ -47,6 +47,7 @@ function refreshRuleControls() {
 
     persistence.readRules(function (rules) {
         if (rules.length > 0) {
+            $existingRulesContainer.find("#norules").remove();
 
             var $ruleControls = $existingRulesContainer.find(".rule-control");
 
@@ -92,7 +93,7 @@ function refreshRuleControls() {
             $existingRulesContainer.find(".rule-control:even").addClass("even");
 
         } else {
-            $existingRulesContainer.html("<h5 class='text-center'>You don't have any items to watch yet.</h5>");
+            $existingRulesContainer.html("<h5 id='norules' class='text-center'>You don't have any items to watch yet.</h5>");
             callbackHandler();
         }
     });
