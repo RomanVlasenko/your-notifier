@@ -1,7 +1,6 @@
 var persistence;
 {
     var initialState = {page: "popup"};
-    var initialRules = [];
 
     persistence = {
 
@@ -61,7 +60,7 @@ var persistence;
                 };
             }
 
-            readRules(function (exRules) {
+            readRulesAll(function (exRules) {
                 exRules = _.reject(exRules, function (exRule) {
                     return _.any(newRules, function (newRule) {
                         return exRule.id == newRule.id;
@@ -87,7 +86,7 @@ var persistence;
             rule.title = common.shortenStr(rule.title, validation.VALUE_MAX_LENGTH);
             rule.value = common.shortenStr(rule.value, validation.VALUE_MAX_LENGTH);
 
-            readRules(function (rules) {
+            readRulesAll(function (rules) {
                 var rulesArr = _.reject(rules, function (r) {
                     return r.id == rule.id;
                 });
@@ -98,10 +97,6 @@ var persistence;
                     callbackHandler();
                 });
             });
-        },
-
-        incVersion: function (obj) {
-            increaseVersion(obj);
         },
 
         deleteRule: function (ruleId) {
@@ -130,17 +125,12 @@ var persistence;
     };
 
     function readRules(callbackHandler) {
-        chromeAPI.storage.get("rules", function (data) {
-            if (data && data.rules) {
-                var rules = _.reject(data.rules, function (r) {
-                    return r.deleted == true;
-                });
-                callbackHandler(rules);
-            } else {
-                chromeAPI.storage.set({"rules": initialRules}, function () {
-                    callbackHandler(initialRules);
-                });
-            }
+        readRulesAll(function (rules) {
+            var existingRules = _.reject(rules, function (r) {
+                return r.deleted;
+            });
+
+            callbackHandler(existingRules);
         });
     }
 
@@ -158,14 +148,5 @@ var persistence;
         chromeAPI.storage.set({"rules": rules}, function () {
             callbackHandler();
         });
-    }
-
-    function increaseVersion(obj) {
-        if (obj.ver) {
-            obj.ver = obj.ver + 1;
-        } else {
-            obj.ver = 0;
-        }
-        return obj;
     }
 }

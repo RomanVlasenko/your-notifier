@@ -34,13 +34,13 @@ chromeAPI.runtime.onMessage.addListener(
 
             var newRule = request.rule;
             newRule.id = String(new Date().getTime());
+            newRule.ver = 0;
 
             persistence.readRules(function (rules) {
 
                 newRule.index = rules.length;
-
                 persistence.saveRule(newRule, function () {
-                    checkAndUpdate(newRule, function(){
+                    checkAndUpdate(newRule, function () {
                         chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
                     });
                 })

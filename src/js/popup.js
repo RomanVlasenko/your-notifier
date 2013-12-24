@@ -177,7 +177,7 @@ function createRuleControlDOM(rule) {
                     return r.id == $(e).attr("id");
                 });
                 rule.index = i;
-                persistence.incVersion(rule);
+                rule.ver = rule.ver + 1;
             });
 
             persistence.saveRules(rules);
