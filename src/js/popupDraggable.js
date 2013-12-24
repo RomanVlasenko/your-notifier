@@ -17,6 +17,11 @@ $(document).ready(function () {
         var inDragMode = false;
 
         $elements.css('cursor', opt.cursor).on("mousedown",function (e) {
+            //Prevent dragging when user presses btn/link etc.
+            if ($(e.target).prop("tagName") != "DIV") {
+                return;
+            }
+
             if (event.which == 1) {
                 if (opt.handle === "") {
                     $selected = $(this);
@@ -53,6 +58,11 @@ $(document).ready(function () {
                 e.preventDefault(); // disable selection
             }
         }).on("mouseup", function (e) {
+
+                  if ($selected == null) {
+                      return;
+                  }
+
                   if (opt.handle === "") {
                       $selected.removeClass(opt.draggableClass);
                   } else {

@@ -119,7 +119,7 @@ function createRuleControlDOM(rule) {
 
     $additionalButtons.insertAfter(ruleControl);
 
-//    Add listeners
+    //Add listeners
     buttons.on("click", ".edit", function (e) {
         onEditClick(rule.id);
         e.preventDefault();
@@ -127,7 +127,6 @@ function createRuleControlDOM(rule) {
 
     buttons.on("click", ".settings", function (e) {
         onMoreSettingsClick($additionalButtons);
-        e.preventDefault();
     });
 
     $additionalButtons.on("click", ".delete", function (e) {
