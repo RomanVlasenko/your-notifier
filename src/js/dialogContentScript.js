@@ -16,6 +16,7 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
     });
 
     $editor.on("click", "#test", function () {
+        hideBadges();
         $editor.find(".yon-test").hide();
         if (validateFields()) {
             common.checkUrl(getRule($editor), function (val) {
@@ -101,5 +102,10 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
         $selector.toggleClass("yon-input-error", !selectorValid);
 
         return titleValid && urlValid && selectorValid;
+    }
+
+    function hideBadges() {
+        $(".yon-test .yon-badge.not-available").hide();
+        $(".yon-test .yon-badge.ok").hide();
     }
 });
