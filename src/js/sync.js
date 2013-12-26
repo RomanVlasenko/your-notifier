@@ -1,4 +1,4 @@
-var SYNC_RULES_PERIOD = 1; //Period of synchronization in minutes
+var SYNC_RULES_PERIOD = 5; //Period of synchronization in minutes
 
 var sync;
 {
@@ -79,15 +79,18 @@ var sync;
         chromeAPI.alarms.create("syncSchedule", {periodInMinutes: SYNC_RULES_PERIOD});
         chromeAPI.alarms.onAlarm.addListener(function (alarm) {
             if (alarm.name == 'syncSchedule') {
-
-                sync.readRules(function (remoteRules) {
-                    persistence.readRulesAll(function (localRules) {
-                        synchronizeRules(localRules, remoteRules);
-                    });
-                });
+                syncSchedule();
             }
         });
     });
+
+    function syncSchedule() {
+        sync.readRules(function (remoteRules) {
+            persistence.readRulesAll(function (localRules) {
+                synchronizeRules(localRules, remoteRules);
+            });
+        });
+    }
 
     function synchronizeRules(localRules, remoteRules) {
 

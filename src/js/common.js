@@ -23,7 +23,8 @@ var chromeAPI = {
     browser: chrome.browserAction,
     notifications: chrome.notifications,
     menu: chrome.contextMenus,
-    extension: chrome.extension
+    extension: chrome.extension,
+    management: chrome.management
 };
 
 var common = {
