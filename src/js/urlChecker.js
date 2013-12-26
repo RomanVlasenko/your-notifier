@@ -40,7 +40,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
     }
 
     persistence.findRule(newRule.id, function (exRule) {
-        if (exRule.value != newRule.value) {
+        if (isValuesEqual(exRule.value, newRule.value)) {
             exRule.value = newRule.value;
             exRule.new = true;
             exRule.notificationShown = false;
@@ -68,4 +68,8 @@ function appendHistoryRecord(rule, record) {
         rule.history = rule.history.slice(0, HISTORY_MAX - 1);
     }
     rule.history.unshift(record);
+}
+
+function isValuesEqual(val1, val2) {
+    return val1.substr(0, validation.VALUE_MAX_LENGTH) == val2.substr(0, validation.VALUE_MAX_LENGTH);
 }
