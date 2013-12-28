@@ -40,7 +40,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
     }
 
     persistence.findRule(newRule.id, function (exRule) {
-        if (isValuesEqual(exRule.value, newRule.value)) {
+        if (!isValuesEqual(exRule.value, newRule.value)) {
             exRule.value = newRule.value;
             exRule.new = true;
             exRule.notificationShown = false;
