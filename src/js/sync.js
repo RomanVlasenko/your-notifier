@@ -157,6 +157,10 @@ var sync;
                 if (ruleMemo.deleted || rule.deleted) {
                     ruleToSave = ruleMemo.deleted ? ruleMemo : rule;
                 } else {
+
+                    ruleMemo.ver = _.isUndefined(ruleMemo.ver) ? 0 : ruleMemo.ver;
+                    rule.ver = _.isUndefined(rule.ver) ? 0 : rule.ver;
+
                     ruleToSave = ruleMemo.ver > rule.ver ? ruleMemo : rule;
                 }
 
