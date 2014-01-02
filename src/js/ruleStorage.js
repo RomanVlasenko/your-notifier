@@ -33,7 +33,9 @@ var ruleStorage = {
     deleteRule: function (ruleId, callback) {
         ss.deleteRule(ruleId, function () {
             sl.deleteRule(ruleId, function () {
-                callback();
+                storageUtils.deleteRuleKey(ruleId, function () {
+                    callback();
+                });
             });
         });
     },

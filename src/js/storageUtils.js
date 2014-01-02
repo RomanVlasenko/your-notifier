@@ -23,6 +23,21 @@ var storageUtils = {
         });
     },
 
+    deleteRuleKey: function (ruleKey) {
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
+
+        this.readRuleKeys(function (exKeys) {
+            var newKeys = _.reject(exKeys, function (key) {
+                return key == ruleKey;
+            });
+            chromeAPI.storage.set({"ruleKeys": newKeys}, function () {
+                chromeAPI.sync.set({"ruleKeys": newKeys}, function () {
+                    callback();
+                });
+            });
+        });
+    },
+
     toLocalRule: function (rule) {
         if (rule) {
             var localRule = {};
