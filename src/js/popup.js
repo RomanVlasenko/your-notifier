@@ -105,7 +105,7 @@ function createRuleControlDOM(rule) {
     var buttons = buttonsDiv.clone();
     var $additionalButtons = additionalButtonsDiv.clone();
     $additionalButtons.attr("id", rule.id);
-    $additionalButtons.find(".popup-notification input").attr("checked", rule.showNotifications);
+    $additionalButtons.find(".popup-notification input").attr("checked", rule.notify);
 
     showNewBadge(ruleControl, rule);
 
@@ -147,9 +147,9 @@ function createRuleControlDOM(rule) {
     });
 
     $additionalButtons.on("change", ".popup-notification input[type=checkbox]", function () {
-        var $checkBox = $(this);
+        var checked = $(this).is(':checked');
         ruleStorage.readRule(rule.id, function (r) {
-            r.notify = $checkBox.val();
+            r.notify = checked;
             ruleStorage.saveRule(r);
         });
     });

@@ -40,7 +40,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
         if (!isValuesEqual(exRule.value, newRule.value)) {
             exRule.value = newRule.value;
             exRule.new = true;
-            exRule.notificationShown = false;
+            exRule.notified = false;
 
             if (newRule.value != NOT_AVAILABLE) {
                 if (_.isEmpty(exRule.history) || newRule.value != exRule.history[0].value) {
