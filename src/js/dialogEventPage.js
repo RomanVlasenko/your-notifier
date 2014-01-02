@@ -41,15 +41,5 @@ chromeAPI.runtime.onMessage.addListener(
                     chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
                 });
             });
-
-//            ruleStorage.readRules(function (rules) {
-//
-//                newRule.index = rules.length;
-//                ruleStorage.saveRule(newRule, function () {
-//                    checkAndUpdate(newRule, function () {
-//                        chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
-//                    });
-//                })
-//            });
         }
     });

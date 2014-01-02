@@ -77,33 +77,33 @@ function markRuleAsEditable(rule) {
 function saveRule() {
     var newRule = getRule();
 
-    ruleStorage.readRule(newRule.id, function (exRule) {
-        if (exRule) {
-            exRule.title = newRule.title;
-            exRule.url = newRule.url;
-            exRule.selector = newRule.selector;
+    if (isEmpty(newRule.id)) {
+        createRule(newRule);
+    } else {
+        ruleStorage.readRule(newRule.id, function (exRule) {
+            if (exRule) {
+                exRule.title = newRule.title;
+                exRule.url = newRule.url;
+                exRule.selector = newRule.selector;
 
-            ruleStorage.saveRule(exRule, function () {
-                persistStatePopup();
-                refreshRuleControls();
-                checkAndUpdate(exRule);
-            });
-        } else {
-            createRule(newRule)
-        }
-    });
+                ruleStorage.saveRule(exRule, function () {
+                    persistStatePopup();
+                    refreshRuleControls();
+                    checkAndUpdate(exRule);
+                });
+            }
+        });
+    }
 }
 
 function createRule(newRule) {
     newRule.id = String(new Date().getTime());
+    newRule.index = 0;
 
-    ruleStorage.readRules(function (rules) {
-        newRule.index = rules.length;
-        ruleStorage.saveRule(newRule, function () {
-            persistStatePopup();
-            refreshRuleControls();
-            checkAndUpdate(newRule);
-        });
+    ruleStorage.saveRule(newRule, function () {
+        persistStatePopup();
+        refreshRuleControls();
+        checkAndUpdate(newRule);
     });
 }
 

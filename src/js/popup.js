@@ -37,13 +37,7 @@ $(document).ready(function () {
 });
 
 function refreshRuleControls() {
-    var callbackHandler;
-    if (arguments[0]) {
-        callbackHandler = arguments[0];
-    } else {
-        callbackHandler = function () {
-        };
-    }
+    var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
 
     ruleStorage.readRules(function (rules) {
         if (rules.length > 0) {
@@ -85,16 +79,15 @@ function refreshRuleControls() {
                     r.notified = true;
                 });
                 ruleStorage.saveRules(rules, function () {
-                    callbackHandler();
+                    callback();
                 });
             });
 
-            $existingRulesContainer.find(".rule-control:odd").addClass("odd");
-            $existingRulesContainer.find(".rule-control:even").addClass("even");
+            repaintStripes();
 
         } else {
             $existingRulesContainer.html("<h5 id='norules' class='text-center'>You don't have any items to watch yet.</h5>");
-            callbackHandler();
+            callback();
         }
     });
 }
@@ -183,9 +176,7 @@ function createRuleControlDOM(rule) {
             ruleStorage.saveRules(rules);
         });
 
-        $existingRulesContainer.find(".rule-control").removeClass("odd, even");
-        $existingRulesContainer.find(".rule-control:odd").addClass("odd");
-        $existingRulesContainer.find(".rule-control:even").addClass("even");
+        repaintStripes();
     }
 
     ruleControl.drags({onDragStart: function () {
@@ -285,4 +276,10 @@ function showNewBadge($ruleControl, rule) {
     if (rule.new == true) {
         $ruleControl.find(".badge.new").fadeIn(1000);
     }
+}
+
+function repaintStripes() {
+    $existingRulesContainer.find(".rule-control").removeClass("odd, even");
+    $existingRulesContainer.find(".rule-control:odd").addClass("odd");
+    $existingRulesContainer.find(".rule-control:even").addClass("even");
 }
