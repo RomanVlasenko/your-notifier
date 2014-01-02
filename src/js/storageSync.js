@@ -1,7 +1,7 @@
 var ss = {
     readRule: function (ruleId, callback) {
         chromeAPI.sync.get(ruleId, function (rule) {
-            callback(rule[ruleId]);
+            callback(storageUtils.toSyncRule(rule[ruleId]));
         });
     },
 
@@ -11,7 +11,12 @@ var ss = {
                 callback([]);
             } else {
                 chromeAPI.sync.get(ruleKeys, function (rules) {
-                    callback(storageUtils.rulesJsonToArray(ruleKeys, rules));
+                    var exRules = storageUtils.rulesJsonToArray(ruleKeys, rules);
+                    var syncRules = _.map(exRules, function (exRule) {
+                        return storageUtils.toSyncRule(exRule);
+                    });
+
+                    callback(syncRules);
                 });
             }
         });
@@ -53,7 +58,7 @@ var ss = {
         newRule.title = c.shortenStr(newRule.title, validation.TITLE_MAX_LENGTH);
         newRule.value = c.shortenStr(newRule.value, validation.VALUE_MAX_LENGTH);
 
-        this.readRule(newRule.id, function(exRule){
+        this.readRule(newRule.id, function (exRule) {
             if (_.isEqual(newRule, exRule)) {
                 callback();
             } else {
@@ -72,20 +77,6 @@ var ss = {
         chromeAPI.sync.remove(ruleId, function () {
             callback();
         });
-    },
-
-    toSyncRule: function (rule) {
-        var ruleJSON = {};
-        ruleJSON[rule.id] = {
-            id: rule.id,
-            selector: rule.selector,
-            title: rule.title,
-            url: rule.url,
-            new: rule.new,
-            notify: rule.notify,
-            notified: rule.notified
-        };
-        return ruleJSON;
     }
 
 };

@@ -34,10 +34,7 @@ function checkAndUpdate(rule) {
 }
 
 function updateRuleValue(newRule, onRuleUpdated) {
-    if (!onRuleUpdated) {
-        onRuleUpdated = function () {
-        };
-    }
+    var callback = onRuleUpdated ? onRuleUpdated : c.emptyCallback();
 
     ruleStorage.readRule(newRule.id, function (exRule) {
         if (!isValuesEqual(exRule.value, newRule.value)) {
@@ -53,10 +50,10 @@ function updateRuleValue(newRule, onRuleUpdated) {
 
             ruleStorage.saveRule(exRule, function () {
                 chromeAPI.runtime.sendMessage({msg: "refreshList"});
-                onRuleUpdated(exRule);
+                callback(exRule);
             });
         } else {
-            onRuleUpdated(exRule);
+            callback(exRule);
         }
     });
 }
@@ -74,6 +71,6 @@ function isValuesEqual(val1, val2) {
     if (_.isUndefined(val1) || _.isUndefined(val2)) {
         return false;
     } else {
-        return val1.substr(0, validation.VALUE_MAX_LENGTH) == val2.substr(0, validation.VALUE_MAX_LENGTH);
+        return c.shortenStr(val1, validation.VALUE_MAX_LENGTH) == c.shortenStr(val2, validation.VALUE_MAX_LENGTH);
     }
 }

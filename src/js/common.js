@@ -29,64 +29,65 @@ var chromeAPI = {
 
 var c = {
 
-        emptyCallback: function () {
-        },
+    emptyCallback: function () {
+    },
 
-        isNetworkAvailable: function (callbackHandler) {
-            if (!callbackHandler.error) {
-                callbackHandler.error = function () {
-                };
-            }
+    isNetworkAvailable: function (callbackHandler) {
+        if (!callbackHandler.error) {
+            callbackHandler.error = function () {
+            };
+        }
 
-            $.ajax({url: "http://google.com",
-                       success: function () {
-                           callbackHandler.success();
-                       },
-                       error: function () {
-                           callbackHandler.error();
-                       }});
-        },
+        $.ajax({url: "http://google.com",
+                   success: function () {
+                       callbackHandler.success();
+                   },
+                   error: function () {
+                       callbackHandler.error();
+                   }});
+    },
 
-        checkUrl: function (rule, callbackHandler) {
-            $.ajax({url: rule.url,
-                       success: function (srcHtml) {
-                           var foundData = $(srcHtml).find(rule.selector);
-                           if (foundData.length != 0) {
-                               var newVal = foundData.first().text().trim();
-                               callbackHandler(newVal);
-                           } else {
-                               callbackHandler("");
-                           }
-
-                       },
-                       error: function () {
+    checkUrl: function (rule, callbackHandler) {
+        $.ajax({url: rule.url,
+                   success: function (srcHtml) {
+                       var foundData = $(srcHtml).find(rule.selector);
+                       if (foundData.length != 0) {
+                           var newVal = foundData.first().text().trim();
+                           callbackHandler(newVal);
+                       } else {
                            callbackHandler("");
-                       }});
-        },
+                       }
 
-        getFavicon: function (url) {
-            return url.replace(/^((http|https):\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
-        },
+                   },
+                   error: function () {
+                       callbackHandler("");
+                   }});
+    },
 
-        formatDate: function (d) {
-            var day = d.getUTCDate();
-            var month = d.getUTCMonth() + 1;
-            var year = d.getFullYear();
+    getFavicon: function (url) {
+        return url.replace(/^((http|https):\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
+    },
 
-            var h = d.getHours();
-            var m = d.getMinutes();
+    formatDate: function (d) {
+        var day = d.getUTCDate();
+        var month = d.getUTCMonth() + 1;
+        var year = d.getFullYear();
 
-            return h + ":" + twoDigits(m) + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
-        },
+        var h = d.getHours();
+        var m = d.getMinutes();
 
-        shortenStr: function (str, maxLength) {
-            if (str && str.length >= maxLength) {
-                return str.substring(0, maxLength) + "...";
-            }
+        return h + ":" + twoDigits(m) + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
+    },
+
+    shortenStr: function (str, maxLength) {
+        if (str && str.length >= maxLength) {
+            return str.substring(0, maxLength) + "...";
+        }
+        else {
             return str;
         }
     }
-    ;
+};
 
 function isEmpty(str) {
     return !str || str.trim().length == 0;

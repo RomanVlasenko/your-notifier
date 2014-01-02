@@ -24,28 +24,34 @@ var storageUtils = {
     },
 
     toLocalRule: function (rule) {
-        var localRule = {};
+        if (rule) {
+            var localRule = {};
 
-        localRule.id = rule.id;
-        localRule.index = rule.index;
-        localRule.value = rule.value;
-        localRule.history = rule.history;
+            localRule.id = rule.id;
+            localRule.index = rule.index;
+            localRule.value = rule.value;
+            localRule.history = rule.history;
 
-        return localRule;
+            return localRule;
+        }
+        return rule;
     },
 
     toSyncRule: function (rule) {
-        var syncRule = {};
+        if (rule) {
+            var syncRule = {};
 
-        syncRule.id = rule.id;
-        syncRule.selector = rule.selector;
-        syncRule.title = rule.title;
-        syncRule.url = rule.url;
-        syncRule.new = rule.new;
-        syncRule.notify = rule.notify;
-        syncRule.notified = rule.notified;
+            syncRule.id = rule.id;
+            syncRule.selector = rule.selector;
+            syncRule.title = rule.title;
+            syncRule.url = rule.url;
+            syncRule.new = rule.new;
+            syncRule.notify = rule.notify;
+            syncRule.notified = rule.notified;
 
-        return syncRule;
+            return syncRule;
+        }
+        return rule;
     },
 
     rulesJsonToArray: function (ruleKeys, rulesJSON) {
@@ -60,7 +66,9 @@ var storageUtils = {
         var rulesJSON = {};
 
         _.each(rulesArray, function (rule) {
-            $.extend(rulesJSON, rule);
+            var ruleJson = {};
+            ruleJson[rule.id] = rule;
+            $.extend(rulesJSON, ruleJson);
         });
 
         return rulesJSON;
