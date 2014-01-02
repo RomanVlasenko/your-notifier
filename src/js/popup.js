@@ -12,7 +12,7 @@ $(document).ready(function () {
     var $container = $("#container");
 
     refreshRuleControls(function () {
-        persistence.readState(function (state) {
+        sl.readState(function (state) {
             if (state.page == NORMAL_MODE) {
                 $container.slideDown(300);
             } else {
@@ -45,7 +45,7 @@ function refreshRuleControls() {
         };
     }
 
-    persistence.readRules(function (rules) {
+    ruleStorage.readRules(function (rules) {
         if (rules.length > 0) {
             $existingRulesContainer.find("#norules").remove();
 
@@ -79,12 +79,12 @@ function refreshRuleControls() {
             });
 
             //Update rules flag NEW to 'false'
-            persistence.readRules(function (rules) {
+            ruleStorage.readRules(function (rules) {
                 _.each(rules, function (r) {
                     r.new = false;
-                    r.notificationShown = true;
+                    r.notified = true;
                 });
-                persistence.saveRules(rules, function () {
+                ruleStorage.saveRules(rules, function () {
                     callbackHandler();
                 });
             });
@@ -110,7 +110,7 @@ function createRuleControlDOM(rule) {
     showNewBadge(ruleControl, rule);
 
     ruleControl.attr("id", rule.id);
-    ruleControl.find(".favicon").attr("src", common.getFavicon(rule.url));
+    ruleControl.find(".favicon").attr("src", c.getFavicon(rule.url));
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
     ruleControl.find(".buttons").append(buttons);
@@ -148,9 +148,9 @@ function createRuleControlDOM(rule) {
 
     $additionalButtons.on("change", ".popup-notification input[type=checkbox]", function () {
         var $checkBox = $(this);
-        persistence.findRule(rule.id, function (r) {
-            r.showNotifications = $checkBox.val();
-            persistence.saveRule(r);
+        ruleStorage.readRule(rule.id, function (r) {
+            r.notify = $checkBox.val();
+            ruleStorage.saveRule(r);
         });
     });
 
@@ -171,7 +171,7 @@ function createRuleControlDOM(rule) {
     }
 
     function onDragEnd() {
-        persistence.readRules(function (rules) {
+        ruleStorage.readRules(function (rules) {
             $existingRulesContainer.find(".rule-control").each(function (i, e) {
                 var rule = _.find(rules, function (r) {
                     return r.id == $(e).attr("id");
@@ -180,7 +180,7 @@ function createRuleControlDOM(rule) {
                 rule.ver = rule.ver + 1;
             });
 
-            persistence.saveRules(rules);
+            ruleStorage.saveRules(rules);
         });
 
         $existingRulesContainer.find(".rule-control").removeClass("odd, even");
@@ -197,20 +197,20 @@ function createRuleControlDOM(rule) {
 
 function updateRuleControlDOM(rule, ruleControl) {
     showNewBadge(ruleControl, rule);
-    ruleControl.find(".favicon").attr("src", common.getFavicon(rule.url));
+    ruleControl.find(".favicon").attr("src", c.getFavicon(rule.url));
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
     return ruleControl;
 }
 
 function onDeleteClick(ruleId) {
-    persistence.deleteRule(ruleId, function () {
+    ruleStorage.deleteRule(ruleId, function () {
         refreshRuleControls();
     });
 }
 
 function onCloneClick(ruleId) {
-    persistence.findRule(ruleId, function (rule) {
+    ruleStorage.readRule(ruleId, function (rule) {
         var clonedRule = _.clone(rule);
         clonedRule.id = '';
         setRule(clonedRule);
@@ -219,7 +219,7 @@ function onCloneClick(ruleId) {
 }
 
 function onEditClick(ruleId) {
-    persistence.findRule(ruleId, function (rule) {
+    ruleStorage.readRule(ruleId, function (rule) {
         setRule(rule);
         openRuleEditor();
         markRuleAsEditable(rule);
@@ -237,7 +237,7 @@ function onMoreSettingsClick($additionalPanel) {
                 var historyTable = $additionalPanel.find("table.history").empty();
 
                 var ruleId = $additionalPanel.attr("id");
-                persistence.findRule(ruleId, function (rule) {
+                ruleStorage.readRule(ruleId, function (rule) {
                     updateHistory(historyTable, rule);
                     $additionalPanel.slideDown("fast");
                 });
@@ -252,10 +252,10 @@ function onMoreSettingsClick($additionalPanel) {
 
 function onClearHistoryClick($additionalPanel, ruleWithHistory) {
 
-    persistence.findRule(ruleWithHistory.id, function (rule) {
+    ruleStorage.readRule(ruleWithHistory.id, function (rule) {
         rule.history = [];
 
-        persistence.saveRule(rule, function () {
+        ruleStorage.saveRule(rule, function () {
             updateHistory($additionalPanel.find("table.history"), rule)
         });
     });
@@ -267,7 +267,7 @@ function updateHistory($historyTable, rule) {
         _.each(rule.history, function (h) {
             $historyTable.append("<tr><td><div class='history-cell' title='" + h.value + "'>" + h.value
                                      + "</div></td><td>"
-                                     + "<div class='date-cell pull-right'>" + common.formatDate(new Date(h.date))
+                                     + "<div class='date-cell pull-right'>" + c.formatDate(new Date(h.date))
                                      + "</div></td></tr>");
         });
     } else {

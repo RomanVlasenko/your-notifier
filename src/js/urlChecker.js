@@ -39,7 +39,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
         };
     }
 
-    persistence.findRule(newRule.id, function (exRule) {
+    ruleStorage.readRule(newRule.id, function (exRule) {
         if (!isValuesEqual(exRule.value, newRule.value)) {
             exRule.value = newRule.value;
             exRule.new = true;
@@ -51,7 +51,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
                 }
             }
 
-            persistence.saveRule(exRule, function () {
+            ruleStorage.saveRule(exRule, function () {
                 chromeAPI.runtime.sendMessage({msg: "refreshList"});
                 onRuleUpdated(exRule);
             });
@@ -71,5 +71,9 @@ function appendHistoryRecord(rule, record) {
 }
 
 function isValuesEqual(val1, val2) {
-    return val1.substr(0, validation.VALUE_MAX_LENGTH) == val2.substr(0, validation.VALUE_MAX_LENGTH);
+    if (_.isUndefined(val1) || _.isUndefined(val2)) {
+        return false;
+    } else {
+        return val1.substr(0, validation.VALUE_MAX_LENGTH) == val2.substr(0, validation.VALUE_MAX_LENGTH);
+    }
 }

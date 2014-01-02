@@ -77,14 +77,13 @@ function markRuleAsEditable(rule) {
 function saveRule() {
     var newRule = getRule();
 
-    persistence.findRule(newRule.id, function (exRule) {
+    ruleStorage.readRule(newRule.id, function (exRule) {
         if (exRule) {
             exRule.title = newRule.title;
             exRule.url = newRule.url;
             exRule.selector = newRule.selector;
-            exRule.ver = exRule.ver + 1;
 
-            persistence.saveRule(exRule, function () {
+            ruleStorage.saveRule(exRule, function () {
                 persistStatePopup();
                 refreshRuleControls();
                 checkAndUpdate(exRule);
@@ -98,10 +97,9 @@ function saveRule() {
 function createRule(newRule) {
     newRule.id = String(new Date().getTime());
 
-    persistence.readRules(function (rules) {
+    ruleStorage.readRules(function (rules) {
         newRule.index = rules.length;
-        newRule.ver = 0;
-        persistence.saveRule(newRule, function () {
+        ruleStorage.saveRule(newRule, function () {
             persistStatePopup();
             refreshRuleControls();
             checkAndUpdate(newRule);
@@ -147,7 +145,7 @@ function onTestClick() {
         if (isEmpty(r.url) || r.url.indexOf("http") != 0) {
             showTestResult("");
         } else {
-            common.checkUrl(getRule(), function (value) {
+            c.checkUrl(getRule(), function (value) {
                 showTestResult(value);
             });
         }

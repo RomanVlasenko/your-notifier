@@ -10,17 +10,17 @@ chromeAPI.runtime.onMessage.addListener(
             updateBadge();
 
             showPopupNotifications(_.filter(updatedRules, function (rule) {
-                return rule.showNotifications && !rule.notificationShown;
+                return rule.notify && !rule.notified;
             }));
         } else if (request.msg == "resetUpdates") {
-            persistence.readRules(function (rules) {
+            ruleStorage.readRules(function (rules) {
                 _.each(rules, function (r) {
                     r.new = false;
                     chromeAPI.notifications.clear(r.id, function () {
                     });
                 });
 
-                persistence.saveRules(rules, function () {
+                ruleStorage.saveRules(rules, function () {
                     showBadge("", "Your notifier");
                 });
             });
@@ -28,7 +28,7 @@ chromeAPI.runtime.onMessage.addListener(
     });
 
 function updateBadge() {
-    persistence.readRules(function (rules) {
+    ruleStorage.readRules(function (rules) {
         var newRulesCount = _.filter(rules,function (rule) {
             return rule.new;
         }).length;
@@ -56,12 +56,12 @@ function showPopupNotifications(rules) {
             type: "basic",
             title: rule.title,
             message: "Now: " + rule.value,
-            iconUrl: common.getFavicon(rule.url)
+            iconUrl: c.getFavicon(rule.url)
         };
 
         chromeAPI.notifications.create(rule.id, opt, function () {
-            rule.notificationShown = true;
-            persistence.saveRule(rule);
+            rule.notified = true;
+            ruleStorage.saveRule(rule);
 
             setTimeout(function () {
                 closeNotification(rule.id);

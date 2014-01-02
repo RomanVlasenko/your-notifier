@@ -8,7 +8,7 @@ var monthNames = [ "January", "February", "March", "April", "May", "June",
                    "July", "August", "September", "October", "November", "December" ];
 
 var validation = {
-    TITLE_MAX_LENGTH: 150,
+    TITLE_MAX_LENGTH: 100,
     VALUE_MAX_LENGTH: 35,
     URL_MAX_LENGTH: 300,
     SELECTOR_MAX_LENGTH: 500
@@ -27,62 +27,66 @@ var chromeAPI = {
     management: chrome.management
 };
 
-var common = {
+var c = {
 
-    isNetworkAvailable: function (callbackHandler) {
-        if (!callbackHandler.error) {
-            callbackHandler.error = function () {
-            };
-        }
+        emptyCallback: function () {
+        },
 
-        $.ajax({url: "http://google.com",
-                   success: function () {
-                       callbackHandler.success();
-                   },
-                   error: function () {
-                       callbackHandler.error();
-                   }});
-    },
+        isNetworkAvailable: function (callbackHandler) {
+            if (!callbackHandler.error) {
+                callbackHandler.error = function () {
+                };
+            }
 
-    checkUrl: function (rule, callbackHandler) {
-        $.ajax({url: rule.url,
-                   success: function (srcHtml) {
-                       var foundData = $(srcHtml).find(rule.selector);
-                       if (foundData.length != 0) {
-                           var newVal = foundData.first().text().trim();
-                           callbackHandler(newVal);
-                       } else {
+            $.ajax({url: "http://google.com",
+                       success: function () {
+                           callbackHandler.success();
+                       },
+                       error: function () {
+                           callbackHandler.error();
+                       }});
+        },
+
+        checkUrl: function (rule, callbackHandler) {
+            $.ajax({url: rule.url,
+                       success: function (srcHtml) {
+                           var foundData = $(srcHtml).find(rule.selector);
+                           if (foundData.length != 0) {
+                               var newVal = foundData.first().text().trim();
+                               callbackHandler(newVal);
+                           } else {
+                               callbackHandler("");
+                           }
+
+                       },
+                       error: function () {
                            callbackHandler("");
-                       }
+                       }});
+        },
 
-                   },
-                   error: function () {
-                       callbackHandler("");
-                   }});
-    },
+        getFavicon: function (url) {
+            return url.replace(/^((http|https):\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
+        },
 
-    getFavicon: function (url) {
-        return url.replace(/^((http|https):\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
-    },
+        formatDate: function (d) {
+            var day = d.getUTCDate();
+            var month = d.getUTCMonth() + 1;
+            var year = d.getFullYear();
 
-    formatDate: function (d) {
-        var day = d.getUTCDate();
-        var month = d.getUTCMonth() + 1;
-        var year = d.getFullYear();
+            var h = d.getHours();
+            var m = d.getMinutes();
 
-        var h = d.getHours();
-        var m = d.getMinutes();
+            return h + ":" + twoDigits(m) + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
+        },
 
-        return h + ":" + twoDigits(m) + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
-    },
-
-    shortenStr: function (str, maxLength) {
-        if (str && str.length >= maxLength) {
-            return str.substring(0, maxLength) + "...";
+        shortenStr: function (str, maxLength) {
+            if (str && str.length >= maxLength) {
+                return str.substring(0, maxLength) + "...";
+            }
+            return str;
         }
-        return str;
     }
-};
+    ;
 
 function isEmpty(str) {
     return !str || str.trim().length == 0;

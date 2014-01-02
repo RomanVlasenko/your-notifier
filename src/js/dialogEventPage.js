@@ -16,7 +16,7 @@ chromeAPI.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.method == "testRule") {
 
-            common.checkUrl(request.rule, function (val) {
+            c.checkUrl(request.rule, function (val) {
                 if (isEmpty(val)) {
                     sendResponse({value: ""});
                 } else {
@@ -34,16 +34,22 @@ chromeAPI.runtime.onMessage.addListener(
 
             var newRule = request.rule;
             newRule.id = String(new Date().getTime());
-            newRule.ver = 0;
+            newRule.index = 0;
 
-            persistence.readRules(function (rules) {
-
-                newRule.index = rules.length;
-                persistence.saveRule(newRule, function () {
-                    checkAndUpdate(newRule, function () {
-                        chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
-                    });
-                })
+            ruleStorage.saveRule(newRule, function () {
+                checkAndUpdate(newRule, function () {
+                    chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
+                });
             });
+
+//            ruleStorage.readRules(function (rules) {
+//
+//                newRule.index = rules.length;
+//                ruleStorage.saveRule(newRule, function () {
+//                    checkAndUpdate(newRule, function () {
+//                        chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
+//                    });
+//                })
+//            });
         }
     });

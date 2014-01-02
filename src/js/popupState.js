@@ -9,7 +9,7 @@ $(document).ready(function () {
 });
 
 function restoreEdit() {
-    persistence.readState(function (state) {
+    sl.readState(function (state) {
         var rule = state.rule;
 
         //Don't open editor if all fields are empty
@@ -21,9 +21,9 @@ function restoreEdit() {
 }
 
 function persistStatePopup() {
-    persistence.saveState({page: NORMAL_MODE});
+    sl.saveState({page: NORMAL_MODE});
 }
 
 function persistStateEdit() {
-    persistence.saveState({page: EDIT_MODE, rule: getRule()});
+    sl.saveState({page: EDIT_MODE, rule: getRule()});
 }

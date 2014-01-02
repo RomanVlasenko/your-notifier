@@ -1,14 +1,14 @@
 chromeAPI.alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
 chromeAPI.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name == 'CheckRulesSchedule') {
-        common.isNetworkAvailable({success: function () {
+        c.isNetworkAvailable({success: function () {
             performScheduledChecking();
         }});
     }
 });
 
 function performScheduledChecking() {
-    persistence.readRules(function (rules) {
+    ruleStorage.readRules(function (rules) {
         _.each(rules, function (rule) {
             checkAndUpdate(rule, onRuleUpdated);
         });

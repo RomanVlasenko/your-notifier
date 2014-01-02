@@ -19,7 +19,7 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
         hideBadges();
         $editor.find(".yon-test").hide();
         if (validateFields()) {
-            common.checkUrl(getRule($editor), function (val) {
+            c.checkUrl(getRule($editor), function (val) {
                 $editor.find(".test-label").html(val);
                 $editor.find(".yon-test").slideDown(200);
 
