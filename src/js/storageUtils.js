@@ -12,7 +12,7 @@ var storageUtils = {
     },
 
     updateRuleKeys: function (keys) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
 
         this.readRuleKeys(function (exKeys) {
             chromeAPI.storage.set({"ruleKeys": _.uniq(exKeys.concat(keys))}, function () {
@@ -24,7 +24,7 @@ var storageUtils = {
     },
 
     deleteRuleKey: function (ruleKey) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
 
         this.readRuleKeys(function (exKeys) {
             var newKeys = _.reject(exKeys, function (key) {

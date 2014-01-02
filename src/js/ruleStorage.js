@@ -53,20 +53,24 @@ var ruleStorage = {
         var rules = [];
 
         ss.readRules(function (syncRules) {
-            sl.readRules(function (localRules) {
+            if (syncRules.length > 0) {
+                sl.readRules(function (localRules) {
 
-                var pairs = _.groupBy(syncRules.concat(localRules), "id");
+                    var pairs = _.groupBy(syncRules.concat(localRules), "id");
 
-                _.each(pairs, function (pair) {
-                    var mergedRule = _.reduce(pair, function (ruleMemo, rule) {
-                        return $.extend(ruleMemo, rule);
-                    }, {});
+                    _.each(pairs, function (pair) {
+                        var mergedRule = _.reduce(pair, function (ruleMemo, rule) {
+                            return $.extend(ruleMemo, rule);
+                        }, {});
 
-                    rules.push(mergedRule);
+                        rules.push(mergedRule);
+                    });
+
+                    callback(rules);
                 });
-
+            } else {
                 callback(rules);
-            });
+            }
         });
     }
 };

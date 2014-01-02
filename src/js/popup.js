@@ -37,7 +37,7 @@ $(document).ready(function () {
 });
 
 function refreshRuleControls() {
-    var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
+    var callback = arguments.length > 0 ? arguments[0] : c.emptyCallback();
 
     ruleStorage.readRules(function (rules) {
         if (rules.length > 0) {
