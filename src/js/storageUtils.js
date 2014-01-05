@@ -44,8 +44,6 @@ var storageUtils = {
 
             localRule.id = rule.id;
             localRule.index = rule.index;
-            localRule.value = rule.value;
-            localRule.history = rule.history;
 
             return localRule;
         }
@@ -63,6 +61,8 @@ var storageUtils = {
             syncRule.new = rule.new;
             syncRule.notify = rule.notify;
             syncRule.notified = rule.notified;
+            syncRule.value = rule.value;
+            syncRule.history = rule.history;
 
             return syncRule;
         }
@@ -72,7 +72,13 @@ var storageUtils = {
     rulesJsonToArray: function (ruleKeys, rulesJSON) {
         var rulesArr = [];
         _.each(ruleKeys, function (key) {
-            rulesArr.push(rulesJSON[key]);
+            if (_.isUndefined(rulesJSON[key])) {
+                var ruleMock = {};
+                ruleMock.id = key;
+                rulesArr.push(ruleMock);
+            } else {
+                rulesArr.push(rulesJSON[key]);
+            }
         });
         return rulesArr;
     },
