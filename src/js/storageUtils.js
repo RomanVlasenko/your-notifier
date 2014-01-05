@@ -44,6 +44,8 @@ var storageUtils = {
 
             localRule.id = rule.id;
             localRule.index = rule.index;
+            localRule.value = rule.value;
+            localRule.history = rule.history;
 
             return localRule;
         }
@@ -61,8 +63,6 @@ var storageUtils = {
             syncRule.new = rule.new;
             syncRule.notify = rule.notify;
             syncRule.notified = rule.notified;
-            syncRule.value = rule.value;
-            syncRule.history = rule.history;
 
             return syncRule;
         }
