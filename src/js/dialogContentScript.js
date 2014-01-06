@@ -15,13 +15,20 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
         $editor.dialog("close");
     });
 
-    $editor.on("click", "#test", function () {
+    $editor.on("click", "button#test", function () {
         hideBadges();
-        $editor.find(".yon-test").hide();
+        var $testValue = $editor.find(".yon-test");
+        $testValue.show();
         if (validateFields()) {
+
+            $testValue.css("background-image",
+                           "url('" + chromeAPI.extension.getURL("../img/load.gif") + "') no-repeat center");
+
             c.checkUrl(getRule($editor), function (val) {
                 $editor.find(".test-label").html(val);
                 $editor.find(".yon-test").slideDown(200);
+
+                $testValue.css("background-image", "none");
 
                 if (isEmpty(val)) {
                     $editor.find(".not-available").show();

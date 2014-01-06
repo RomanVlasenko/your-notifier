@@ -30,7 +30,7 @@
                    "js/dialogContentScript.js"]
         }
     ],
-    "web_accessible_resources": ["dialog.html"],
+    "web_accessible_resources": ["dialog.html", "img/load.gif"],
     "permissions": [ "<all_urls>" , "storage", "alarms", "tabs", "notifications", "contextMenus"],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
