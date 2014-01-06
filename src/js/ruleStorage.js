@@ -74,3 +74,22 @@ var ruleStorage = {
         });
     }
 };
+
+//Remove rule with the same key from local storage (case when rule was removed on another instance of chrome)
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    for (var key in changes) {
+        var storageChange = changes[key];
+
+        if (namespace == "sync") {
+            if (_.isUndefined(storageChange.newValue)) {
+                console.log("Rule '%s' was deleted remotely", key);
+
+                storageUtils.deleteRuleKey(key, function () {
+                    sl.deleteRule(key, function () {
+                        chromeAPI.runtime.sendMessage({msg: "refreshList"});
+                    });
+                });
+            }
+        }
+    }
+});

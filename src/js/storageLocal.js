@@ -38,7 +38,7 @@ var sl = {
 
     readRule: function (ruleId, callback) {
         chromeAPI.storage.get(ruleId, function (rule) {
-            if(_.isUndefined(rule[ruleId])) {
+            if (_.isUndefined(rule[ruleId])) {
                 var ruleMock = {};
                 ruleMock.id = ruleId;
                 callback(ruleMock);
@@ -77,9 +77,7 @@ var sl = {
         var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
 
         chromeAPI.storage.remove(ruleId, function () {
-            chromeAPI.storage.remove(ruleId, function () {
-                callback();
-            });
+            callback();
         });
     }
 };
