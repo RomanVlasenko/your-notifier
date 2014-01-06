@@ -86,7 +86,7 @@ function refreshRuleControls() {
             repaintStripes();
 
         } else {
-            $existingRulesContainer.html("<h5 id='norules' class='text-center'>You don't have any items to watch yet.</h5>");
+            $existingRulesContainer.html($("#empty-rules").html());
             callback();
         }
     });

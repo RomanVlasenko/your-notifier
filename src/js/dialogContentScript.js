@@ -24,7 +24,7 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
             $testValue.css("background-image", "url('" + chromeAPI.extension.getURL("../img/load.gif") + "')");
 
             c.checkUrl(getRule($editor), function (val) {
-                $testValue.html(val);
+                $editor.find(".test-label").html(val);
                 $testValue.slideDown(200);
 
                 $testValue.css("background-image", "none");
