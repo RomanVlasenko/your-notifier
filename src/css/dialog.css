@@ -227,6 +227,7 @@
     border: 1px dashed #ccc;
     vertical-align: middle;
     height: 80px;
+    background: no-repeat center;
 }
 
 .yon-test-inner {

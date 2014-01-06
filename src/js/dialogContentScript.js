@@ -21,12 +21,11 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
         $testValue.show();
         if (validateFields()) {
 
-            $testValue.css("background-image",
-                           "url('" + chromeAPI.extension.getURL("../img/load.gif") + "') no-repeat center");
+            $testValue.css("background-image", "url('" + chromeAPI.extension.getURL("../img/load.gif") + "')");
 
             c.checkUrl(getRule($editor), function (val) {
-                $editor.find(".test-label").html(val);
-                $editor.find(".yon-test").slideDown(200);
+                $testValue.html(val);
+                $testValue.slideDown(200);
 
                 $testValue.css("background-image", "none");
 
