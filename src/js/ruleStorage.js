@@ -32,11 +32,7 @@ var ruleStorage = {
 
     deleteRule: function (ruleId, callback) {
         ss.deleteRule(ruleId, function () {
-            sl.deleteRule(ruleId, function () {
-                storageUtils.deleteRuleKey(ruleId, function () {
-                    callback();
-                });
-            });
+            callback();
         });
     },
 
@@ -82,7 +78,7 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
         if (namespace == "sync") {
             if (_.isUndefined(storageChange.newValue)) {
-                console.log("Rule '%s' was deleted remotely", key);
+                console.log("Rule '%s' was deleted", key);
 
                 storageUtils.deleteRuleKey(key, function () {
                     sl.deleteRule(key, function () {
