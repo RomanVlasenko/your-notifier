@@ -9,7 +9,6 @@ var updates = {
     REQUEST_PER_URL_INTERVAL: 10000
 };
 
-
 var monthNames = [ "January", "February", "March", "April", "May", "June",
                    "July", "August", "September", "October", "November", "December" ];
 
@@ -95,19 +94,27 @@ var c = {
     },
 
     baseUrl: function (url) {
-        if (isEmpty(url)) {
-            return url;
-        }
+        var baseUrl;
 
-        var pathArray = window.location.href.split('/');
-        var protocol = pathArray[0];
-        var host = pathArray[2];
-        return protocol + '://' + host;
+        if (isNotEmpty(url)) {
+            var pathArray = url.split('/');
+
+            if (pathArray.length >= 2) {
+                var protocol = pathArray[0];
+                var host = pathArray[2];
+                baseUrl = protocol + '://' + host;
+            }
+        }
+        return baseUrl;
     }
 };
 
 function isEmpty(str) {
     return !str || str.trim().length == 0;
+}
+
+function isNotEmpty(str) {
+    return !isEmpty(str);
 }
 
 function twoDigits(d) {

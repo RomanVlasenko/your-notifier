@@ -9,8 +9,6 @@ chromeAPI.alarms.onAlarm.addListener(function (alarm) {
 
 function performScheduledChecking() {
 
-    console.log("performScheduledChecking");
-
     ruleStorage.readRules(function (rules) {
 
         if (rules.length == 0) {
@@ -22,6 +20,8 @@ function performScheduledChecking() {
             return c.baseUrl(rule.url);
         });
 
+        console.log("Perform scheduled checking on %s rules in %s sets", rules.length, _.size(ruleSets));
+
         _.each(ruleSets, function (ruleSet) {
             for (var i = 0; i < ruleSet.length; i = i + 1) {
 
@@ -29,19 +29,21 @@ function performScheduledChecking() {
                     return function () {
                         rule.lastUpdated = rule.lastUpdated ? rule.lastUpdated : 0;
 
-                        console.log("Rule '%s' was updated %s ms ago", rule.id, rule.lastUpdated)
+                        console.log("Rule '%s' was updated %s ms ago", rule.id, new Date().getTime() - rule.lastUpdated)
 
                         //Update only if it was updated more than %updates.UPDATE_INTERVAL% ago
                         if (rule.lastUpdated < new Date().getTime() - updates.UPDATE_INTERVAL) {
 
                             ruleStorage.readRule(rule.id, function (r) {
                                 r.lastUpdated = new Date().getTime();
-                                ruleStorage.saveRule(rule, c.emptyCallback);
+                                ruleStorage.saveRule(r, function () {
+                                    checkAndUpdate(r, function (rule) {
+                                        onRuleUpdated(rule);
+                                    });
+                                });
                             });
-
-                            checkAndUpdate(rule, function (r) {
-                                onRuleUpdated(r);
-                            });
+                        } else {
+                            console.log("Rule '%s' is up to date", rule.id);
                         }
                     };
                 })(ruleSet[i]), i * updates.REQUEST_PER_URL_INTERVAL);
