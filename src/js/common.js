@@ -4,6 +4,12 @@ var NO_HISTORY = "No history available";
 
 var HISTORY_MAX = 5;
 
+var updates = {
+    UPDATE_INTERVAL: 60000,
+    REQUEST_PER_URL_INTERVAL: 10000
+};
+
+
 var monthNames = [ "January", "February", "March", "April", "May", "June",
                    "July", "August", "September", "October", "November", "December" ];
 
@@ -86,6 +92,17 @@ var c = {
         else {
             return str;
         }
+    },
+
+    baseUrl: function (url) {
+        if (isEmpty(url)) {
+            return url;
+        }
+
+        var pathArray = window.location.href.split('/');
+        var protocol = pathArray[0];
+        var host = pathArray[2];
+        return protocol + '://' + host;
     }
 };
 

@@ -254,3 +254,8 @@
 .yon-input-error {
     background-color: rgb(255, 231, 231) !important;
 }
+
+#yon-edit-rule .row {
+    max-width: 378px !important;
+    min-width: 378px !important;
+}
