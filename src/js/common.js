@@ -1,12 +1,14 @@
 //Constants
 var NOT_AVAILABLE = "Not available";
+var ERROR = "Resource unreachable";
 var NO_HISTORY = "No history available";
 
 var HISTORY_MAX = 5;
 
 var updates = {
     UPDATE_INTERVAL: 60000,
-    REQUEST_PER_URL_INTERVAL: 10000
+    REQUEST_PER_URL_INTERVAL: 10000,
+    MAX_ATTEMPTS: 3
 };
 
 var monthNames = [ "January", "February", "March", "April", "May", "June",

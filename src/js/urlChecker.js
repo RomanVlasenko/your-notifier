@@ -28,8 +28,23 @@ function checkAndUpdate(rule) {
                }});
 
     function onError() {
-        rule.value = NOT_AVAILABLE;
-        updateRuleValue(rule, callbackHandler);
+        if (rule.value) {
+            if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
+                rule.value = NOT_AVAILABLE;
+                updateRuleValue(rule, callbackHandler);
+            } else {
+                ruleStorage.readRule(ruleId, function (rule) {
+                    rule.attempts = (rule.attempts || 0) + 1;
+                    ruleStorage.saveRule(rule, function () {
+                        callbackHandler();
+                    });
+                    console.log("%s is unreachable at the moment. Attempts made: %s", rule.id, rule.attempts);
+                });
+            }
+        } else {
+            rule.value = ERROR;
+            updateRuleValue(rule, callbackHandler);
+        }
     }
 }
 
@@ -42,7 +57,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
             exRule.new = true;
             exRule.notified = false;
 
-            if (newRule.value != NOT_AVAILABLE) {
+            if (newRule.value != ERROR) {
                 if (_.isEmpty(exRule.history) || newRule.value != exRule.history[0].value) {
                     appendHistoryRecord(exRule, {"value": exRule.value, "date": new Date().getTime()});
                 }

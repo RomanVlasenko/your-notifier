@@ -16,18 +16,20 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
     });
 
     $editor.on("click", "button#test", function () {
-        hideBadges();
-        var $testValue = $editor.find(".yon-test");
-        $testValue.show();
+        clearResult();
+
+        var $testPanel = $editor.find(".yon-test");
+        $testPanel.show();
+
         if (validateFields()) {
 
-            $testValue.css("background-image", "url('" + chromeAPI.extension.getURL("../img/load.gif") + "')");
+            $testPanel.css("background-image", "url('" + chromeAPI.extension.getURL("../img/load.gif") + "')");
 
             c.checkUrl(getRule($editor), function (val) {
                 $editor.find(".test-label").html(val);
-                $testValue.slideDown(200);
+                $testPanel.slideDown(200);
 
-                $testValue.css("background-image", "none");
+                $testPanel.css("background-image", "none");
 
                 if (isEmpty(val)) {
                     $editor.find(".not-available").show();
@@ -110,8 +112,9 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
         return titleValid && urlValid && selectorValid;
     }
 
-    function hideBadges() {
+    function clearResult() {
         $(".yon-test .yon-badge.not-available").hide();
         $(".yon-test .yon-badge.ok").hide();
+        $editor.find(".test-label").empty();
     }
 });
