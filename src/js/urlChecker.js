@@ -32,13 +32,18 @@ function checkAndUpdate(rule) {
 
                },
                error: function () {
-                   onError();
+                   onNetworkError();
                }});
 
     function onError() {
+        rule.value = NOT_AVAILABLE;
+        updateRuleValue(rule, callbackHandler);
+    }
+
+    function onNetworkError() {
         if (rule.value) {
             if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
-                rule.value = NOT_AVAILABLE;
+                rule.value = ERROR;
                 updateRuleValue(rule, callbackHandler);
             } else {
                 ruleStorage.readRule(ruleId, function (rule) {
@@ -65,7 +70,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
             exRule.new = true;
             exRule.notified = false;
 
-            if (newRule.value != ERROR) {
+            if (newRule.value != NOT_AVAILABLE) {
                 if (_.isEmpty(exRule.history) || newRule.value != exRule.history[0].value) {
                     appendHistoryRecord(exRule, {"value": exRule.value, "date": new Date().getTime()});
                 }
