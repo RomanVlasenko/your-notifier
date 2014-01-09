@@ -4,7 +4,7 @@
     "name": "Your notifier",
     "short_name": "YoN",
     "description": "Helps to gather and monitor data from different online sources",
-    "version": "1.0.6.5",
+    "version": "1.0.6.6",
     "browser_action": {
         "default_icon": "img/icon32x32.png",
         "default_popup": "popup.html",

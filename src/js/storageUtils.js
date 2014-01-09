@@ -47,6 +47,7 @@ var storageUtils = {
             localRule.value = rule.value;
             localRule.history = rule.history;
             localRule.lastUpdated = rule.lastUpdated;
+            localRule.attempts = rule.attempts;
 
             return localRule;
         }
