@@ -16,7 +16,15 @@ function checkAndUpdate(rule) {
                        var newVal = foundData.first().text().trim();
                        if (newVal) {
                            rule.value = newVal;
-                           updateRuleValue(rule, callbackHandler);
+
+                           if ((rule.attempts || 0) > 0) {
+                               ruleStorage.readRule(rule.id, function (rule) {
+                                   rule.attempts = 0;
+                                   ruleStorage.saveRule(rule, function () {
+                                       updateRuleValue(rule, callbackHandler);
+                                   });
+                               });
+                           }
                        }
                    } else {
                        onError();
