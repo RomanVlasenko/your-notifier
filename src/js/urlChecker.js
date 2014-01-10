@@ -16,15 +16,16 @@ function checkAndUpdate(rule) {
                        var newVal = foundData.first().text().trim();
                        if (newVal) {
                            rule.value = newVal;
-
-                           if ((rule.attempts || 0) > 0) {
-                               ruleStorage.readRule(rule.id, function (rule) {
+                           ruleStorage.readRule(rule.id, function (rule) {
+                               if ((rule.attempts || 0) > 0) {
                                    rule.attempts = 0;
                                    ruleStorage.saveRule(rule, function () {
                                        updateRuleValue(rule, callbackHandler);
                                    });
-                               });
-                           }
+                               } else {
+                                   updateRuleValue(rule, callbackHandler);
+                               }
+                           });
                        }
                    } else {
                        onError();
@@ -32,18 +33,19 @@ function checkAndUpdate(rule) {
 
                },
                error: function () {
-                   onNetworkError();
+                   console.log("%s is unreachable at the moment. Attempts made: %s", rule.id, rule.attempts);
+                   onHttpError();
                }});
 
     function onError() {
-        rule.value = NOT_AVAILABLE;
-        updateRuleValue(rule, callbackHandler);
+        console.log("unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
+        onHttpError();
     }
 
-    function onNetworkError() {
+    function onHttpError() {
         if (rule.value) {
             if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
-                rule.value = ERROR;
+                rule.value = NOT_AVAILABLE;
                 updateRuleValue(rule, callbackHandler);
             } else {
                 ruleStorage.readRule(ruleId, function (rule) {
@@ -51,7 +53,6 @@ function checkAndUpdate(rule) {
                     ruleStorage.saveRule(rule, function () {
                         callbackHandler();
                     });
-                    console.log("%s is unreachable at the moment. Attempts made: %s", rule.id, rule.attempts);
                 });
             }
         } else {
