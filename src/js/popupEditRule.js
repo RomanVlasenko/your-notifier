@@ -98,7 +98,7 @@ function saveRule() {
 
 function createRule(newRule) {
     newRule.id = String(new Date().getTime());
-    newRule.index = 0;
+    newRule.index = -1;
 
     ruleStorage.saveRule(newRule, function () {
         persistStatePopup();

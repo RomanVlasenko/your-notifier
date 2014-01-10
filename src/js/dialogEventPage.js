@@ -34,7 +34,7 @@ chromeAPI.runtime.onMessage.addListener(
 
             var newRule = request.rule;
             newRule.id = String(new Date().getTime());
-            newRule.index = 0;
+            newRule.index = -1;
 
             ruleStorage.saveRule(newRule, function () {
                 checkAndUpdate(newRule, function () {
