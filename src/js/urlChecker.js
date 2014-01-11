@@ -15,17 +15,21 @@ function checkAndUpdate(rule) {
                    if (foundData.length != 0) {
                        var newVal = foundData.first().text().trim();
                        if (newVal) {
-                           rule.value = newVal;
+
+                           //Resetting attempts counter if it's needed
                            ruleStorage.readRule(rule.id, function (rule) {
                                if ((rule.attempts || 0) > 0) {
                                    rule.attempts = 0;
+                                   rule.value = newVal;
                                    ruleStorage.saveRule(rule, function () {
                                        updateRuleValue(rule, callbackHandler);
                                    });
                                } else {
+                                   rule.value = newVal;
                                    updateRuleValue(rule, callbackHandler);
                                }
                            });
+
                        }
                    } else {
                        onError();
