@@ -1,4 +1,4 @@
-var NOTIFICATION_AUTOCLOSE_TIME = 5000;
+var NOTIFICATION_AUTOCLOSE_TIME = 10000;
 
 chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
 
@@ -74,3 +74,15 @@ function closeNotification(notificationId) {
     chromeAPI.notifications.clear(notificationId, function () {
     });
 }
+
+chromeAPI.notifications.onClicked.addListener(function (notificationId) {
+    ruleStorage.readRule(notificationId, function (rule) {
+        chromeAPI.tabs.create({url: rule.url});
+        chromeAPI.notifications.clear(notificationId, function () {
+            rule.new = false;
+            ruleStorage.updateRule(rule, function () {
+                updateBadge();
+            });
+        });
+    });
+});
