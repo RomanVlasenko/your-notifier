@@ -1,4 +1,4 @@
-var NOTIFICATION_AUTOCLOSE_TIME = 10000;
+var NOTIFICATION_AUTOCLOSE_TIME = 5000;
 
 chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
 
@@ -61,7 +61,7 @@ function showPopupNotifications(rules) {
 
         chromeAPI.notifications.create(rule.id, opt, function () {
             rule.notified = true;
-            ruleStorage.saveRule(rule);
+            ruleStorage.updateRule(rule);
 
             setTimeout(function () {
                 closeNotification(rule.id);

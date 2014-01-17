@@ -21,7 +21,7 @@ function checkAndUpdate(rule) {
                                if ((rule.attempts || 0) > 0) {
                                    rule.attempts = 0;
                                    rule.value = newVal;
-                                   ruleStorage.saveRule(rule, function () {
+                                   ruleStorage.updateRule(rule, function () {
                                        updateRuleValue(rule, callbackHandler);
                                    });
                                } else {
@@ -52,9 +52,9 @@ function checkAndUpdate(rule) {
                 rule.value = NOT_AVAILABLE;
                 updateRuleValue(rule, callbackHandler);
             } else {
-                ruleStorage.readRule(ruleId, function (rule) {
+                ruleStorage.readRule(rule.id, function (rule) {
                     rule.attempts = (rule.attempts || 0) + 1;
-                    ruleStorage.saveRule(rule, function () {
+                    ruleStorage.updateRule(rule, function () {
                         callbackHandler();
                     });
                 });
@@ -81,7 +81,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
                 }
             }
 
-            ruleStorage.saveRule(exRule, function () {
+            ruleStorage.updateRule(exRule, function () {
                 chromeAPI.runtime.sendMessage({msg: "refreshList"});
                 callback(exRule);
             });

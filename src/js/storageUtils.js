@@ -15,8 +15,10 @@ var storageUtils = {
         var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
 
         this.readRuleKeys(function (exKeys) {
-            chromeAPI.storage.set({"ruleKeys": _.uniq(exKeys.concat(keys))}, function () {
-                chromeAPI.sync.set({"ruleKeys": _.uniq(exKeys.concat(keys))}, function () {
+            var newKeys = exKeys.concat(keys);
+
+            chromeAPI.storage.set({"ruleKeys": _.uniq(newKeys)}, function () {
+                chromeAPI.sync.set({"ruleKeys": _.uniq(newKeys)}, function () {
                     callback();
                 });
             });

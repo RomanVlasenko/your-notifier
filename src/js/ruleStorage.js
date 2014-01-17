@@ -1,5 +1,13 @@
 var ruleStorage = {
 
+    readRule: function (ruleId, callback) {
+        ss.readRule(ruleId, function (syncRule) {
+            sl.readRule(ruleId, function (localRule) {
+                callback($.extend(syncRule, localRule));
+            });
+        });
+    },
+
     saveRule: function (rule, callback) {
         sl.saveRule(rule, function () {
             ss.saveRule(rule, function () {
@@ -7,6 +15,18 @@ var ruleStorage = {
                     callback();
                 });
             });
+        });
+    },
+
+    updateRule: function (rule, callback) {
+        this.readRule(rule.id, function (exRule) {
+            if (!_.isUndefined(exRule)) {
+                sl.saveRule(rule, function () {
+                    ss.saveRule(rule, function () {
+                        callback();
+                    });
+                });
+            }
         });
     },
 
@@ -33,14 +53,6 @@ var ruleStorage = {
     deleteRule: function (ruleId, callback) {
         ss.deleteRule(ruleId, function () {
             callback();
-        });
-    },
-
-    readRule: function (ruleId, callback) {
-        ss.readRule(ruleId, function (syncRule) {
-            sl.readRule(ruleId, function (localRule) {
-                callback($.extend(syncRule, localRule));
-            });
         });
     },
 
