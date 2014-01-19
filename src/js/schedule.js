@@ -52,20 +52,13 @@ function performScheduledChecking() {
 
         });
 
-        var updatedRules = [];
-
         function onRuleUpdated(rule) {
-
             console.log("Rule '%s' updated in %s ms", rule.id, new Date().getTime() - rule.lastUpdated);
 
-            updatedRules.push(rule);
-
-            var newRules = _.filter(updatedRules, function (r) {
-                return r.new;
-            });
-
-            chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: newRules});
-            chromeAPI.runtime.sendMessage({msg: "refreshList"});
+            if (rule.new) {
+                chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [rule]});
+                chromeAPI.runtime.sendMessage({msg: "refreshList"});
+            }
         }
     });
 }
