@@ -50,6 +50,9 @@ var storageUtils = {
             localRule.history = rule.history;
             localRule.lastUpdated = rule.lastUpdated;
             localRule.attempts = rule.attempts;
+            localRule.new = rule.new;
+            localRule.notify = rule.notify;
+            localRule.notified = rule.notified;
 
             return localRule;
         }
@@ -64,9 +67,6 @@ var storageUtils = {
             syncRule.selector = rule.selector;
             syncRule.title = rule.title;
             syncRule.url = rule.url;
-            syncRule.new = rule.new;
-            syncRule.notify = rule.notify;
-            syncRule.notified = rule.notified;
 
             return syncRule;
         }
