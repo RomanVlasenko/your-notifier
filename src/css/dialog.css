@@ -1,13 +1,12 @@
 .yon-dialog {
     position: absolute;
     z-index: 999999999;
-    background-color: rgb(238, 238, 238);
+    background-color: rgb(238, 238, 238) !important;
     box-shadow: rgb(238, 238, 238) 1px 2px 3px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.428571429;
     color: #333;
-    -webkit-box-shadow: rgb(238, 238, 238) 1px 2px 3px 0px;
     background-color: rgb(238, 238, 238);
     border-image-outset: 0px;
     border-image-repeat: stretch;
@@ -30,7 +29,7 @@
 .yon-dialog .ui-dialog-titlebar {
     margin: 0 auto;
     cursor: move;
-    background: rgb(204, 204, 204) none;
+    background: rgb(204, 204, 204) none !important;
     border-image-outset: 0px;
     border-image-repeat: stretch;
     border-image-slice: 100%;
@@ -38,14 +37,14 @@
     border-image-width: 1;
     border-radius: 3px;
     border: 1px solid rgb(233, 233, 233);
-    color: rgb(51, 51, 51);
+    color: rgb(51, 51, 51) !important;
     direction: ltr;
-    display: block;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    display: block !important;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    font-size: 14px !important;
     font-weight: normal;
     height: 20px;
-    line-height: 20px;
+    line-height: 20px !important;
     padding: 0 !important;
     text-align: center;
     width: 393px;
@@ -162,18 +161,17 @@
 
 .yon-dialog-container {
     border: none !important;
-    color: rgb(51, 51, 51);
-    cursor: auto;
-    display: block;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    color: rgb(51, 51, 51) !important;
+    display: block !important;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    font-size: 14px !important;
     height: 90px;
     line-height: 20px;
+    padding: 5px !important;
+    text-align: center !important;
+    width: 390px !important;
     max-height: none;
     min-height: 0;
-    padding: 5px;
-    text-align: center;
-    width: 390px;
 }
 
 .yon-btn {
