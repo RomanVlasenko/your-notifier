@@ -1,9 +1,11 @@
 {
     "manifest_version": 2,
 
-    "name": "Your notifier",
+    "name": "__MSG_appName__",
+    "description": "__MSG_appDesc__",
+    "default_locale": "en",
+
     "short_name": "YoN",
-    "description": "Helps to gather and monitor data from different online sources",
     "version": "1.0.6.15",
     "browser_action": {
         "default_icon": "img/icon32x32.png",
