@@ -18,53 +18,38 @@
         <h1>Your notifier</h1>
         <p>Chrome extension that helps to gather and monitor data from different online sources</p>
 
-        <p class="view"><a href="https://github.com/RomanVlasenko/your_notifier">View the Project on GitHub <small>RomanVlasenko/your_notifier</small></a></p>
+        <p class="view"><a href="https://github.com/RomanVlasenko/your-notifier">View the Project on GitHub <small>RomanVlasenko/your-notifier</small></a></p>
 
 
         <ul>
-          <li><a href="https://github.com/RomanVlasenko/your_notifier/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/RomanVlasenko/your_notifier/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/RomanVlasenko/your_notifier">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/RomanVlasenko/your-notifier/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/RomanVlasenko/your-notifier/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/RomanVlasenko/your-notifier">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
-        <h1>
-<a name="your-notifier" class="anchor" href="#your-notifier"><span class="octicon octicon-link"></span></a>Your notifier</h1>
+        <p>This extension is for you if you often catch yourself surfing the Internet to simply check if something changed on some page. Save your time, now yellow duck will do the job.</p>
 
-<p><b>Your notifier</b> is a Chrome extension that helps to gather and monitor data from different online sources</p>
+<h1>
+<a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use:</h1>
 
-<h3>
-<a name="howto" class="anchor" href="#howto"><span class="octicon octicon-link"></span></a>HOWTO</h3>
+<ol>
+<li>Go to any web page</li>
+<li>Click right button on value you're interested in, select "Watch this item" from context menu</li>
+<li>Test it (optionally) and save it.</li>
+</ol><h1>
+<a name="how-it-works" class="anchor" href="#how-it-works"><span class="octicon octicon-link"></span></a>How it works:</h1>
 
-<ul>
-<li>Press "Create rule"</li>
-<li>Add some title for a page which you'd like to monitor</li>
-<li>Add URL of that page</li>
-<li>Add jQuery/CSS selector by which notifier will find particular piece of data you're interested in</li>
-</ul><h3>
-<a name="example1" class="anchor" href="#example1"><span class="octicon octicon-link"></span></a>Example1:</h3>
+<p>Every minute it loads all pages from listed items and finds specified values via CSS selectors.</p>
 
-<p>I'd like to be aware of current price for new Kindle Fire from Amazon.</p>
-
-<ul>
-<li>Title: <pre>Kindle Fire (Price)</pre>
-</li>
-<li>URL: <pre><a href="http://www.amazon.com/Kindle-Fire-HDX-Display-Wi-Fi/dp/B00BWYQ9YE/ref=sr_tr_1?s=digital-text&amp;ie=UTF8&amp;qid=1385503461&amp;sr=1-1&amp;keywords=kindle+fire">http://www.amazon.com/Kindle-Fire-HDX-Display-Wi-Fi/dp/B00BWYQ9YE/ref=sr_tr_1?s=digital-text&amp;ie=UTF8&amp;qid=1385503461&amp;sr=1-1&amp;keywords=kindle+fire</a></pre>
-</li>
-<li>CSS Selector: <pre>span#buyingPriceValue</pre>
-</li>
-</ul><h3>
-<a name="example2" class="anchor" href="#example2"><span class="octicon octicon-link"></span></a>Example2:</h3>
-
-<p>I'd like to be updated on Apple stocks price</p>
+<h1>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>Notes:</h1>
 
 <ul>
-<li>Title: <pre>Apple Inc. stocks price</pre>
-</li>
-<li>URL: <pre><a href="http://finance.yahoo.com/q?s=AAPL">http://finance.yahoo.com/q?s=AAPL</a></pre>
-</li>
-<li>CSS Selector: <pre>span.time_rtq_ticker</pre>
-</li>
+<li>It's not always possible to automatically generate CSS selector, sometimes you'll need to set it manually</li>
+<li>Extension checks items every minute, it does not show changed value immediately</li>
+<li>It doesn't work with asynchronously loaded values (via AJAX)</li>
+<li>Extension has some time limits on page loading, therefore sometimes it will be showing "Not Available" instead of real value, but it's rare cases</li>
 </ul>
       </section>
       <footer>
