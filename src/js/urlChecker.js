@@ -9,37 +9,37 @@ function checkAndUpdate(rule) {
     }
 
     $.ajax({url: rule.url,
-               success: function (srcHtml) {
-                   var foundData = $(srcHtml).find(rule.selector);
+        success: function (srcHtml) {
+            var foundData = $(srcHtml).find(rule.selector);
 
-                   if (foundData.length != 0) {
-                       var newVal = foundData.first().text().trim();
-                       if (newVal) {
+            if (foundData.length != 0) {
+                var newVal = foundData.first().text().trim();
+                if (newVal) {
 
-                           //Resetting attempts counter if it's needed
-                           ruleStorage.readRule(rule.id, function (rule) {
-                               if ((rule.attempts || 0) > 0) {
-                                   rule.attempts = 0;
-                                   rule.value = newVal;
-                                   ruleStorage.updateRule(rule, function () {
-                                       updateRuleValue(rule, callbackHandler);
-                                   });
-                               } else {
-                                   rule.value = newVal;
-                                   updateRuleValue(rule, callbackHandler);
-                               }
-                           });
+                    //Resetting attempts counter if it's needed
+                    ruleStorage.readRule(rule.id, function (rule) {
+                        if ((rule.attempts || 0) > 0) {
+                            rule.attempts = 0;
+                            rule.value = newVal;
+                            ruleStorage.updateRule(rule, function () {
+                                updateRuleValue(rule, callbackHandler);
+                            });
+                        } else {
+                            rule.value = newVal;
+                            updateRuleValue(rule, callbackHandler);
+                        }
+                    });
 
-                       }
-                   } else {
-                       onError();
-                   }
+                }
+            } else {
+                onError();
+            }
 
-               },
-               error: function () {
-                   console.log("%s is unreachable at the moment. Attempts made: %s", rule.id, rule.attempts);
-                   onHttpError();
-               }});
+        },
+        error: function () {
+            console.log("%s is not reachable at the moment. Attempts made: %s", rule.id, rule.attempts);
+            onHttpError();
+        }});
 
     function onError() {
         console.log("unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
@@ -75,10 +75,8 @@ function updateRuleValue(newRule, onRuleUpdated) {
             exRule.new = true;
             exRule.notified = false;
 
-            if (newRule.value != NOT_AVAILABLE) {
-                if (_.isEmpty(exRule.history) || newRule.value != exRule.history[0].value) {
-                    appendHistoryRecord(exRule, {"value": exRule.value, "date": new Date().getTime()});
-                }
+            if (_.isEmpty(exRule.history) || newRule.value != exRule.history[0].value) {
+                appendHistoryRecord(exRule, {"value": exRule.value, "date": new Date().getTime()});
             }
 
             ruleStorage.updateRule(exRule, function () {
