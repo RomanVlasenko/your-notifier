@@ -66,6 +66,8 @@ var sl = {
 
         var newRule = storageUtils.toLocalRule(rule);
 
+        newRule.value = c.shortenStr(newRule.value, validation.VALUE_MAX_LENGTH);
+
         var newRuleJson = {};
         newRuleJson[newRule.id] = newRule;
         chromeAPI.storage.set(newRuleJson, function () {

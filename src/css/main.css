@@ -169,7 +169,7 @@ button.delete {
 @media (-webkit-min-device-pixel-ratio: 0) {
     .history-cell {
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
     }
 }
@@ -194,4 +194,11 @@ button.pressed {
 
 .additional {
     white-space: nowrap;
+}
+
+.input-sm {
+    padding: 5px;
+}
+select.update-frequency {
+    width: 145px;
 }

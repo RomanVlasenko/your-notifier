@@ -67,6 +67,7 @@ var storageUtils = {
             syncRule.selector = rule.selector;
             syncRule.title = rule.title;
             syncRule.url = rule.url;
+            syncRule.updateFrequency = rule.updateFrequency;
 
             return syncRule;
         }

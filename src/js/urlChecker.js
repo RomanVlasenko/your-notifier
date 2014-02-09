@@ -32,21 +32,17 @@ function checkAndUpdate(rule) {
 
                 }
             } else {
+                console.log("unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
                 onError();
             }
 
         },
         error: function () {
             console.log("%s is not reachable at the moment. Attempts made: %s", rule.id, rule.attempts);
-            onHttpError();
+            onError();
         }});
 
     function onError() {
-        console.log("unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
-        onHttpError();
-    }
-
-    function onHttpError() {
         if (rule.value) {
             if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
                 rule.value = NOT_AVAILABLE;

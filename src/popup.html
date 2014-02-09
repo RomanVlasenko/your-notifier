@@ -13,15 +13,15 @@
     <script type="text/javascript" src="js/common.js"></script>
     <script type="text/javascript" src="js/urlChecker.js"></script>
 
-    <script type="text/javascript" src="js/storageSync.js"></script>
-    <script type="text/javascript" src="js/storageLocal.js"></script>
-    <script type="text/javascript" src="js/storageUtils.js"></script>
-    <script type="text/javascript" src="js/ruleStorage.js"></script>
+    <script type="text/javascript" src="js/storage/storageSync.js"></script>
+    <script type="text/javascript" src="js/storage/storageLocal.js"></script>
+    <script type="text/javascript" src="js/storage/storageUtils.js"></script>
+    <script type="text/javascript" src="js/storage/ruleStorage.js"></script>
 
-    <script type="text/javascript" src="js/popupState.js"></script>
-    <script type="text/javascript" src="js/popup.js"></script>
-    <script type="text/javascript" src="js/popupEditRule.js"></script>
-    <script type="text/javascript" src="js/popupDraggable.js"></script>
+    <script type="text/javascript" src="js/popup/persistence.js"></script>
+    <script type="text/javascript" src="js/popup/popup.js"></script>
+    <script type="text/javascript" src="js/popup/ruleEditor.js"></script>
+    <script type="text/javascript" src="js/popup/draggable.js"></script>
 </head>
 <body>
 <div id="container">
@@ -119,6 +119,14 @@
                         <input type="checkbox"> Popup notifications
                     </label>
                 </div>
+                <div><select class="form-control input-sm update-frequency">
+                    <option value=1>Update every 1 min</option>
+                    <option value=5>5 min</option>
+                    <option value=30>30 min</option>
+                    <option value=60>1 hour</option>
+                    <option value=1440>1 day</option>
+                    <option value=10080>1 week</option>
+                </select></div>
             </div>
         </div>
     </div>

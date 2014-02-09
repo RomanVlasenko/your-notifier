@@ -15,7 +15,7 @@ function performScheduledChecking() {
             return;
         }
 
-        //Grouping rules by base URL to make pauses between requests to the same sites and prevent them from flooding
+        //Grouping rules by base URI to make pauses between requests to prevent sites from flooding
         var ruleSets = _.groupBy(rules, function (rule) {
             return c.baseUrl(rule.url);
         });
@@ -31,8 +31,9 @@ function performScheduledChecking() {
 
                         console.log("Rule '%s' was updated %s ms ago", rule.id, new Date().getTime() - rule.lastUpdated)
 
-                        //Update only if it was updated more than %updates.UPDATE_INTERVAL% ago
-                        if (rule.lastUpdated < new Date().getTime() - updates.UPDATE_INTERVAL) {
+                        //Update only if its last update time exceeded update frequency or update interval time
+                        var updateInterval = rule.updateFrequency ? rule.updateFrequency * 60000 : updates.UPDATE_INTERVAL;
+                        if (rule.lastUpdated < new Date().getTime() - updateInterval) {
 
                             ruleStorage.readRule(rule.id, function (r) {
                                 r.lastUpdated = new Date().getTime();

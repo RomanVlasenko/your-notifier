@@ -56,7 +56,6 @@ var ss = {
         var newRule = storageUtils.toSyncRule(rule);
 
         newRule.title = c.shortenStr(newRule.title, validation.TITLE_MAX_LENGTH);
-        newRule.value = c.shortenStr(newRule.value, validation.VALUE_MAX_LENGTH);
 
         this.readRule(newRule.id, function (exRule) {
             if (_.isEqual(newRule, exRule)) {

@@ -4,7 +4,7 @@ chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
 
 chromeAPI.runtime.onMessage.addListener(
     function (request) {
-        if (request.msg == "rulesUpdated") {
+        if (request.msg === "rulesUpdated") {
             var updatedRules = request.rules;
 
             updateBadge();

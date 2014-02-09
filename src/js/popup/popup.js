@@ -14,7 +14,7 @@ $(document).ready(function () {
     refreshRuleControls(function () {
         sl.readState(function (state) {
             if (state.page == NORMAL_MODE) {
-                $container.slideDown(300);
+                $container.show();
             } else {
                 restoreEdit();
                 $container.show();
@@ -100,6 +100,10 @@ function createRuleControlDOM(rule) {
     $additionalButtons.attr("id", rule.id);
     $additionalButtons.find(".popup-notification input").attr("checked", rule.notify);
 
+    $additionalButtons.find("select.update-frequency option").filter(function() {
+        return ($(this).attr("value") == rule.updateFrequency);
+    }).prop('selected', true);
+
     showNewBadge(ruleControl, rule);
 
     ruleControl.attr("id", rule.id);
@@ -143,7 +147,16 @@ function createRuleControlDOM(rule) {
         var checked = $(this).is(':checked');
         ruleStorage.readRule(rule.id, function (r) {
             r.notify = checked;
-            ruleStorage.saveRule(r);
+            ruleStorage.updateRule(r);
+        });
+    });
+
+    $additionalButtons.on("change", "select.update-frequency", function () {
+        var selectedInterval = $(this).find(":selected").attr("value");
+
+        ruleStorage.readRule(rule.id, function (r) {
+            r.updateFrequency = parseInt(selectedInterval);
+            ruleStorage.updateRule(r);
         });
     });
 
@@ -257,9 +270,9 @@ function updateHistory($historyTable, rule) {
     if (rule.history && rule.history.length > 0) {
         _.each(rule.history, function (h) {
             $historyTable.append("<tr><td><div class='history-cell' title='" + h.value + "'>" + h.value
-                                     + "</div></td><td>"
-                                     + "<div class='date-cell pull-right'>" + c.formatDate(new Date(h.date))
-                                     + "</div></td></tr>");
+                + "</div></td><td>"
+                + "<div class='date-cell pull-right'>" + c.formatDate(new Date(h.date))
+                + "</div></td></tr>");
         });
     } else {
         $historyTable.append("<p class='text-center'>" + NO_HISTORY + "</p>");
