@@ -31,9 +31,7 @@ function performScheduledChecking() {
 
                         console.log("Rule '%s' was updated %s ms ago", rule.id, new Date().getTime() - rule.lastUpdated)
 
-                        //Update only if its last update time exceeded update frequency or update interval time
-                        var updateInterval = rule.updateFrequency ? rule.updateFrequency * 60000 : updates.UPDATE_INTERVAL;
-                        if (rule.lastUpdated < new Date().getTime() - updateInterval) {
+                        if (rule.lastUpdated < new Date().getTime() - getUpdateInterval(rule)) {
 
                             ruleStorage.readRule(rule.id, function (r) {
                                 r.lastUpdated = new Date().getTime();
@@ -60,6 +58,13 @@ function performScheduledChecking() {
                 chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [rule]});
                 chromeAPI.runtime.sendMessage({msg: "refreshList"});
             }
+        }
+
+        function getUpdateInterval(rule) {
+            if (rule.value == NOT_AVAILABLE || !rule.updateFrequency) {
+                return updates.UPDATE_INTERVAL;
+            }
+            return rule.updateFrequency * 60000;
         }
     });
 }
