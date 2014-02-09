@@ -199,6 +199,11 @@ button.pressed {
 .input-sm {
     padding: 5px;
 }
+
+.update-frequency-container {
+    padding-top: 10px;
+}
+
 select.update-frequency {
-    width: 145px;
+    width: 150px;
 }

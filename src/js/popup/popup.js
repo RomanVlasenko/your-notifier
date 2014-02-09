@@ -100,9 +100,11 @@ function createRuleControlDOM(rule) {
     $additionalButtons.attr("id", rule.id);
     $additionalButtons.find(".popup-notification input").attr("checked", rule.notify);
 
-    $additionalButtons.find("select.update-frequency option").filter(function() {
+    var $selectedInterval = $additionalButtons.find("select.update-frequency option").filter(function() {
         return ($(this).attr("value") == rule.updateFrequency);
     }).prop('selected', true);
+
+    $selectedInterval.text("Update every " + $selectedInterval.text());
 
     showNewBadge(ruleControl, rule);
 
