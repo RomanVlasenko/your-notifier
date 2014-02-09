@@ -102,7 +102,13 @@ function createRuleControlDOM(rule) {
 
     var $selectedInterval = $additionalButtons.find("select.update-frequency option").filter(function() {
         return ($(this).attr("value") == rule.updateFrequency);
-    }).prop('selected', true);
+    });
+
+    if ($selectedInterval.length == 0) {
+        $selectedInterval = $additionalButtons.find("select.update-frequency option").first();
+    }
+
+    $selectedInterval.prop('selected', true);
 
     $selectedInterval.text("Update every " + $selectedInterval.text());
 
