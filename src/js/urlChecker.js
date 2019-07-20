@@ -63,7 +63,7 @@ function checkAndUpdate(rule) {
 }
 
 function updateRuleValue(newRule, onRuleUpdated) {
-    var callback = onRuleUpdated ? onRuleUpdated : c.emptyCallback();
+    var callback = onRuleUpdated ? onRuleUpdated : c.emptyCallback;
 
     ruleStorage.readRule(newRule.id, function (exRule) {
         if (!isValuesEqual(exRule.value, newRule.value)) {

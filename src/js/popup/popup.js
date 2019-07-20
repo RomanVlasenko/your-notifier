@@ -37,7 +37,7 @@ $(document).ready(function () {
 });
 
 function refreshRuleControls() {
-    var callback = arguments.length > 0 ? arguments[0] : c.emptyCallback();
+    var callback = arguments.length > 0 ? arguments[0] : c.emptyCallback;
 
     ruleStorage.readRules(function (rules) {
         if (rules.length > 0) {
@@ -155,7 +155,7 @@ function createRuleControlDOM(rule) {
         var checked = $(this).is(':checked');
         ruleStorage.readRule(rule.id, function (r) {
             r.notify = checked;
-            ruleStorage.updateRule(r);
+            ruleStorage.updateRule(r, c.emptyCallback);
         });
     });
 
@@ -164,7 +164,7 @@ function createRuleControlDOM(rule) {
 
         ruleStorage.readRule(rule.id, function (r) {
             r.updateFrequency = parseInt(selectedInterval);
-            ruleStorage.updateRule(r);
+            ruleStorage.updateRule(r, c.emptyCallback);
         });
     });
 

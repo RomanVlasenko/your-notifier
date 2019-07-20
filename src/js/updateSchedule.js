@@ -55,6 +55,8 @@ function performScheduledChecking() {
             console.log("Rule '%s' updated in %s ms", rule.id, new Date().getTime() - rule.lastUpdated);
 
             if (rule.new) {
+                notifications.onRuleUpdated(rule);
+
                 chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [rule]});
                 chromeAPI.runtime.sendMessage({msg: "refreshList"});
             }

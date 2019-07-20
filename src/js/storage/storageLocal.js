@@ -15,7 +15,7 @@ var sl = {
     },
 
     saveState: function (state) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
 
         chromeAPI.storage.set({"state": state}, function () {
             callback();
@@ -49,7 +49,7 @@ var sl = {
     },
 
     saveRules: function (rules) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
 
         var newRules = [];
         _.each(rules, function (rule) {
@@ -62,7 +62,7 @@ var sl = {
     },
 
     saveRule: function (rule) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
 
         var newRule = storageUtils.toLocalRule(rule);
 
@@ -76,7 +76,7 @@ var sl = {
     },
 
     deleteRule: function (ruleId) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
 
         chromeAPI.storage.remove(ruleId, function () {
             callback();

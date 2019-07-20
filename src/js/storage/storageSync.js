@@ -23,7 +23,7 @@ var ss = {
     },
 
     saveRules: function (rules) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
 
         this.readRules(function (exRules) {
             var newRules = [];
@@ -51,7 +51,7 @@ var ss = {
     },
 
     saveRule: function (rule) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
 
         var newRule = storageUtils.toSyncRule(rule);
 
@@ -71,7 +71,7 @@ var ss = {
     },
 
     deleteRule: function (ruleId) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback();
+        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
 
         chromeAPI.sync.remove(ruleId, function () {
             callback();

@@ -2,30 +2,29 @@ var NOTIFICATION_AUTOCLOSE_TIME = 10000;
 
 chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
 
-chromeAPI.runtime.onMessage.addListener(
-    function (request) {
-        if (request.msg === "rulesUpdated") {
-            var updatedRules = request.rules;
+var notifications = {
+    onRuleUpdated: function onRuleUpdated(rule) {
+        updateBadge();
 
-            updateBadge();
-
-            showPopupNotifications(_.filter(updatedRules, function (rule) {
-                return rule.notify && !rule.notified;
-            }));
-        } else if (request.msg == "resetUpdates") {
-            ruleStorage.readRules(function (rules) {
-                _.each(rules, function (r) {
-                    r.new = false;
-                    chromeAPI.notifications.clear(r.id, function () {
-                    });
-                });
-
-                ruleStorage.saveRules(rules, function () {
-                    showBadge("", "Your notifier");
-                });
-            });
+        if (rule.notify && !rule.notified) {
+            showPopupNotifications([rule]);
         }
+    }
+}
+
+function resetUpdates() {
+    ruleStorage.readRules(function (rules) {
+        _.each(rules, function (r) {
+            r.new = false;
+            chromeAPI.notifications.clear(r.id, function () {
+            });
+        });
+
+        ruleStorage.saveRules(rules, function () {
+            showBadge("", "Your notifier");
+        });
     });
+}
 
 function updateBadge() {
     ruleStorage.readRules(function (rules) {
@@ -61,7 +60,7 @@ function showPopupNotifications(rules) {
 
         chromeAPI.notifications.create(rule.id, opt, function () {
             rule.notified = true;
-            ruleStorage.updateRule(rule);
+            ruleStorage.updateRule(rule, c.emptyCallback);
 
             setTimeout(function () {
                 closeNotification(rule.id);
