@@ -2,6 +2,21 @@ var NOTIFICATION_AUTOCLOSE_TIME = 10000;
 
 chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
 
+chromeAPI.runtime.onMessage.addListener(function (request) {
+    if (request.msg == "resetUpdates") {
+        ruleStorage.readRules(function (rules) {
+            _.each(rules, function (r) {
+                r.new = false;
+                chromeAPI.notifications.clear(r.id, function () {});
+          });
+
+          ruleStorage.saveRules(rules, function () {
+            showBadge("", "Your notifier");
+          });
+        });
+    }
+});
+
 var notifications = {
     onRuleUpdated: function onRuleUpdated(rule) {
         updateBadge();
@@ -10,20 +25,6 @@ var notifications = {
             showPopupNotifications([rule]);
         }
     }
-}
-
-function resetUpdates() {
-    ruleStorage.readRules(function (rules) {
-        _.each(rules, function (r) {
-            r.new = false;
-            chromeAPI.notifications.clear(r.id, function () {
-            });
-        });
-
-        ruleStorage.saveRules(rules, function () {
-            showBadge("", "Your notifier");
-        });
-    });
 }
 
 function updateBadge() {
