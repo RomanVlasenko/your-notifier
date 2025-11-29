@@ -8,14 +8,26 @@ function checkAndUpdate(rule) {
         }
     }
 
-    $.ajax({url: rule.url,
-        success: function (srcHtml) {
-            var foundData = $(srcHtml).find(rule.selector);
+    fetch(rule.url)
+        .then(function (response) {
+            return response.text();
+        })
+        .then(function (srcHtml) {
+            // Parse HTML using offscreen document
+            chrome.runtime.sendMessage({
+                type: 'PARSE_HTML',
+                html: srcHtml,
+                selector: rule.selector
+            }, function (response) {
+                if (chrome.runtime.lastError) {
+                    console.error('Error sending to offscreen document:', chrome.runtime.lastError.message);
+                    onError();
+                    return;
+                }
 
-            if (foundData.length != 0) {
-                var newVal = foundData.first().text().trim();
+                var newVal = response && response.result ? response.result : '';
+
                 if (newVal) {
-
                     //Resetting attempts counter if it's needed
                     ruleStorage.readRule(rule.id, function (rule) {
                         if ((rule.attempts || 0) > 0) {
@@ -29,18 +41,16 @@ function checkAndUpdate(rule) {
                             updateRuleValue(rule, callbackHandler);
                         }
                     });
-
+                } else {
+                    console.log("unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
+                    onError();
                 }
-            } else {
-                console.log("unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
-                onError();
-            }
-
-        },
-        error: function () {
+            });
+        })
+        .catch(function () {
             console.log("%s is not reachable at the moment. Attempts made: %s", rule.id, rule.attempts);
             onError();
-        }});
+        });
 
     function onError() {
         if (rule.value) {
@@ -76,7 +86,11 @@ function updateRuleValue(newRule, onRuleUpdated) {
             }
 
             ruleStorage.updateRule(exRule, function () {
-                chromeAPI.runtime.sendMessage({msg: "refreshList"});
+                chromeAPI.runtime.sendMessage({msg: "refreshList"}, function() {
+                    if (chrome.runtime.lastError) {
+                        // Ignore - popup may not be open
+                    }
+                });
                 callback(exRule);
             });
         } else {

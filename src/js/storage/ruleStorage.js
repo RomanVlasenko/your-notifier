@@ -3,7 +3,7 @@ var ruleStorage = {
     readRule: function (ruleId, callback) {
         ss.readRule(ruleId, function (syncRule) {
             sl.readRule(ruleId, function (localRule) {
-                callback($.extend(syncRule, localRule));
+                callback(Object.assign({}, syncRule, localRule));
             });
         });
     },
@@ -68,7 +68,7 @@ var ruleStorage = {
 
                     _.each(pairs, function (pair) {
                         var mergedRule = _.reduce(pair, function (ruleMemo, rule) {
-                            return $.extend(ruleMemo, rule);
+                            return Object.assign(ruleMemo, rule);
                         }, {});
 
                         rules.push(mergedRule);
@@ -94,7 +94,11 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
                 storageUtils.deleteRuleKey(key, function () {
                     sl.deleteRule(key, function () {
-                        chromeAPI.runtime.sendMessage({msg: "refreshList"});
+                        chromeAPI.runtime.sendMessage({msg: "refreshList"}, function() {
+                            if (chrome.runtime.lastError) {
+                                // Ignore - popup may not be open
+                            }
+                        });
                     });
                 });
             }

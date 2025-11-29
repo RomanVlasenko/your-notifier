@@ -6,7 +6,7 @@ $(document).mousedown(function (e) {
     }
 });
 
-$.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
+$.get(chrome.runtime.getURL("dialog.html"), function (data) {
     var $editor = $(data);
 
     $editor.on("click", "#cancel", function () {
@@ -23,7 +23,7 @@ $.get(chromeAPI.extension.getURL("dialog.html"), function (data) {
 
         if (validateFields()) {
 
-            $testPanel.css("background-image", "url('" + chromeAPI.extension.getURL("../img/load.gif") + "')");
+            $testPanel.css("background-image", "url('" + chrome.runtime.getURL("img/load.gif") + "')");
 
             c.checkUrl(getRule($editor), function (val) {
                 $editor.find(".test-label").html(val);

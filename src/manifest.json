@@ -1,33 +1,19 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
 
     "name": "__MSG_appName__",
     "description": "__MSG_appDesc__",
     "default_locale": "en",
 
     "short_name": "YoN",
-    "version": "1.0.10",
-    "browser_action": {
+    "version": "2.0.0",
+    "action": {
         "default_icon": "img/icon32x32.png",
         "default_popup": "popup.html",
         "default_title": "Your notifier"
     },
     "background": {
-        "scripts": [
-            "lib/jquery-2.0.3.min.js",
-            "lib/jquery-2.0.3.min.map",
-            "lib/underscore-min.js",
-            "js/common.js",
-            "js/urlChecker.js",
-            "js/updateSchedule.js",
-            "js/dialog/eventPage.js",
-            "js/notification.js",
-            "js/storage/storageLocal.js",
-            "js/storage/storageSync.js",
-            "js/storage/ruleStorage.js",
-            "js/storage/storageUtils.js"
-        ],
-        "persistent": false
+        "service_worker": "js/background.js"
     },
     "icons": {
         "16": "img/icon16x16.png",
@@ -47,7 +33,13 @@
             ]
         }
     ],
-    "web_accessible_resources": ["dialog.html", "img/load.gif"],
-    "permissions": [ "<all_urls>" , "storage", "alarms", "tabs", "notifications", "contextMenus"],
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+    "web_accessible_resources": [{
+        "resources": ["dialog.html", "img/load.gif"],
+        "matches": ["<all_urls>"]
+    }],
+    "permissions": ["storage", "alarms", "notifications", "contextMenus", "offscreen"],
+    "host_permissions": ["<all_urls>"],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    }
 }

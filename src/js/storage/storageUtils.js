@@ -94,7 +94,7 @@ var storageUtils = {
         _.each(rulesArray, function (rule) {
             var ruleJson = {};
             ruleJson[rule.id] = rule;
-            $.extend(rulesJSON, ruleJson);
+            Object.assign(rulesJSON, ruleJson);
         });
 
         return rulesJSON;

@@ -17,7 +17,7 @@ var monthNames = [ "January", "February", "March", "April", "May", "June",
 var validation = {
     TITLE_MAX_LENGTH: 100,
     VALUE_MAX_LENGTH: 35,
-    URL_MAX_LENGTH: 300,
+    URL_MAX_LENGTH: 1000,
     SELECTOR_MAX_LENGTH: 500
 };
 
@@ -27,10 +27,9 @@ var chromeAPI = {
     alarms: chrome.alarms,
     runtime: chrome.runtime,
     tabs: chrome.tabs,
-    browser: chrome.browserAction,
+    browser: chrome.action,
     notifications: chrome.notifications,
     menu: chrome.contextMenus,
-    extension: chrome.extension,
     management: chrome.management
 };
 
@@ -45,30 +44,47 @@ var c = {
             };
         }
 
-        $.ajax({url: "http://google.com",
-                   success: function () {
-                       callbackHandler.success();
-                   },
-                   error: function () {
-                       callbackHandler.error();
-                   }});
+        fetch('https://www.google.com', { method: 'HEAD', mode: 'no-cors' })
+            .then(function () {
+                callbackHandler.success();
+            })
+            .catch(function () {
+                callbackHandler.error();
+            });
     },
 
     checkUrl: function (rule, callbackHandler) {
-        $.ajax({url: rule.url,
-                   success: function (srcHtml) {
-                       var foundData = $(srcHtml).find(rule.selector);
-                       if (foundData.length != 0) {
-                           var newVal = foundData.first().text().trim();
-                           callbackHandler(newVal);
-                       } else {
-                           callbackHandler("");
-                       }
-
-                   },
-                   error: function () {
-                       callbackHandler("");
-                   }});
+        fetch(rule.url)
+            .then(function (response) { return response.text(); })
+            .then(function (srcHtml) {
+                // Send to offscreen document for parsing (if in service worker context)
+                if (typeof document === 'undefined') {
+                    chrome.runtime.sendMessage({
+                        type: 'PARSE_HTML',
+                        html: srcHtml,
+                        selector: rule.selector
+                    }, function (response) {
+                        if (chrome.runtime.lastError) {
+                            console.error('Error sending to offscreen document:', chrome.runtime.lastError.message);
+                            callbackHandler("");
+                            return;
+                        }
+                        callbackHandler(response && response.result ? response.result : "");
+                    });
+                } else {
+                    // Popup/content script context - can use jQuery directly
+                    var foundData = $(srcHtml).find(rule.selector);
+                    if (foundData.length != 0) {
+                        var newVal = foundData.first().text().trim();
+                        callbackHandler(newVal);
+                    } else {
+                        callbackHandler("");
+                    }
+                }
+            })
+            .catch(function () {
+                callbackHandler("");
+            });
     },
 
     getFavicon: function (url) {
