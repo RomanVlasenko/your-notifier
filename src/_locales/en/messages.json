@@ -1,10 +1,10 @@
 {
     "appName": {
-        "message": "Your notifier",
+        "message": "Your Notifier — Track Page Updates.",
         "description": "The title of the application, displayed in the web store."
     },
     "appDesc": {
-        "message": "Helps to monitor changes on different web-pages, notifies about changes",
+        "message": "Effortlessly track changes on any web page and get automatic notifications. No more manual refreshing - let it watch for you!",
         "description": "The description of the application, displayed in the web store."
     }
 }
