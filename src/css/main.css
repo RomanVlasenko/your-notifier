@@ -34,11 +34,11 @@ a, a:hover {
     margin-left: 1px !important;
 }
 
-.rule-buttons > button.btn, button.clone, button#create:hover {
+.rule-buttons > button.btn, button.clone, button.action-btn:hover {
     background-color: #ccc;
 }
 
-.rule-buttons > button.btn, button.clone, button#create {
+.rule-buttons > button.btn, button.clone, button.action-btn {
     background-color: rgb(221, 221, 221);
 }
 
@@ -68,10 +68,7 @@ div.value {
     text-overflow: ellipsis;
 }
 
-button#create {
-    margin-top: 2px;
-    margin-bottom: 2px;
-}
+/* Removed - now using .action-btn class */
 
 button#save {
     margin-top: 2px;
@@ -206,4 +203,53 @@ button.pressed {
 
 select.update-frequency {
     width: 150px;
+}
+
+/* Remove padding from button row */
+.button-row {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.button-row .col-xs-6 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Action button styling */
+button.action-btn {
+    font-size: 15px;
+    padding: 8px 12px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Pressed button state - match mouse-down appearance */
+button.active-action {
+    background-color: #d4d4d4 !important;
+    background-image: none !important;
+    border-color: #8c8c8c !important;
+    outline: 0;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+/* Unified action content container */
+#action-content {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 150ms ease-out, opacity 150ms ease-out;
+    opacity: 0;
+}
+
+#action-content.open {
+    max-height: 500px; /* Adjust based on max expected content height */
+    opacity: 1;
 }

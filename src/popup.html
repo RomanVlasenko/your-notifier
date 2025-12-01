@@ -25,9 +25,25 @@
 </head>
 <body>
 <div id="container">
-    <button id="create" class="btn btn-large btn-block btn-sm btn-default" type="button">Create item</button>
+    <div class="row button-row">
+        <div class="col-xs-6">
+            <button id="create" class="btn btn-block btn-default action-btn" type="button">
+                <span class="glyphicon glyphicon-plus"></span> Create item
+            </button>
+        </div>
+        <div class="col-xs-6">
+            <button id="test-notification-btn" class="btn btn-block btn-default action-btn" type="button">
+                <span class="glyphicon glyphicon-bell"></span> Test Notifications
+            </button>
+        </div>
+    </div>
 
-    <div id="edit-rule-div">
+    <!-- Unified content container -->
+    <div id="action-content">
+        <!-- Content will be dynamically populated based on which button was clicked -->
+    </div>
+
+    <div id="edit-rule-div" style="display: none;">
 
         <input type="hidden" id="ruleId"/>
 

@@ -2,6 +2,7 @@ var ruleControlDiv;
 var buttonsDiv;
 var additionalButtonsDiv;
 var $existingRulesContainer;
+var currentAction = null;
 
 $(document).ready(function () {
 
@@ -33,6 +34,256 @@ $(document).ready(function () {
                 refreshRuleControls();
             }
         });
+
+    // Helper function to detect browser name
+    function getBrowserName() {
+        const userAgent = navigator.userAgent;
+        if (userAgent.includes("Brave")) return "Brave Browser";
+        if (userAgent.includes("Edg")) return "Microsoft Edge";
+        if (userAgent.includes("Chrome")) return "Google Chrome";
+        return "your browser";
+    }
+
+    // Helper function to detect OS
+    function getOS() {
+        const userAgent = navigator.userAgent;
+        if (userAgent.includes("Mac")) return "mac";
+        if (userAgent.includes("Linux")) return "linux";
+        if (userAgent.includes("Windows")) return "windows";
+        return "unknown";
+    }
+
+    // Populate help steps based on OS
+    function populateHelpSteps() {
+        const os = getOS();
+        const browser = getBrowserName();
+        const $helpSteps = $("#help-steps");
+
+        if (os === "mac") {
+            $helpSteps.html(
+                '<li>Open <strong>System Settings</strong> &gt; <strong>Notifications</strong></li>' +
+                '<li>Find <strong>' + browser + '</strong> in the list</li>' +
+                '<li>Enable <strong>"Allow notifications"</strong></li>' +
+                '<li>Set style to <strong>"Banners"</strong> or <strong>"Alerts"</strong></li>' +
+                '<li>Make sure <strong>Focus/Do Not Disturb</strong> is off</li>'
+            );
+        } else if (os === "linux") {
+            $helpSteps.html(
+                '<li>Open <strong>System Settings</strong> &gt; <strong>Notifications</strong></li>' +
+                '<li>Find <strong>' + browser + '</strong> in the list</li>' +
+                '<li>Enable notifications for ' + browser + '</li>' +
+                '<li>Make sure <strong>Do Not Disturb</strong> is off</li>'
+            );
+        } else if (os === "windows") {
+            $helpSteps.html(
+                '<li>Open <strong>Settings</strong> &gt; <strong>System</strong> &gt; <strong>Notifications</strong></li>' +
+                '<li>Find <strong>' + browser + '</strong> in the list</li>' +
+                '<li>Enable notifications for ' + browser + '</li>' +
+                '<li>Make sure <strong>Focus Assist</strong> is off</li>'
+            );
+        } else {
+            $helpSteps.html(
+                '<li>Check your system notification settings</li>' +
+                '<li>Find <strong>' + browser + '</strong> in the list</li>' +
+                '<li>Enable notifications for the browser</li>'
+            );
+        }
+    }
+
+    // Initialize help steps on page load
+    populateHelpSteps();
+
+    // Unified function to toggle action content
+    function toggleActionContent(actionType, contentGenerator) {
+        var $actionContent = $("#action-content");
+        var $createBtn = $("#create");
+        var $testBtn = $("#test-notification-btn");
+
+        // If clicking the same button, close it
+        if (currentAction === actionType) {
+            $actionContent.removeClass("open");
+            setTimeout(function() {
+                $actionContent.empty();
+            }, 150); // Match transition duration
+            $createBtn.removeClass("active-action");
+            $testBtn.removeClass("active-action");
+            currentAction = null;
+            return;
+        }
+
+        // Update button states
+        $createBtn.toggleClass("active-action", actionType === "create");
+        $testBtn.toggleClass("active-action", actionType === "test-notification");
+
+        // Generate and show content
+        var content = contentGenerator();
+
+        if (currentAction === null) {
+            // First time opening - add content then trigger transition
+            $actionContent.html(content);
+            // Force reflow to ensure transition happens
+            $actionContent[0].offsetHeight;
+            $actionContent.addClass("open");
+        } else {
+            // Switching between actions - just replace content (already open)
+            $actionContent.html(content);
+        }
+
+        currentAction = actionType;
+    }
+
+    // Generate create item form content
+    function generateCreateItemForm() {
+        return '<input type="hidden" id="ruleId"/>' +
+            '<div class="input-group input-group-sm">' +
+            '    <span class="input-group-addon">Title</span>' +
+            '    <input type="text" id="title" class="form-control" placeholder="Title">' +
+            '</div>' +
+            '<div class="input-group input-group-sm">' +
+            '    <span class="input-group-addon">URL</span>' +
+            '    <input type="text" id="url" class="form-control" placeholder="URL">' +
+            '</div>' +
+            '<div class="input-group input-group-sm">' +
+            '    <span class="input-group-addon">Selector:</span>' +
+            '    <input type="text" id="selector" class="form-control" placeholder="CSS/jQuery selector...">' +
+            '</div>' +
+            '<div class="row">' +
+            '    <div class="col-xs-6">' +
+            '        <div class="test" style="display: none;">' +
+            '            <h5><span class="test-value"></span> <span class="label test-label label-primary"></span></h5>' +
+            '        </div>' +
+            '    </div>' +
+            '    <div class="col-xs-6">' +
+            '        <div class="editor-buttons pull-right">' +
+            '            <button class="btn btn-small btn-default btn-sm" type="button" id="test">Test</button>' +
+            '            <button class="btn btn-small btn-primary btn-sm" type="button" id="save">Save</button>' +
+            '        </div>' +
+            '    </div>' +
+            '</div>';
+    }
+
+    // Generate test notification content
+    function generateTestNotificationContent() {
+        return '<div id="notification-status" style="display: none;" class="alert"></div>' +
+            '<div id="notification-help" style="display: none;" class="alert alert-info">' +
+            '    <strong>Don\'t see notifications?</strong> Follow these steps:' +
+            '    <ol id="help-steps" style="margin: 10px 0; padding-left: 20px;">' +
+            '        <!-- Steps will be populated by JavaScript based on OS -->' +
+            '    </ol>' +
+            '    <a href="#" id="hide-help">Hide</a>' +
+            '</div>';
+    }
+
+    // Test notification function
+    function testNotification() {
+        var $status = $("#notification-status");
+        var $help = $("#notification-help");
+
+        chromeAPI.runtime.sendMessage({ method: "testNotification" }, function(response) {
+            if (response.success) {
+                $status.removeClass("alert-danger").addClass("alert-success")
+                       .html(response.message +
+                             ' <a href="#" id="show-help">Show setup guide</a>')
+                       .show();
+
+                // Add click handler for show help link
+                $("#show-help").on("click", function(e) {
+                    e.preventDefault();
+                    $help.slideDown();
+                });
+            } else {
+                $status.removeClass("alert-success").addClass("alert-danger")
+                       .html('<strong>Error:</strong> ' + response.error)
+                       .show();
+            }
+        });
+
+        // Populate help steps
+        populateHelpSteps();
+    }
+
+    // Update "Create item" button handler
+    $("#create").on("click", function() {
+        // Save existing field values before regenerating form
+        var existingRuleId = $("#ruleId").val();
+        var existingTitle = $("#title").val();
+        var existingUrl = $("#url").val();
+        var existingSelector = $("#selector").val();
+        var hasExistingData = existingRuleId || existingTitle || existingUrl || existingSelector;
+
+        toggleActionContent("create", function() {
+            return generateCreateItemForm();
+        });
+
+        // Restore or populate form fields after content is generated
+        if (currentAction === "create") {
+            if (hasExistingData) {
+                // Restore saved values (from clone/edit)
+                $("#ruleId").val(existingRuleId);
+                $("#title").val(existingTitle);
+                $("#url").val(existingUrl);
+                $("#selector").val(existingSelector);
+            } else {
+                // Populate with current tab info for new items
+                chromeAPI.tabs.query({active: true}, function (activeTabs) {
+                    if (activeTabs && activeTabs.length > 0) {
+                        var currentTab = activeTabs[0];
+                        $("#title").val(currentTab.title);
+                        $("#url").val(currentTab.url);
+                    }
+                });
+            }
+        }
+    });
+
+    // Update "Test Notifications" button handler
+    $("#test-notification-btn").on("click", function() {
+        if (currentAction !== "test-notification") {
+            // Opening test notifications
+            toggleActionContent("test-notification", function() {
+                return generateTestNotificationContent();
+            });
+
+            // Trigger the test
+            testNotification();
+        } else {
+            // Closing
+            toggleActionContent("test-notification", function() {
+                return "";
+            });
+        }
+    });
+
+    // Event delegation for dynamically generated content
+    $(document).on("click", "#test", function() {
+        onTestClick();
+    });
+
+    $(document).on("click", "#save", function() {
+        onSaveClick();
+    });
+
+    $(document).on("click", "#hide-help", function(e) {
+        e.preventDefault();
+        $("#notification-help").slideUp();
+    });
+
+    // Phase 5: Check for recent notification errors on popup load
+    chromeAPI.storage.get(['notificationError'], function(result) {
+        if (result.notificationError) {
+            $("#notification-status")
+                .removeClass("alert-success").addClass("alert-warning")
+                .html('<strong>Notice:</strong> ' + result.notificationError +
+                      ' <a href="#" id="clear-error">Dismiss</a>')
+                .show();
+
+            $("#clear-error").on("click", function(e) {
+                e.preventDefault();
+                chromeAPI.storage.remove('notificationError');
+                $("#notification-status").fadeOut();
+            });
+        }
+    });
 
 });
 

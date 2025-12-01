@@ -7,47 +7,21 @@ $(document).ready(function () {
     $testValue = $(".test .test-value");
     $testLabel = $(".test .test-label");
 
-    $('#create').click(function () {
-        onCreateClick();
-    });
-
-    $('#cancel').click(function () {
-        closeRuleEditor();
-    });
-
-    $('#save').click(function () {
-        onSaveClick();
-    });
-
-    $('#test').click(function () {
-        onTestClick();
-    });
+    // Note: Create button click handler is now in popup.js
+    // Note: Cancel button removed - clicking active button again closes
+    // Note: Save and Test button handlers are now delegated in popup.js
 });
-
-function onCreateClick() {
-    chromeAPI.tabs.query({active: true}, function (activeTabs) {
-        if (activeTabs && activeTabs.length > 0) {
-            var currentTab = activeTabs[0];
-            $("#title").val(currentTab.title);
-            $("#url").val(currentTab.url);
-
-            persistStateEdit();
-        }
-    });
-
-    openRuleEditor();
-}
 
 function openRuleEditor() {
     closeAdditionalButtons();
-    $('#edit-rule-div').slideDown("fast");
-    $('#create').hide();
+    // Trigger the create button to open the editor
+    $("#create").click();
 }
 
 function closeRuleEditor() {
     $(".rule-control[id=" + getRule().id + "]").toggleClass("edit", false);
-    $('#edit-rule-div').hide();
-    $('#create').show();
+    // Trigger the create button to close
+    $("#create").click();
     persistStatePopup();
     clearEditor();
     $test.hide();
@@ -56,8 +30,8 @@ function closeRuleEditor() {
 function onSaveClick() {
     if (validateFields()) {
         saveRule();
-        $('#edit-rule-div').hide();
-        closeRuleEditor()
+        // Close the action content
+        $("#create").click();
     }
 }
 
@@ -153,6 +127,11 @@ function onTestClick() {
 }
 
 function showTestResult(value) {
+    // Find test elements in the dynamically generated content
+    var $testValue = $("#action-content .test-value");
+    var $testLabel = $("#action-content .test-label");
+    var $test = $("#action-content .test");
+
     if (isEmpty(value)) {
         $testValue.text("");
         $testLabel.text(NOT_AVAILABLE);
