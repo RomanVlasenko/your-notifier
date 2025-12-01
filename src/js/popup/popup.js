@@ -39,9 +39,10 @@ $(document).ready(function () {
     function getBrowserName() {
         const userAgent = navigator.userAgent;
         if (userAgent.includes("Brave")) return "Brave Browser";
+        if (userAgent.includes("OPR") || userAgent.includes("Opera")) return "Opera";
         if (userAgent.includes("Edg")) return "Microsoft Edge";
         if (userAgent.includes("Chrome")) return "Google Chrome";
-        return "your browser";
+        return null; // Return null for unknown browsers
     }
 
     // Helper function to detect OS
@@ -59,10 +60,13 @@ $(document).ready(function () {
         const browser = getBrowserName();
         const $helpSteps = $("#help-steps");
 
+        // Use "your browser" if browser is unknown
+        const browserText = browser || "your browser";
+
         if (os === "mac") {
             $helpSteps.html(
                 '<li>Open <strong>System Settings</strong> &gt; <strong>Notifications</strong></li>' +
-                '<li>Find <strong>' + browser + '</strong> in the list</li>' +
+                '<li>Find <strong>' + browserText + '</strong> in the list</li>' +
                 '<li>Enable <strong>"Allow notifications"</strong></li>' +
                 '<li>Set style to <strong>"Banners"</strong> or <strong>"Alerts"</strong></li>' +
                 '<li>Make sure <strong>Focus/Do Not Disturb</strong> is off</li>'
@@ -70,21 +74,21 @@ $(document).ready(function () {
         } else if (os === "linux") {
             $helpSteps.html(
                 '<li>Open <strong>System Settings</strong> &gt; <strong>Notifications</strong></li>' +
-                '<li>Find <strong>' + browser + '</strong> in the list</li>' +
-                '<li>Enable notifications for ' + browser + '</li>' +
+                '<li>Find <strong>' + browserText + '</strong> in the list</li>' +
+                '<li>Enable notifications for ' + browserText + '</li>' +
                 '<li>Make sure <strong>Do Not Disturb</strong> is off</li>'
             );
         } else if (os === "windows") {
             $helpSteps.html(
                 '<li>Open <strong>Settings</strong> &gt; <strong>System</strong> &gt; <strong>Notifications</strong></li>' +
-                '<li>Find <strong>' + browser + '</strong> in the list</li>' +
-                '<li>Enable notifications for ' + browser + '</li>' +
+                '<li>Find <strong>' + browserText + '</strong> in the list</li>' +
+                '<li>Enable notifications for ' + browserText + '</li>' +
                 '<li>Make sure <strong>Focus Assist</strong> is off</li>'
             );
         } else {
             $helpSteps.html(
                 '<li>Check your system notification settings</li>' +
-                '<li>Find <strong>' + browser + '</strong> in the list</li>' +
+                '<li>Find <strong>' + browserText + '</strong> in the list</li>' +
                 '<li>Enable notifications for the browser</li>'
             );
         }
