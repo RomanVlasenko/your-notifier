@@ -8,11 +8,19 @@ $(document).ready(function () {
 
     $existingRulesContainer = $("#existing-rules");
 
-    chromeAPI.runtime.sendMessage({msg: "resetUpdates"});
-
     var $container = $("#container");
 
+    // Load and display rules
     refreshRuleControls(function () {
+        // Clear the badge count on extension icon
+        chromeAPI.browser.setBadgeText({text: ""});
+
+        // Hide "New" badges after a brief delay (so users see them briefly)
+        // But envelope icons remain until clicked
+        setTimeout(function() {
+            $(".badge.new").fadeOut(500);
+        }, 1500);
+
         sl.readState(function (state) {
             if (state.page == NORMAL_MODE) {
                 $container.show();
@@ -327,18 +335,10 @@ function refreshRuleControls() {
                 }
             });
 
-            //Update rules flag NEW to 'false'
-            ruleStorage.readRules(function (rules) {
-                _.each(rules, function (r) {
-                    r.new = false;
-                    r.notified = true;
-                });
-                ruleStorage.saveRules(rules, function () {
-                    callback();
-                });
-            });
-
             repaintStripes();
+
+            // Execute callback after rendering is complete
+            callback();
 
         } else {
             $existingRulesContainer.html($("#empty-rules").html());
@@ -367,13 +367,14 @@ function createRuleControlDOM(rule) {
 
     $selectedInterval.text("Update every " + $selectedInterval.text());
 
-    showNewBadge(ruleControl, rule);
-
     ruleControl.attr("id", rule.id);
     ruleControl.find(".favicon").attr("src", c.getFavicon(rule.url));
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
     ruleControl.find(".buttons").append(buttons);
+
+    // Call showNewBadge AFTER buttons are appended so the settings icon exists
+    showNewBadge(ruleControl, rule);
 
     $existingRulesContainer.append(ruleControl);
 
@@ -386,6 +387,20 @@ function createRuleControlDOM(rule) {
     });
 
     buttons.on("click", ".settings", function (e) {
+        var $settingsBtn = $(this);
+        var $icon = $settingsBtn.find("span");
+        var ruleId = $additionalButtons.attr("id");
+
+        // If showing envelope icon (new update), change back to cog and mark as not new
+        if ($icon.hasClass("glyphicon-envelope")) {
+            $icon.removeClass("glyphicon-envelope").addClass("glyphicon-cog");
+
+            ruleStorage.readRule(ruleId, function (rule) {
+                rule.new = false;
+                ruleStorage.updateRule(rule, c.emptyCallback);
+            });
+        }
+
         onMoreSettingsClick($additionalButtons);
     });
 
@@ -550,7 +565,15 @@ function closeAdditionalButtons() {
 
 function showNewBadge($ruleControl, rule) {
     if (rule.new == true) {
+        // Note: Badge is shown initially but hidden immediately on popup open
+        // We keep this for potential future use or when refreshList is called while popup is open
         $ruleControl.find(".badge.new").fadeIn(1000);
+
+        // Change settings icon from cog to envelope
+        // This persists until user clicks on it
+        var $settingsBtn = $ruleControl.find(".settings");
+        var $icon = $settingsBtn.find("span");
+        $icon.removeClass("glyphicon-cog").addClass("glyphicon-envelope");
     }
 }
 
