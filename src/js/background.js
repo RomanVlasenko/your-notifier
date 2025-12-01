@@ -129,6 +129,75 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
     return false;
 });
 
+// Phase 4: Test notification handler
+chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.method == "testNotification") {
+        testNotificationSystem().then(result => {
+            sendResponse(result);
+        });
+        return true; // Keep channel open for async response
+    }
+    return false;
+});
+
+async function testNotificationSystem() {
+    console.log('[Background] Testing notification system...');
+
+    const hasPermission = await checkNotificationPermission();
+    console.log('[Background] Permission check result:', hasPermission);
+
+    if (!hasPermission) {
+        console.warn('[Background] Permission denied - returning error');
+        return {
+            success: false,
+            error: 'Notification permission denied. Check Brave settings at brave://settings/content/notifications'
+        };
+    }
+
+    try {
+        const testId = 'test-notification-' + Date.now();
+        console.log('[Background] Creating test notification with ID:', testId);
+
+        await new Promise((resolve, reject) => {
+            const iconUrl = chrome.runtime.getURL('img/icon48x48.png');
+            console.log('[Background] Using icon URL:', iconUrl);
+
+            chromeAPI.notifications.create(testId, {
+                type: "basic",
+                title: "Your Notifier - Test",
+                message: "Notifications are working correctly!",
+                iconUrl: iconUrl,
+                priority: 2,
+                requireInteraction: false,
+                silent: false
+            }, function (notificationId) {
+                if (chrome.runtime.lastError) {
+                    console.error('[Background] Chrome runtime error:', chrome.runtime.lastError);
+                    reject(chrome.runtime.lastError);
+                } else {
+                    console.log('[Background] Notification created successfully with ID:', notificationId);
+                    // Auto-close after 5 seconds
+                    setTimeout(() => {
+                        console.log('[Background] Auto-closing notification:', testId);
+                        chromeAPI.notifications.clear(testId, () => {});
+                    }, 5000);
+                    resolve(notificationId);
+                }
+            });
+        });
+
+        console.log('[Background] Test notification completed successfully');
+        return {
+            success: true,
+            message: 'Notification sent! If you don\'t see it, check system settings.',
+            helpLink: true
+        };
+    } catch (error) {
+        console.error('[Background] Test notification failed:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // Notification handling (from notification.js)
 chromeAPI.runtime.onMessage.addListener(function (request) {
     if (request.msg == "resetUpdates") {
@@ -151,7 +220,9 @@ var notifications = {
         updateBadge();
 
         if (rule.notify && !rule.notified) {
-            showPopupNotifications([rule]);
+            showPopupNotifications([rule]).catch(err => {
+                console.error('[Background] Notification error:', err);
+            });
         }
     }
 }
@@ -175,26 +246,37 @@ function showBadge(text, title) {
     chromeAPI.browser.setTitle({title: title});
 }
 
-function showPopupNotifications(rules) {
-    if (!rules || rules.length == 0) {
-        return;
-    }
+// Check notification permission before creating notifications
+async function checkNotificationPermission() {
+    return new Promise((resolve) => {
+        chromeAPI.notifications.getPermissionLevel((level) => {
+            console.log('[Background] Notification permission level:', level);
+            // level can be: "granted", "denied", or undefined (before user choice)
+            resolve(level === 'granted');
+        });
+    });
+}
 
-    console.log('[Background] Showing popup notifications for', rules.length, 'rules');
-
-    _.each(rules, function (rule) {
+// Create a single notification (Promise-based for better error handling)
+function createNotification(rule) {
+    return new Promise((resolve, reject) => {
         console.log('[Background] Creating notification for rule:', rule.id, rule.title);
 
-        var opt = {
+        const opt = {
             type: "basic",
             title: rule.title,
             message: "Now: " + rule.value,
-            iconUrl: rule.url ? c.getFavicon(rule.url) : chrome.runtime.getURL('img/icon48.png')
+            // Phase 2 & 3: Use local icon for reliability, add required properties
+            iconUrl: chrome.runtime.getURL('img/icon48x48.png'),
+            priority: 2,  // Add priority (0=min, 2=max)
+            requireInteraction: false,  // Auto-dismiss allowed
+            silent: false  // Allow sound
         };
 
         chromeAPI.notifications.create(rule.id, opt, function (notificationId) {
             if (chrome.runtime.lastError) {
                 console.error('[Background] Error creating notification:', chrome.runtime.lastError.message);
+                reject(chrome.runtime.lastError);
                 return;
             }
 
@@ -205,8 +287,39 @@ function showPopupNotifications(rules) {
             setTimeout(function () {
                 closeNotification(rule.id);
             }, NOTIFICATION_AUTOCLOSE_TIME);
+
+            resolve(notificationId);
         });
     });
+}
+
+async function showPopupNotifications(rules) {
+    if (!rules || rules.length == 0) {
+        return;
+    }
+
+    // Phase 1: Check permission first
+    const hasPermission = await checkNotificationPermission();
+    if (!hasPermission) {
+        console.warn('[Background] Notification permission not granted');
+        // Store error state for UI to display
+        chromeAPI.storage.set({
+            notificationError: 'Notification permission denied. Please check Chrome settings.'
+        });
+        return;
+    }
+
+    console.log('[Background] Showing popup notifications for', rules.length, 'rules');
+
+    // Process each rule with async/await for better error handling
+    for (const rule of rules) {
+        try {
+            await createNotification(rule);
+        } catch (error) {
+            console.error('[Background] Error creating notification for rule:', rule.id, error);
+            // Continue processing other notifications even if one fails
+        }
+    }
 }
 
 function closeNotification(notificationId) {
