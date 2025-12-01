@@ -4,23 +4,32 @@
 console.log('[Offscreen] Offscreen document loaded and ready');
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    console.log('[Offscreen] Received message:', message.type);
+    console.log('[Offscreen] Received message:', message.type, 'from:', sender.id);
 
     if (message.type === 'PARSE_HTML') {
+        const requestId = Date.now() + '-' + Math.random().toString(36).substring(7);
+        console.log('[Offscreen] Request %s: Starting HTML parse with selector: %s', requestId, message.selector);
+        console.log('[Offscreen] Request %s: HTML length: %s bytes', requestId, message.html ? message.html.length : 0);
+
         try {
-            // Use DOMParser to parse HTML
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(message.html, 'text/html');
+            // Use jQuery to parse HTML (same as popup context)
+            // This supports jQuery selectors like :eq(), :first, etc.
+            console.log('[Offscreen] Request %s: Parsing HTML with jQuery', requestId);
+            const $html = $(message.html);
+            const foundData = $html.find(message.selector);
 
-            // Find element using CSS selector
-            const element = doc.querySelector(message.selector);
+            console.log('[Offscreen] Request %s: jQuery find returned %s elements', requestId, foundData.length);
 
-            const result = element ? element.textContent.trim() : '';
-            console.log('[Offscreen] Parsed result:', result ? result.substring(0, 50) + '...' : '(empty)');
-
-            sendResponse({ result: result });
+            if (foundData.length != 0) {
+                const result = foundData.first().text().trim();
+                console.log('[Offscreen] Request %s: Element found, result: %s', requestId, result ? result.substring(0, 50) + '...' : '(empty text)');
+                sendResponse({ result: result });
+            } else {
+                console.warn('[Offscreen] Request %s: No element found for selector: %s', requestId, message.selector);
+                sendResponse({ result: '' });
+            }
         } catch (error) {
-            console.error('[Offscreen] Error parsing HTML:', error);
+            console.error('[Offscreen] Request %s: Error parsing HTML:', requestId, error);
             sendResponse({ result: '' });
         }
 

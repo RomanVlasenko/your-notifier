@@ -8,26 +8,34 @@ function checkAndUpdate(rule) {
         }
     }
 
+    console.log("[urlChecker] Starting fetch for rule %s: %s", rule.id, rule.url);
+
     fetch(rule.url)
         .then(function (response) {
+            console.log("[urlChecker] Fetch successful for rule %s, status: %s", rule.id, response.status);
             return response.text();
         })
         .then(function (srcHtml) {
+            console.log("[urlChecker] HTML received for rule %s, length: %s bytes", rule.id, srcHtml.length);
+
             // Parse HTML using offscreen document
+            console.log("[urlChecker] Sending PARSE_HTML message for rule %s with selector: %s", rule.id, rule.selector);
             chrome.runtime.sendMessage({
                 type: 'PARSE_HTML',
                 html: srcHtml,
                 selector: rule.selector
             }, function (response) {
                 if (chrome.runtime.lastError) {
-                    console.error('Error sending to offscreen document:', chrome.runtime.lastError.message);
+                    console.error('[urlChecker] Error sending to offscreen document for rule %s:', rule.id, chrome.runtime.lastError.message);
                     onError();
                     return;
                 }
 
+                console.log("[urlChecker] Received response from offscreen document for rule %s:", rule.id, response);
                 var newVal = response && response.result ? response.result : '';
 
                 if (newVal) {
+                    console.log("[urlChecker] Successfully parsed value for rule %s: %s", rule.id, newVal);
                     //Resetting attempts counter if it's needed
                     ruleStorage.readRule(rule.id, function (rule) {
                         if ((rule.attempts || 0) > 0) {
@@ -42,13 +50,13 @@ function checkAndUpdate(rule) {
                         }
                     });
                 } else {
-                    console.log("unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
+                    console.log("[urlChecker] Unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
                     onError();
                 }
             });
         })
-        .catch(function () {
-            console.log("%s is not reachable at the moment. Attempts made: %s", rule.id, rule.attempts);
+        .catch(function (error) {
+            console.log("[urlChecker] Fetch failed for rule %s. Error: %s. Attempts made: %s", rule.id, error, rule.attempts);
             onError();
         });
 
@@ -58,10 +66,10 @@ function checkAndUpdate(rule) {
                 rule.value = NOT_AVAILABLE;
                 updateRuleValue(rule, callbackHandler);
             } else {
-                ruleStorage.readRule(rule.id, function (rule) {
-                    rule.attempts = (rule.attempts || 0) + 1;
-                    ruleStorage.updateRule(rule, function () {
-                        callbackHandler();
+                ruleStorage.readRule(rule.id, function (updatedRule) {
+                    updatedRule.attempts = (updatedRule.attempts || 0) + 1;
+                    ruleStorage.updateRule(updatedRule, function () {
+                        callbackHandler(updatedRule);
                     });
                 });
             }
