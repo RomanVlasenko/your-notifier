@@ -344,7 +344,7 @@ chromeAPI.notifications.onClicked.addListener(function (notificationId) {
 chromeAPI.alarms.get("CheckRulesSchedule", function(alarm) {
     if (!alarm) {
         console.log('[Background] Creating CheckRulesSchedule alarm');
-        chromeAPI.alarms.create("CheckRulesSchedule", {periodInMinutes: 1});
+        chromeAPI.alarms.create("CheckRulesSchedule", {periodInMinutes: 0.5});
     } else {
         console.log('[Background] CheckRulesSchedule alarm already exists');
     }
