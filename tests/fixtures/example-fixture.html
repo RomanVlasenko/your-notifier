@@ -1,0 +1,71 @@
+<!--
+TEST_METADATA:
+site: Example Site
+url: https://example.com/product/123
+target_element: Product price
+expected_value: €29.99
+selector_hint: .product-price.amount
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example Product Page</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Example Store</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/products">Products</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="product-container">
+            <div class="product-image">
+                <img src="/img/product.jpg" alt="Product">
+            </div>
+
+            <div class="product-details">
+                <h2 class="product-title">Example Product</h2>
+
+                
+                <div class="product-price">
+                    <span class="label">Price:</span>
+                    <span class="amount">€29.99</span>
+                </div>
+
+                <div class="product-description">
+                    <p>This is an example product description.</p>
+                </div>
+
+                <button class="add-to-cart">Add to Cart</button>
+            </div>
+
+            <div class="product-reviews">
+                <h3>Customer Reviews</h3>
+                <div class="review">
+                    <span class="rating">5 stars</span>
+                    <p>Great product!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="related-products">
+            <h3>Related Products</h3>
+            <div class="product-item">
+                <span class="price">€19.99</span>
+            </div>
+            <div class="product-item">
+                <span class="price">€39.99</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Example Store</p>
+    </div>
+</body>
+</html>

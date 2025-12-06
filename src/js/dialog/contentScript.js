@@ -55,6 +55,15 @@ $.get(chrome.runtime.getURL("dialog.html"), function (data) {
         function (request, sender, sendResponse) {
             if (request.method == "createRule") {
                 if ($clickedElement) {
+                    // Debug: Log the element being passed to selectorator
+                    console.log("Element passed to selectorator:", {
+                        tagName: $clickedElement[0].tagName,
+                        className: $clickedElement[0].className,
+                        id: $clickedElement[0].id,
+                        textContent: $clickedElement.text().substring(0, 50),
+                        outerHTML: $clickedElement[0].outerHTML.substring(0, 200)
+                    });
+
                     try {
                         selector = $clickedElement.getSelector().join("\n");
                     } catch (e) {

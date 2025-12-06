@@ -2,3 +2,4 @@
 *.iml
 *.af~lock~
 .DS_Store
+node_modules/
