@@ -36,7 +36,7 @@
         "description": "Button to delete a rule"
     },
     "labelTitle": {
-        "message": "Titel",
+        "message": "Titel:",
         "description": "Label for title field"
     },
     "labelSelector": {
