@@ -87,7 +87,11 @@ var c = {
     },
 
     getFavicon: function (url) {
-        return url.replace(/^((http|https):\/\/[^\/]+).*$/, '$1') + '/favicon.ico';
+        // Extract domain from URL
+        var domain = url.replace(/^https?:\/\/([^\/]+).*$/, '$1');
+        // Use DuckDuckGo's favicon service for better reliability
+        // Falls back to a default icon if the favicon doesn't exist
+        return 'https://icons.duckduckgo.com/ip3/' + domain + '.ico';
     },
 
     formatDate: function (d) {

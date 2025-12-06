@@ -17,6 +17,7 @@ $(document).ready(function () {
     refreshRuleControls(function () {
         // Clear the badge count on extension icon
         chromeAPI.browser.setBadgeText({text: ""});
+        chromeAPI.browser.setTitle({title: "Your notifier"});
 
         // Hide "New" badges after a brief delay (so users see them briefly)
         // But envelope icons remain until clicked
@@ -370,7 +371,12 @@ function createRuleControlDOM(rule) {
     $selectedInterval.text(chrome.i18n.getMessage('labelUpdateEvery') + " " + $selectedInterval.text());
 
     ruleControl.attr("id", rule.id);
-    ruleControl.find(".favicon").attr("src", c.getFavicon(rule.url));
+    var $favicon = ruleControl.find(".favicon");
+    $favicon.attr("src", c.getFavicon(rule.url));
+    // Hide favicon if it fails to load (instead of showing broken image icon)
+    $favicon.on('error', function() {
+        $(this).hide();
+    });
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
     ruleControl.find(".buttons").append(buttons);
@@ -481,7 +487,12 @@ function createRuleControlDOM(rule) {
 
 function updateRuleControlDOM(rule, ruleControl) {
     showNewBadge(ruleControl, rule);
-    ruleControl.find(".favicon").attr("src", c.getFavicon(rule.url));
+    var $favicon = ruleControl.find(".favicon");
+    $favicon.attr("src", c.getFavicon(rule.url)).show();
+    // Hide favicon if it fails to load (instead of showing broken image icon)
+    $favicon.on('error', function() {
+        $(this).hide();
+    });
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
     return ruleControl;
