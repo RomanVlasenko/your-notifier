@@ -28,12 +28,12 @@
     <div class="row button-row">
         <div class="col-xs-6">
             <button id="create" class="btn btn-block btn-default action-btn" type="button">
-                <span class="glyphicon glyphicon-plus"></span> Create Item
+                <span class="glyphicon glyphicon-plus"></span> <span data-i18n="buttonCreateItem">Create Item</span>
             </button>
         </div>
         <div class="col-xs-6">
             <button id="test-notification-btn" class="btn btn-block btn-default action-btn" type="button">
-                <span class="glyphicon glyphicon-bell"></span> Test Notifications
+                <span class="glyphicon glyphicon-bell"></span> <span data-i18n="buttonTestNotifications">Test Notifications</span>
             </button>
         </div>
     </div>
@@ -48,8 +48,8 @@
         <input type="hidden" id="ruleId"/>
 
         <div class="input-group input-group-sm">
-            <span class="input-group-addon">Title</span>
-            <input type="text" id="title" class="form-control" placeholder="Title">
+            <span class="input-group-addon" data-i18n="labelTitle">Title</span>
+            <input type="text" id="title" class="form-control" data-i18n-placeholder="placeholderTitle" placeholder="Title">
         </div>
 
         <div class="input-group input-group-sm">
@@ -58,8 +58,8 @@
         </div>
 
         <div class="input-group input-group-sm">
-            <span class="input-group-addon">Selector:</span>
-            <input type="text" id="selector" class="form-control" placeholder="CSS/jQuery selector...">
+            <span class="input-group-addon" data-i18n="labelSelector">Selector:</span>
+            <input type="text" id="selector" class="form-control" data-i18n-placeholder="placeholderSelector" placeholder="CSS/jQuery selector...">
         </div>
 
         <div class='row'>
@@ -70,9 +70,9 @@
             </div>
             <div class='col-xs-6'>
                 <div class="editor-buttons pull-right">
-                    <button class="btn btn-small btn-default btn-sm" type="button" id="cancel">Cancel</button>
-                    <button class="btn btn-small btn-default btn-sm" type="button" id="test">Test</button>
-                    <button class="btn btn-small btn-primary btn-sm" type="button" id="save">Save</button>
+                    <button class="btn btn-small btn-default btn-sm" type="button" id="cancel" data-i18n="buttonCancel">Cancel</button>
+                    <button class="btn btn-small btn-default btn-sm" type="button" id="test" data-i18n="buttonTest">Test</button>
+                    <button class="btn btn-small btn-primary btn-sm" type="button" id="save" data-i18n="buttonSave">Save</button>
                 </div>
             </div>
         </div>
@@ -87,13 +87,13 @@
 <div id="controls" style="display: none">
 
     <div id="empty-rules">
-        <h5 id='norules' class='text-center'>You don't have any items to watch yet.</h5>
+        <h5 id='norules' class='text-center' data-i18n="guideNoItemsYet">You don't have any items to watch yet.</h5>
         <div class="panel panel-default">
             <div class="panel-body">
                 <ol>
-                    <li>Go to any web page</li>
-                    <li>Click right button on value you're interested in, select "Watch this item"</li>
-                    <li>Test it (optionally) and save it</li>
+                    <li data-i18n="guideStep1">Go to any web page</li>
+                    <li data-i18n="guideStep2">Click right button on value you're interested in, select "Watch this item"</li>
+                    <li data-i18n="guideStep3">Test it (optionally) and save it</li>
                 </ol>
             </div>
         </div>
@@ -101,7 +101,7 @@
 
     <div class='rule-control'>
         <div class="row">
-            <div class='title col-xs-7'><img class="favicon" src=""/> <span style="display: none" class="badge new">New</span> <a class="url" href="#"></a></div>
+            <div class='title col-xs-7'><img class="favicon" src=""/> <span style="display: none" class="badge new" data-i18n="badgeNew">New</span> <a class="url" href="#"></a></div>
             <div class='value col-xs-3 text-right'><span></span></div>
             <div class='buttons col-xs-2'></div>
         </div>
@@ -115,8 +115,8 @@
     <div class='row rule-buttons-more'>
         <div class='col-xs-8'>
             <div class="panel history panel-default">
-                <div class="panel-heading">Change history:
-                    <button type='button' class='clear-history btn btn-xs btn-default pull-right'>Clear</button>
+                <div class="panel-heading"><span data-i18n="labelChangeHistory">Change history:</span>
+                    <button type='button' class='clear-history btn btn-xs btn-default pull-right' data-i18n="buttonClear">Clear</button>
                 </div>
                 <table class="table table-condensed history">
                 </table>
@@ -125,10 +125,10 @@
         <div class='additional col-xs-4'>
             <div class="pull-right">
                 <button type='button' class='clone btn btn-small btn-default'>
-                    <span class='glyphicon glyphicon-upload'></span> Clone
+                    <span class='glyphicon glyphicon-upload'></span> <span data-i18n="buttonClone">Clone</span>
                 </button>
                 <button type='button' class='delete btn btn-small btn-default'>
-                    <span class='glyphicon glyphicon-trash'></span> Delete
+                    <span class='glyphicon glyphicon-trash'></span> <span data-i18n="buttonDelete">Delete</span>
                 </button>
                 <div class="update-frequency-container"><select class="form-control input-sm update-frequency">
                     <option value=1>1 min</option>
@@ -140,7 +140,7 @@
                 </select></div>
                 <div class="checkbox popup-notification">
                     <label>
-                        <input type="checkbox"> Popup notifications
+                        <input type="checkbox"> <span data-i18n="labelPopupNotifications">Popup notifications</span>
                     </label>
                 </div>
             </div>

@@ -9,6 +9,9 @@ $(document).mousedown(function (e) {
 $.get(chrome.runtime.getURL("dialog.html"), function (data) {
     var $editor = $(data);
 
+    // Localize the dialog after loading
+    localizeElement($editor[0]);
+
     $editor.on("click", "#cancel", function () {
         clearDialog();
 
@@ -70,7 +73,7 @@ $.get(chrome.runtime.getURL("dialog.html"), function (data) {
         $editor.find("#url").val(url);
         $editor.find("#selector").val(selector);
 
-        $editor.dialog({title: "Create new item", width: "400", dialogClass: "yon-dialog"});
+        $editor.dialog({title: chrome.i18n.getMessage('dialogTitleCreateNewItem'), width: "400", dialogClass: "yon-dialog"});
     }
 
     function getRule($editor) {

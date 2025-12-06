@@ -67,7 +67,7 @@ chromeAPI.menu.removeAll(function() {
         console.log('[Background] Error removing menus:', chrome.runtime.lastError.message);
     }
     console.log('[Background] Creating context menu');
-    chromeAPI.menu.create({id: "openDialog", contexts: ["page", "selection", "link"], title: "Watch this item"}, function() {
+    chromeAPI.menu.create({id: "openDialog", contexts: ["page", "selection", "link"], title: chrome.i18n.getMessage('contextMenuWatchItem')}, function() {
         if (chrome.runtime.lastError) {
             console.log('[Background] Error creating menu:', chrome.runtime.lastError.message);
         } else {
@@ -165,7 +165,7 @@ async function testNotificationSystem() {
             chromeAPI.notifications.create(testId, {
                 type: "basic",
                 title: "Your Notifier - Test",
-                message: "Notifications are working correctly!",
+                message: chrome.i18n.getMessage('notificationTestSuccess'),
                 iconUrl: iconUrl,
                 priority: 2,
                 requireInteraction: false,
@@ -189,7 +189,7 @@ async function testNotificationSystem() {
         console.log('[Background] Test notification completed successfully');
         return {
             success: true,
-            message: 'Notification sent! If you don\'t see it, check system settings.',
+            message: chrome.i18n.getMessage('notificationSent'),
             helpLink: true
         };
     } catch (error) {
@@ -265,7 +265,7 @@ function createNotification(rule) {
         const opt = {
             type: "basic",
             title: rule.title,
-            message: "Now: " + rule.value,
+            message: chrome.i18n.getMessage('notificationNow') + ' ' + rule.value,
             // Phase 2 & 3: Use local icon for reliability, add required properties
             iconUrl: chrome.runtime.getURL('img/icon48x48.png'),
             priority: 2,  // Add priority (0=min, 2=max)

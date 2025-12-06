@@ -84,7 +84,7 @@ button.delete {
 }
 
 .editor-buttons button {
-    width: 60px;
+    min-width: 60px;
 }
 
 .rule-buttons-more {
@@ -194,7 +194,29 @@ button.pressed {
 }
 
 .additional {
-    white-space: nowrap;
+    white-space: normal;
+}
+
+.additional .pull-right {
+    width: 100%;
+    float: none !important;
+}
+
+.additional button.clone,
+.additional button.delete {
+    width: 100%;
+    margin-bottom: 5px;
+    text-align: left;
+    display: block;
+}
+
+.additional .update-frequency-container {
+    width: 100%;
+}
+
+.additional .popup-notification {
+    width: 100%;
+    margin-top: 5px;
 }
 
 .input-sm {
@@ -206,7 +228,7 @@ button.pressed {
 }
 
 select.update-frequency {
-    width: 150px;
+    width: 100%;
 }
 
 /* Remove padding from button row */

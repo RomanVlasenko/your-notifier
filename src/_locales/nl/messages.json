@@ -1,102 +1,102 @@
 {
     "appName": {
-        "message": "Your Notifier — Відстежуй оновлення сторінок.",
+        "message": "Your Notifier — Volg paginawijzigingen.",
         "description": "The title of the application, displayed in the web store."
     },
     "appDesc": {
-        "message": "Перестаньте постійно оновлювати сторінки. Це розширення стежить за вибраним текстом на сайті й повідомляє вас, коли він змінюється.",
+        "message": "Stop met constant vernieuwen. Deze extensie houdt specifieke tekst op webpagina's in de gaten en meldt het zodra er iets verandert.",
         "description": "The description of the application, displayed in the web store."
     },
     "buttonCreateItem": {
-        "message": "Створити елемент",
+        "message": "Item aanmaken",
         "description": "Button to create a new tracking item"
     },
     "buttonTestNotifications": {
-        "message": "Перевірити сповіщення",
+        "message": "Meldingen testen",
         "description": "Button to test notification system"
     },
     "buttonTest": {
-        "message": "Тест",
+        "message": "Testen",
         "description": "Button to test a rule"
     },
     "buttonCancel": {
-        "message": "Скасувати",
+        "message": "Annuleren",
         "description": "Cancel button"
     },
     "buttonSave": {
-        "message": "Зберегти",
+        "message": "Opslaan",
         "description": "Save button"
     },
     "buttonClone": {
-        "message": "Копіювати",
+        "message": "Dupliceren",
         "description": "Button to clone a rule"
     },
     "buttonDelete": {
-        "message": "Видалити",
+        "message": "Verwijderen",
         "description": "Button to delete a rule"
     },
     "labelTitle": {
-        "message": "Назва",
+        "message": "Titel",
         "description": "Label for title field"
     },
     "labelSelector": {
-        "message": "Селектор:",
+        "message": "Selector:",
         "description": "Label for CSS selector field"
     },
     "labelPopupNotifications": {
-        "message": "Спливаючі сповіщення",
+        "message": "Pop-upmeldingen",
         "description": "Label for popup notifications checkbox"
     },
     "labelChangeHistory": {
-        "message": "Історія змін:",
+        "message": "Wijzigingsgeschiedenis:",
         "description": "Label for change history section"
     },
     "labelUpdateEvery": {
-        "message": "Перевіряти кожні",
+        "message": "Bijwerken elke",
         "description": "Prefix for update frequency dropdown"
     },
     "linkShowGuide": {
-        "message": "Показати інструкцію",
+        "message": "Installatiegids tonen",
         "description": "Link to show setup guide"
     },
     "linkHide": {
-        "message": "Сховати",
+        "message": "Verbergen",
         "description": "Link to hide help section"
     },
     "notificationSent": {
-        "message": "Сповіщення надіслано! Якщо не бачите його, перевірте налаштування системи.",
+        "message": "Melding verzonden! Als je deze niet ziet, controleer dan je systeeminstellingen.",
         "description": "Success message after test notification"
     },
     "notificationTestSuccess": {
-        "message": "Сповіщення працюють правильно!",
+        "message": "Meldingen werken correct!",
         "description": "Test notification message"
     },
     "placeholderTitle": {
-        "message": "Назва",
+        "message": "Titel",
         "description": "Placeholder for title input field"
     },
     "placeholderSelector": {
-        "message": "CSS/jQuery селектор...",
+        "message": "CSS/jQuery-selector...",
         "description": "Placeholder for selector input field"
     },
     "helpDontSeeNotifications": {
-        "message": "Не бачите сповіщення?",
+        "message": "Zie je geen meldingen?",
         "description": "Help section title"
     },
     "helpFollowSteps": {
-        "message": "Виконайте ці кроки:",
+        "message": "Volg deze stappen:",
         "description": "Help section intro"
     },
     "helpYourBrowser": {
-        "message": "ваш браузер",
+        "message": "je browser",
         "description": "Fallback text for unknown browser"
     },
     "helpMacStep1": {
-        "message": "Відкрийте <strong>Системні параметри</strong> &gt; <strong>Сповіщення</strong>",
+        "message": "Open <strong>Systeeminstellingen</strong> &gt; <strong>Meldingen</strong>",
         "description": "macOS notification help step 1"
     },
     "helpMacStep2": {
-        "message": "Знайдіть <strong>$BROWSER$</strong> у списку",
+        "message": "Zoek <strong>$BROWSER$</strong> in de lijst",
         "description": "macOS notification help step 2",
         "placeholders": {
             "browser": {
@@ -106,23 +106,23 @@
         }
     },
     "helpMacStep3": {
-        "message": "Увімкніть <strong>\"Дозволити сповіщення\"</strong>",
+        "message": "Schakel <strong>\"Meldingen toestaan\"</strong> in",
         "description": "macOS notification help step 3"
     },
     "helpMacStep4": {
-        "message": "Оберіть стиль <strong>\"Банери\"</strong> або <strong>\"Попередження\"</strong>",
+        "message": "Stel de stijl in op <strong>\"Banners\"</strong> of <strong>\"Waarschuwingen\"</strong>",
         "description": "macOS notification help step 4"
     },
     "helpMacStep5": {
-        "message": "Переконайтеся, що <strong>Фокусування/Не турбувати</strong> вимкнено",
+        "message": "Zorg ervoor dat <strong>Focus/Niet storen</strong> uitstaat",
         "description": "macOS notification help step 5"
     },
     "helpLinuxStep1": {
-        "message": "Перевірте налаштування сповіщень у вашій системі",
+        "message": "Controleer je systeemmeldingsinstellingen",
         "description": "Linux notification help step 1"
     },
     "helpLinuxStep2": {
-        "message": "Знайдіть <strong>$BROWSER$</strong> у списку",
+        "message": "Zoek <strong>$BROWSER$</strong> in de lijst",
         "description": "Linux notification help step 2",
         "placeholders": {
             "browser": {
@@ -132,15 +132,15 @@
         }
     },
     "helpLinuxStep3": {
-        "message": "Увімкніть сповіщення для браузера",
+        "message": "Schakel meldingen voor de browser in",
         "description": "Linux notification help step 3"
     },
     "helpWindowsStep1": {
-        "message": "Відкрийте <strong>Параметри</strong> &gt; <strong>Система</strong> &gt; <strong>Сповіщення</strong>",
+        "message": "Open <strong>Instellingen</strong> &gt; <strong>Systeem</strong> &gt; <strong>Meldingen</strong>",
         "description": "Windows notification help step 1"
     },
     "helpWindowsStep2": {
-        "message": "Знайдіть <strong>$BROWSER$</strong> у списку",
+        "message": "Zoek <strong>$BROWSER$</strong> in de lijst",
         "description": "Windows notification help step 2",
         "placeholders": {
             "browser": {
@@ -150,7 +150,7 @@
         }
     },
     "helpWindowsStep3": {
-        "message": "Увімкніть сповіщення для $BROWSER$",
+        "message": "Schakel meldingen in voor $BROWSER$",
         "description": "Windows notification help step 3",
         "placeholders": {
             "browser": {
@@ -160,59 +160,59 @@
         }
     },
     "helpWindowsStep4": {
-        "message": "Переконайтеся, що <strong>Помічник концентрації уваги</strong> вимкнено",
+        "message": "Zorg ervoor dat <strong>Ondersteuning voor focus</strong> uitstaat",
         "description": "Windows notification help step 4"
     },
     "errorLabel": {
-        "message": "Помилка:",
+        "message": "Fout:",
         "description": "Error label in messages"
     },
     "dialogTitleCreateNewItem": {
-        "message": "Створити новий елемент",
+        "message": "Nieuw item aanmaken",
         "description": "Dialog title when creating a new tracking item"
     },
     "buttonClear": {
-        "message": "Очистити",
+        "message": "Wissen",
         "description": "Button to clear change history"
     },
     "contextMenuWatchItem": {
-        "message": "Стежити за цим елементом",
+        "message": "Dit item volgen",
         "description": "Context menu item to watch a page element"
     },
     "guideNoItemsYet": {
-        "message": "У вас ще немає елементів для відстеження.",
+        "message": "Je hebt nog geen items om te volgen.",
         "description": "Message shown when no tracking items exist"
     },
     "guideStep1": {
-        "message": "Перейдіть на будь-яку веб-сторінку",
+        "message": "Ga naar een webpagina",
         "description": "First step in setup guide"
     },
     "guideStep2": {
-        "message": "Клацніть правою кнопкою на потрібному значенні, оберіть \"Стежити за цим елементом\"",
+        "message": "Klik met de rechtermuisknop op de gewenste waarde en selecteer \"Dit item volgen\"",
         "description": "Second step in setup guide"
     },
     "guideStep3": {
-        "message": "Протестуйте (за бажанням) і збережіть",
+        "message": "Test het (optioneel) en sla het op",
         "description": "Third step in setup guide"
     },
     "badgeNew": {
-        "message": "Нове",
+        "message": "Nieuw",
         "description": "Badge shown for new/updated items"
     },
     "statusNotAvailable": {
-        "message": "Недоступно",
+        "message": "Niet beschikbaar",
         "description": "Status message when content is not available"
     },
     "statusResourceUnreachable": {
-        "message": "Ресурс недоступний",
+        "message": "Bron onbereikbaar",
         "description": "Error message when resource cannot be reached"
     },
     "statusNoHistory": {
-        "message": "Історія відсутня",
+        "message": "Geen geschiedenis beschikbaar",
         "description": "Message when there is no change history"
     },
     "notificationNow": {
-        "message": "Зараз:",
+        "message": "Nu:",
         "description": "Prefix for current value in notifications"
     }
 }

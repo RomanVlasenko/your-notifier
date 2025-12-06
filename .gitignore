@@ -1,2 +1,4 @@
 .idea/
 *.iml
+*.af~lock~
+.DS_Store

@@ -1,5 +1,5 @@
 chromeAPI.menu.removeAll();
-chromeAPI.menu.create({id: "openDialog", contexts: ["page", "selection", "link"], title: "Watch this item"});
+chromeAPI.menu.create({id: "openDialog", contexts: ["page", "selection", "link"], title: chrome.i18n.getMessage('contextMenuWatchItem')});
 
 chromeAPI.menu.onClicked.addListener(function (e) {
     if (e.menuItemId == "openDialog") {

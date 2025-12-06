@@ -55,7 +55,7 @@ function showPopupNotifications(rules) {
         var opt = {
             type: "basic",
             title: rule.title,
-            message: "Now: " + rule.value,
+            message: chrome.i18n.getMessage('notificationNow') + ' ' + rule.value,
             iconUrl: c.getFavicon(rule.url)
         };
 

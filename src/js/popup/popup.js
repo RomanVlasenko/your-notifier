@@ -6,6 +6,9 @@ var currentAction = null;
 
 $(document).ready(function () {
 
+    // Localize the page
+    localizeElement(document.body);
+
     $existingRulesContainer = $("#existing-rules");
 
     var $container = $("#container");
@@ -68,36 +71,35 @@ $(document).ready(function () {
         const browser = getBrowserName();
         const $helpSteps = $("#help-steps");
 
-        // Use "your browser" if browser is unknown
-        const browserText = browser || "your browser";
+        // Use localized "your browser" if browser is unknown
+        const browserText = browser || chrome.i18n.getMessage('helpYourBrowser');
 
         if (os === "mac") {
             $helpSteps.html(
-                '<li>Open <strong>System Settings</strong> &gt; <strong>Notifications</strong></li>' +
-                '<li>Find <strong>' + browserText + '</strong> in the list</li>' +
-                '<li>Enable <strong>"Allow notifications"</strong></li>' +
-                '<li>Set style to <strong>"Banners"</strong> or <strong>"Alerts"</strong></li>' +
-                '<li>Make sure <strong>Focus/Do Not Disturb</strong> is off</li>'
+                '<li>' + chrome.i18n.getMessage('helpMacStep1') + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpMacStep2', [browserText]) + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpMacStep3') + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpMacStep4') + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpMacStep5') + '</li>'
             );
         } else if (os === "linux") {
             $helpSteps.html(
-                '<li>Open <strong>System Settings</strong> &gt; <strong>Notifications</strong></li>' +
-                '<li>Find <strong>' + browserText + '</strong> in the list</li>' +
-                '<li>Enable notifications for ' + browserText + '</li>' +
-                '<li>Make sure <strong>Do Not Disturb</strong> is off</li>'
+                '<li>' + chrome.i18n.getMessage('helpLinuxStep1') + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpLinuxStep2', [browserText]) + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpLinuxStep3') + '</li>'
             );
         } else if (os === "windows") {
             $helpSteps.html(
-                '<li>Open <strong>Settings</strong> &gt; <strong>System</strong> &gt; <strong>Notifications</strong></li>' +
-                '<li>Find <strong>' + browserText + '</strong> in the list</li>' +
-                '<li>Enable notifications for ' + browserText + '</li>' +
-                '<li>Make sure <strong>Focus Assist</strong> is off</li>'
+                '<li>' + chrome.i18n.getMessage('helpWindowsStep1') + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpWindowsStep2', [browserText]) + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpWindowsStep3', [browserText]) + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpWindowsStep4') + '</li>'
             );
         } else {
             $helpSteps.html(
-                '<li>Check your system notification settings</li>' +
-                '<li>Find <strong>' + browserText + '</strong> in the list</li>' +
-                '<li>Enable notifications for the browser</li>'
+                '<li>' + chrome.i18n.getMessage('helpLinuxStep1') + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpLinuxStep2', [browserText]) + '</li>' +
+                '<li>' + chrome.i18n.getMessage('helpLinuxStep3') + '</li>'
             );
         }
     }
@@ -148,16 +150,16 @@ $(document).ready(function () {
     function generateCreateItemForm() {
         return '<input type="hidden" id="ruleId"/>' +
             '<div class="input-group input-group-sm">' +
-            '    <span class="input-group-addon">Title</span>' +
-            '    <input type="text" id="title" class="form-control" placeholder="Title">' +
+            '    <span class="input-group-addon" data-i18n="labelTitle">' + chrome.i18n.getMessage('labelTitle') + '</span>' +
+            '    <input type="text" id="title" class="form-control" data-i18n-placeholder="placeholderTitle" placeholder="' + chrome.i18n.getMessage('placeholderTitle') + '">' +
             '</div>' +
             '<div class="input-group input-group-sm">' +
             '    <span class="input-group-addon">URL</span>' +
             '    <input type="text" id="url" class="form-control" placeholder="URL">' +
             '</div>' +
             '<div class="input-group input-group-sm">' +
-            '    <span class="input-group-addon">Selector:</span>' +
-            '    <input type="text" id="selector" class="form-control" placeholder="CSS/jQuery selector...">' +
+            '    <span class="input-group-addon" data-i18n="labelSelector">' + chrome.i18n.getMessage('labelSelector') + '</span>' +
+            '    <input type="text" id="selector" class="form-control" data-i18n-placeholder="placeholderSelector" placeholder="' + chrome.i18n.getMessage('placeholderSelector') + '">' +
             '</div>' +
             '<div class="row">' +
             '    <div class="col-xs-6">' +
@@ -167,8 +169,8 @@ $(document).ready(function () {
             '    </div>' +
             '    <div class="col-xs-6">' +
             '        <div class="editor-buttons pull-right">' +
-            '            <button class="btn btn-small btn-default btn-sm" type="button" id="test">Test</button>' +
-            '            <button class="btn btn-small btn-primary btn-sm" type="button" id="save">Save</button>' +
+            '            <button class="btn btn-small btn-default btn-sm" type="button" id="test" data-i18n="buttonTest">' + chrome.i18n.getMessage('buttonTest') + '</button>' +
+            '            <button class="btn btn-small btn-primary btn-sm" type="button" id="save" data-i18n="buttonSave">' + chrome.i18n.getMessage('buttonSave') + '</button>' +
             '        </div>' +
             '    </div>' +
             '</div>';
@@ -178,11 +180,11 @@ $(document).ready(function () {
     function generateTestNotificationContent() {
         return '<div id="notification-status" style="display: none;" class="alert"></div>' +
             '<div id="notification-help" style="display: none;" class="alert alert-info">' +
-            '    <strong>Don\'t see notifications?</strong> Follow these steps:' +
+            '    <strong>' + chrome.i18n.getMessage('helpDontSeeNotifications') + '</strong> ' + chrome.i18n.getMessage('helpFollowSteps') +
             '    <ol id="help-steps" style="margin: 10px 0; padding-left: 20px;">' +
             '        <!-- Steps will be populated by JavaScript based on OS -->' +
             '    </ol>' +
-            '    <a href="#" id="hide-help">Hide</a>' +
+            '    <a href="#" id="hide-help">' + chrome.i18n.getMessage('linkHide') + '</a>' +
             '</div>';
     }
 
@@ -195,7 +197,7 @@ $(document).ready(function () {
             if (response.success) {
                 $status.removeClass("alert-danger").addClass("alert-success")
                        .html(response.message +
-                             ' <a href="#" id="show-help">Show setup guide</a>')
+                             ' <a href="#" id="show-help">' + chrome.i18n.getMessage('linkShowGuide') + '</a>')
                        .show();
 
                 // Add click handler for show help link
@@ -205,7 +207,7 @@ $(document).ready(function () {
                 });
             } else {
                 $status.removeClass("alert-success").addClass("alert-danger")
-                       .html('<strong>Error:</strong> ' + response.error)
+                       .html('<strong>' + chrome.i18n.getMessage('errorLabel') + '</strong> ' + response.error)
                        .show();
             }
         });
@@ -365,7 +367,7 @@ function createRuleControlDOM(rule) {
 
     $selectedInterval.prop('selected', true);
 
-    $selectedInterval.text("Update every " + $selectedInterval.text());
+    $selectedInterval.text(chrome.i18n.getMessage('labelUpdateEvery') + " " + $selectedInterval.text());
 
     ruleControl.attr("id", rule.id);
     ruleControl.find(".favicon").attr("src", c.getFavicon(rule.url));

@@ -1,7 +1,7 @@
 //Constants
-var NOT_AVAILABLE = "Not available";
-var ERROR = "Resource unreachable";
-var NO_HISTORY = "No history available";
+var NOT_AVAILABLE = chrome.i18n.getMessage('statusNotAvailable');
+var ERROR = chrome.i18n.getMessage('statusResourceUnreachable');
+var NO_HISTORY = chrome.i18n.getMessage('statusNoHistory');
 
 var HISTORY_MAX = 5;
 
@@ -11,8 +11,7 @@ var updates = {
     MAX_ATTEMPTS: 3
 };
 
-var monthNames = [ "January", "February", "March", "April", "May", "June",
-                   "July", "August", "September", "October", "November", "December" ];
+// Removed monthNames array - now using Intl.DateTimeFormat for locale-aware date formatting
 
 var validation = {
     TITLE_MAX_LENGTH: 100,
@@ -92,14 +91,23 @@ var c = {
     },
 
     formatDate: function (d) {
-        var day = d.getUTCDate();
-        var month = d.getUTCMonth() + 1;
-        var year = d.getFullYear();
+        // Use Intl.DateTimeFormat for locale-aware date formatting
+        // Get locale from Chrome i18n API (e.g., 'uk', 'en', 'de') or fallback to browser language
+        var locale = chrome.i18n.getUILanguage() || navigator.language;
 
-        var h = d.getHours();
-        var m = d.getMinutes();
+        var timeFormatter = new Intl.DateTimeFormat(locale, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
 
-        return h + ":" + twoDigits(m) + " (" + day + " " + monthNames[month - 1].substr(0, 3) + " " + year + ")";
+        var dateFormatter = new Intl.DateTimeFormat(locale, {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+
+        return timeFormatter.format(d) + ' (' + dateFormatter.format(d) + ')';
     },
 
     shortenStr: function (str, maxLength) {
@@ -140,5 +148,17 @@ function twoDigits(d) {
         d = "0" + d;
     }
     return d;
+}
+
+// Localization helper function
+function localizeElement(element) {
+    // Localize text content
+    element.querySelectorAll('[data-i18n]').forEach(function(el) {
+        el.textContent = chrome.i18n.getMessage(el.dataset.i18n);
+    });
+    // Localize placeholders
+    element.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+        el.placeholder = chrome.i18n.getMessage(el.dataset.i18nPlaceholder);
+    });
 }
 
