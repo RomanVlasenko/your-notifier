@@ -1,0 +1,218 @@
+{
+    "appName": {
+        "message": "Your Notifier — Suivez les mises à jour des pages.",
+        "description": "The title of the application, displayed in the web store."
+    },
+    "appDesc": {
+        "message": "Arrêtez d'actualiser les pages. Cette extension surveille un texte spécifique sur une page web et vous notifie lorsqu'il change.",
+        "description": "The description of the application, displayed in the web store."
+    },
+    "buttonCreateItem": {
+        "message": "Créer un élément",
+        "description": "Button to create a new tracking item"
+    },
+    "buttonTestNotifications": {
+        "message": "Tester les notifications",
+        "description": "Button to test notification system"
+    },
+    "buttonTest": {
+        "message": "Tester",
+        "description": "Button to test a rule"
+    },
+    "buttonCancel": {
+        "message": "Annuler",
+        "description": "Cancel button"
+    },
+    "buttonSave": {
+        "message": "Enregistrer",
+        "description": "Save button"
+    },
+    "buttonClone": {
+        "message": "Dupliquer",
+        "description": "Button to clone a rule"
+    },
+    "buttonDelete": {
+        "message": "Supprimer",
+        "description": "Button to delete a rule"
+    },
+    "labelTitle": {
+        "message": "Titre :",
+        "description": "Label for title field"
+    },
+    "labelSelector": {
+        "message": "Sélecteur :",
+        "description": "Label for CSS selector field"
+    },
+    "labelPopupNotifications": {
+        "message": "Notifications contextuelles",
+        "description": "Label for popup notifications checkbox"
+    },
+    "labelChangeHistory": {
+        "message": "Historique des modifications :",
+        "description": "Label for change history section"
+    },
+    "labelUpdateEvery": {
+        "message": "Actualiser toutes les",
+        "description": "Prefix for update frequency dropdown"
+    },
+    "linkShowGuide": {
+        "message": "Afficher le guide de configuration",
+        "description": "Link to show setup guide"
+    },
+    "linkHide": {
+        "message": "Masquer",
+        "description": "Link to hide help section"
+    },
+    "notificationSent": {
+        "message": "Notification envoyée ! Si vous ne la voyez pas, vérifiez les réglages système.",
+        "description": "Success message after test notification"
+    },
+    "notificationTestSuccess": {
+        "message": "Les notifications fonctionnent correctement !",
+        "description": "Test notification message"
+    },
+    "placeholderTitle": {
+        "message": "Titre",
+        "description": "Placeholder for title input field"
+    },
+    "placeholderSelector": {
+        "message": "Sélecteur CSS/jQuery...",
+        "description": "Placeholder for selector input field"
+    },
+    "helpDontSeeNotifications": {
+        "message": "Vous ne voyez pas les notifications ?",
+        "description": "Help section title"
+    },
+    "helpFollowSteps": {
+        "message": "Suivez ces étapes :",
+        "description": "Help section intro"
+    },
+    "helpYourBrowser": {
+        "message": "votre navigateur",
+        "description": "Fallback text for unknown browser"
+    },
+    "helpMacStep1": {
+        "message": "Ouvrez <strong>Réglages Système</strong> &gt; <strong>Notifications</strong>",
+        "description": "macOS notification help step 1"
+    },
+    "helpMacStep2": {
+        "message": "Trouvez <strong>$BROWSER$</strong> dans la liste",
+        "description": "macOS notification help step 2",
+        "placeholders": {
+            "browser": {
+                "content": "$1",
+                "example": "Google Chrome"
+            }
+        }
+    },
+    "helpMacStep3": {
+        "message": "Activez <strong>\"Autoriser les notifications\"</strong>",
+        "description": "macOS notification help step 3"
+    },
+    "helpMacStep4": {
+        "message": "Définissez le style sur <strong>\"Bannières\"</strong> ou <strong>\"Alertes\"</strong>",
+        "description": "macOS notification help step 4"
+    },
+    "helpMacStep5": {
+        "message": "Assurez-vous que <strong>Concentration/Ne pas déranger</strong> est désactivé",
+        "description": "macOS notification help step 5"
+    },
+    "helpLinuxStep1": {
+        "message": "Vérifiez les paramètres de notification de votre système",
+        "description": "Linux notification help step 1"
+    },
+    "helpLinuxStep2": {
+        "message": "Trouvez <strong>$BROWSER$</strong> dans la liste",
+        "description": "Linux notification help step 2",
+        "placeholders": {
+            "browser": {
+                "content": "$1",
+                "example": "Google Chrome"
+            }
+        }
+    },
+    "helpLinuxStep3": {
+        "message": "Activez les notifications pour le navigateur",
+        "description": "Linux notification help step 3"
+    },
+    "helpWindowsStep1": {
+        "message": "Ouvrez <strong>Paramètres</strong> &gt; <strong>Système</strong> &gt; <strong>Notifications</strong>",
+        "description": "Windows notification help step 1"
+    },
+    "helpWindowsStep2": {
+        "message": "Trouvez <strong>$BROWSER$</strong> dans la liste",
+        "description": "Windows notification help step 2",
+        "placeholders": {
+            "browser": {
+                "content": "$1",
+                "example": "Google Chrome"
+            }
+        }
+    },
+    "helpWindowsStep3": {
+        "message": "Activez les notifications pour $BROWSER$",
+        "description": "Windows notification help step 3",
+        "placeholders": {
+            "browser": {
+                "content": "$1",
+                "example": "Google Chrome"
+            }
+        }
+    },
+    "helpWindowsStep4": {
+        "message": "Assurez-vous que <strong>Assistance de concentration</strong> est désactivé",
+        "description": "Windows notification help step 4"
+    },
+    "errorLabel": {
+        "message": "Erreur :",
+        "description": "Error label in messages"
+    },
+    "dialogTitleCreateNewItem": {
+        "message": "Créer un nouvel élément",
+        "description": "Dialog title when creating a new tracking item"
+    },
+    "buttonClear": {
+        "message": "Effacer",
+        "description": "Button to clear change history"
+    },
+    "contextMenuWatchItem": {
+        "message": "Surveiller cet élément",
+        "description": "Context menu item to watch a page element"
+    },
+    "guideNoItemsYet": {
+        "message": "Vous n'avez encore aucun élément à surveiller.",
+        "description": "Message shown when no tracking items exist"
+    },
+    "guideStep1": {
+        "message": "Accédez à n'importe quelle page web",
+        "description": "First step in setup guide"
+    },
+    "guideStep2": {
+        "message": "Faites un clic droit sur la valeur qui vous intéresse et sélectionnez \"Surveiller cet élément\"",
+        "description": "Second step in setup guide"
+    },
+    "guideStep3": {
+        "message": "Testez-le (facultatif) et enregistrez-le",
+        "description": "Third step in setup guide"
+    },
+    "badgeNew": {
+        "message": "Nouveau",
+        "description": "Badge shown for new/updated items"
+    },
+    "statusNotAvailable": {
+        "message": "Non disponible",
+        "description": "Status message when content is not available"
+    },
+    "statusResourceUnreachable": {
+        "message": "Ressource inaccessible",
+        "description": "Error message when resource cannot be reached"
+    },
+    "statusNoHistory": {
+        "message": "Aucun historique disponible",
+        "description": "Message when there is no change history"
+    },
+    "notificationNow": {
+        "message": "Maintenant :",
+        "description": "Prefix for current value in notifications"
+    }
+}
