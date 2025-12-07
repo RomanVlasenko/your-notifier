@@ -134,14 +134,14 @@ describe('Selector Generator', () => {
         testFixture('github_com.html');
         testFixture('ebay_com.html');
         testFixture('sinoptik_ua.html');
+        testFixture('yahoo_finance_com.html');
         testFixture('zalando_nl.html', { expectedToFail: true }); // CSS-in-JS limitation
         testFixture('booking_com.html', { expectedToFail: true }); // jQuery :eq() selector limitation
 
         // Additional fixtures to be added:
-        // testFixture('aliexpress-product.html');
-        // testFixture('yahoo-finance-goog.html');
-        // testFixture('reddit-upvotes.html');
-        // testFixture('youtube-views.html');
+        // testFixture('aliexpress-product.html'); - dynamic, completely
+        // testFixture('reddit-upvotes.html'); - dynamic, completely
+        // testFixture('youtube-views.html'); - dynamic, completely
         // testFixture('news-article.html');
     });
 
