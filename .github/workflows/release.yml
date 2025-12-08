@@ -60,33 +60,20 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
-          release_name: Release v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
+          generate_release_notes: true
           body: |
-            ## Your Notifier Extension v${{ steps.get_version.outputs.version }}
-
-            ### Installation
+            ## Installation
             1. Download the `your-notifier-${{ steps.get_version.outputs.version }}.zip` file
             2. Extract it to a folder
             3. Open Chrome/Edge and go to `chrome://extensions/`
             4. Enable "Developer mode"
             5. Click "Load unpacked" and select the extracted folder
-
-            ### Changes
-            See commit history for details.
           draft: false
           prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./your-notifier-${{ steps.get_version.outputs.version }}.zip
-          asset_name: your-notifier-${{ steps.get_version.outputs.version }}.zip
-          asset_content_type: application/zip
+          files: ./your-notifier-${{ steps.get_version.outputs.version }}.zip
