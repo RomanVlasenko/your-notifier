@@ -6,7 +6,7 @@
     "default_locale": "en",
 
     "short_name": "YoN",
-    "version": "2.0.4",
+    "version": "2.0.5",
     "action": {
         "default_icon": "img/icon32x32.png",
         "default_popup": "popup.html",
@@ -27,7 +27,8 @@
             "js": [
                 "lib/jquery-2.0.3.min.js",
                 "lib/jquery-ui-1.10.3.min.js",
-                "lib/selectorator.min.js",
+                "lib/css-selector-generator.min.js",
+                "js/selector-generator-adapter.js",
                 "js/common.js",
                 "js/dialog/contentScript.js"
             ]

@@ -55,8 +55,8 @@ $.get(chrome.runtime.getURL("dialog.html"), function (data) {
         function (request, sender, sendResponse) {
             if (request.method == "createRule") {
                 if ($clickedElement) {
-                    // Debug: Log the element being passed to selectorator
-                    console.log("Element passed to selectorator:", {
+                    // Debug: Log the element being passed to selector generator
+                    console.log("Element passed to selector generator:", {
                         tagName: $clickedElement[0].tagName,
                         className: $clickedElement[0].className,
                         id: $clickedElement[0].id,
@@ -65,7 +65,7 @@ $.get(chrome.runtime.getURL("dialog.html"), function (data) {
                     });
 
                     try {
-                        selector = $clickedElement.getSelector().join("\n");
+                        selector = generateSelector($clickedElement);
                     } catch (e) {
                         console.log("Unable to generate selector: " + e);
                     }

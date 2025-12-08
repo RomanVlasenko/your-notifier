@@ -75,10 +75,10 @@ export function findTargetElement($, selectorHint) {
 }
 
 /**
- * Extract text value from an element, trimming whitespace
+ * Extract text value from an element, trimming and normalizing whitespace
  * @param {jQuery} $element - jQuery element
- * @returns {string} Trimmed text content
+ * @returns {string} Trimmed and normalized text content
  */
 export function extractValue($element) {
-    return $element.text().trim();
+    return $element.text().trim().replace(/\s+/g, ' ');
 }
