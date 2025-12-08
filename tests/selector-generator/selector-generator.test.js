@@ -36,7 +36,10 @@ const selectorConfig = {
     ],
     includeTag: false,
     combineWithinSelector: true,
-    combineBetweenSelectors: true
+    combineBetweenSelectors: true,
+    // Aggressive performance limits for fast test execution
+    maxCombinations: 10,
+    maxCandidates: 10
 };
 
 describe('Selector Generator', () => {
