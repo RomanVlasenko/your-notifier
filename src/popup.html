@@ -32,8 +32,8 @@
             </button>
         </div>
         <div class="col-xs-6">
-            <button id="test-notification-btn" class="btn btn-block btn-default action-btn" type="button">
-                <span class="glyphicon glyphicon-bell"></span> <span data-i18n="buttonTestNotifications">Test Notifications</span>
+            <button id="settings-btn" class="btn btn-block btn-default action-btn" type="button">
+                <span class="glyphicon glyphicon-cog"></span> <span data-i18n="buttonSettings">Settings</span>
             </button>
         </div>
     </div>
@@ -86,6 +86,57 @@
 <!--Control Elements-->
 <div id="controls" style="display: none">
 
+    <div id="settings-panel">
+        <!-- Action Buttons -->
+        <div class="settings-buttons">
+            <button id="test-notification-btn" class="btn btn-small btn-default" type="button">
+                <span class="glyphicon glyphicon-bell"></span> <span data-i18n="buttonTestNotifications">Test Notifications</span>
+            </button>
+            <div class="btn-group" role="group">
+                <button id="import-btn" class="btn btn-small btn-default" type="button">
+                    <span class="glyphicon glyphicon-download-alt"></span> <span data-i18n="buttonImport">Import</span>
+                </button>
+                <button id="export-btn" class="btn btn-small btn-default" type="button">
+                    <span class="glyphicon glyphicon-upload"></span> <span data-i18n="buttonExport">Export</span>
+                </button>
+            </div>
+            <input type="file" id="import-file-input" accept=".json" style="display: none;">
+        </div>
+
+        <!-- Notification feedback areas -->
+        <div id="test-notification-status" class="alert" style="margin-top: 10px; display: none;"></div>
+        <div id="import-export-status" class="alert" style="margin-top: 10px; display: none;"></div>
+        <div id="notification-help" class="alert alert-info" style="display: none; margin-top: 10px;">
+            <p style="font-size: 15px; margin-bottom: 5px;"><strong data-i18n="helpDontSeeNotifications">Don't see notifications?</strong></p>
+            <p style="font-size: 15px; margin-bottom: 5px;" data-i18n="helpFollowSteps">Follow these steps:</p>
+            <ol id="help-steps" style="font-size: 15px; margin-left: 20px;"></ol>
+            <a href="#" id="hide-help-link" style="font-size: 15px;" data-i18n="linkHide">Hide</a>
+        </div>
+
+        <!-- Help & Support Section -->
+        <div class="panel panel-default" style="margin-left: 5px; margin-right: 5px; margin-bottom: 0;">
+            <div class="panel-heading">
+                <strong data-i18n="settingsHelpSupport">Help & Support</strong>
+            </div>
+            <div class="panel-body">
+                <ul class="settings-links">
+                    <li>
+                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                        <a href="https://chromewebstore.google.com/detail/ijkpkehidneobagkboaoapccnfnnmemg/reviews" target="_blank" data-i18n="footerRateExtension">Rate extension</a>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-thumbs-down"></span>
+                        <a href="https://chromewebstore.google.com/detail/ijkpkehidneobagkboaoapccnfnnmemg/support" target="_blank" data-i18n="footerReportIssue">Report issue</a>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-facetime-video"></span>
+                        <a href="https://www.youtube.com/watch?v=R2G8UPHAADc" target="_blank" data-i18n="footerWatchDemo">Watch demo</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <div id="empty-rules">
         <h5 id='norules' class='text-center' data-i18n="guideNoItemsYet">You don't have any items to watch yet.</h5>
         <div class="panel panel-default">
@@ -109,7 +160,7 @@
 
     <div class='rule-buttons btn-group btn-group-sm pull-right'>
         <button type='button' class='edit btn btn-default'><span class='glyphicon glyphicon-pencil'></span></button>
-        <button type='button' class='settings btn btn-default'><span class='glyphicon glyphicon-cog'></span></button>
+        <button type='button' class='settings btn btn-default'><span class='glyphicon glyphicon-th-list'></span></button>
     </div>
 
     <div class='row rule-buttons-more'>

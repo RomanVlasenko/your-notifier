@@ -214,5 +214,45 @@
     "notificationNow": {
         "message": "Nu:",
         "description": "Prefix for current value in notifications"
+    },
+    "footerRateExtension": {
+        "message": "Extensie beoordelen",
+        "description": "Footer link to rate extension in web store"
+    },
+    "footerReportIssue": {
+        "message": "Probleem melden",
+        "description": "Footer link to report issues on GitHub"
+    },
+    "footerWatchDemo": {
+        "message": "Bekijk demo",
+        "description": "Footer link to YouTube demo video"
+    },
+    "buttonSettings": {
+        "message": "Instellingen",
+        "description": "Settings button label"
+    },
+    "settingsImportExport": {
+        "message": "Importeren / Exporteren",
+        "description": "Settings section heading for import/export"
+    },
+    "settingsImportExportDesc": {
+        "message": "Maak een back-up of herstel al uw volgregels",
+        "description": "Description for import/export section"
+    },
+    "buttonImport": {
+        "message": "Importeren",
+        "description": "Import button label"
+    },
+    "buttonExport": {
+        "message": "Exporteren",
+        "description": "Export button label"
+    },
+    "settingsNotifications": {
+        "message": "Meldingen",
+        "description": "Settings section heading for notifications"
+    },
+    "settingsHelpSupport": {
+        "message": "Hulp & Ondersteuning",
+        "description": "Settings section heading for help and support links"
     }
 }

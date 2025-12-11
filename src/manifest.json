@@ -6,7 +6,7 @@
     "default_locale": "en",
 
     "short_name": "YoN",
-    "version": "2.0.5",
+    "version": "2.0.6",
     "action": {
         "default_icon": "img/icon32x32.png",
         "default_popup": "popup.html",

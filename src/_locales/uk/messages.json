@@ -214,5 +214,45 @@
     "notificationNow": {
         "message": "Зараз:",
         "description": "Prefix for current value in notifications"
+    },
+    "footerRateExtension": {
+        "message": "Оцінити розширення",
+        "description": "Footer link to rate extension in web store"
+    },
+    "footerReportIssue": {
+        "message": "Повідомити про проблему",
+        "description": "Footer link to report issues on GitHub"
+    },
+    "footerWatchDemo": {
+        "message": "Дивитися демо",
+        "description": "Footer link to YouTube demo video"
+    },
+    "buttonSettings": {
+        "message": "Налаштування",
+        "description": "Settings button label"
+    },
+    "settingsImportExport": {
+        "message": "Імпорт / Експорт",
+        "description": "Settings section heading for import/export"
+    },
+    "settingsImportExportDesc": {
+        "message": "Створіть резервну копію або відновіть всі правила відстеження",
+        "description": "Description for import/export section"
+    },
+    "buttonImport": {
+        "message": "Імпортувати",
+        "description": "Import button label"
+    },
+    "buttonExport": {
+        "message": "Експортувати",
+        "description": "Export button label"
+    },
+    "settingsNotifications": {
+        "message": "Сповіщення",
+        "description": "Settings section heading for notifications"
+    },
+    "settingsHelpSupport": {
+        "message": "Допомога та Підтримка",
+        "description": "Settings section heading for help and support links"
     }
 }

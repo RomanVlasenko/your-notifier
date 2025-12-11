@@ -265,9 +265,9 @@ button.active-action {
 /* Unified action content container */
 #action-content {
     margin: 0;
-    padding: 0 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
+    padding: 0;
+    background-color: transparent;
+    border: none;
     border-radius: 4px;
     max-height: 0;
     overflow: hidden;
@@ -279,3 +279,123 @@ button.active-action {
     max-height: 500px; /* Adjust based on max expected content height */
     opacity: 1;
 }
+
+/* Settings panel styling */
+#settings-panel {
+    padding: 5px;
+    background-color: #eee;
+}
+
+.settings-buttons {
+    padding: 0px;
+    margin-bottom: 0px;
+}
+
+.settings-buttons button {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.button-group-separator {
+    display: inline-block;
+    width: 10px;
+}
+
+.settings-buttons .btn-group {
+    float: right;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.settings-buttons .btn-group button {
+    margin: 0;
+}
+
+.settings-buttons::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.settings-section {
+    margin-bottom: 20px;
+    padding: 15px 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.settings-heading {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.settings-content {
+    font-size: 13px;
+}
+
+.settings-content button {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.settings-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.settings-links li {
+    margin-bottom: 8px;
+}
+
+.settings-links li .glyphicon {
+    color: #428bca;
+    margin-right: 8px;
+    font-size: 15px;
+}
+
+.settings-links a {
+    color: #428bca;
+    text-decoration: none;
+    border-bottom: 1px dashed #428bca;
+    font-size: 15px;
+}
+
+.settings-links a:hover {
+    color: #2a6496;
+    border-bottom-color: #2a6496;
+}
+
+/* Help & Support panel spacing */
+#settings-panel .panel {
+    margin-bottom: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#settings-panel .panel-body {
+    padding-left: 5px !important;
+}
+
+#settings-panel .panel-heading {
+    padding-left: 5px !important;
+}
+
+/* Notification feedback areas */
+#test-notification-status,
+#notification-help {
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+}
+

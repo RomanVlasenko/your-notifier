@@ -4,6 +4,9 @@
 
 Chrome extension for tracking value changes on web pages. Users select an element, extension generates a CSS selector, and monitors for changes.
 
+Web Store link: https://chromewebstore.google.com/detail/ijkpkehidneobagkboaoapccnfnnmemg
+GitHub link: https://github.com/RomanVlasenko/your-notifier
+
 ## Key Architecture
 
 - `src/` - Extension source (Manifest V3)

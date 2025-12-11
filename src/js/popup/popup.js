@@ -112,7 +112,7 @@ $(document).ready(function () {
     function toggleActionContent(actionType, contentGenerator) {
         var $actionContent = $("#action-content");
         var $createBtn = $("#create");
-        var $testBtn = $("#test-notification-btn");
+        var $settingsBtn = $("#settings-btn");
 
         // If clicking the same button, close it
         if (currentAction === actionType) {
@@ -121,14 +121,14 @@ $(document).ready(function () {
                 $actionContent.empty();
             }, 150); // Match transition duration
             $createBtn.removeClass("active-action");
-            $testBtn.removeClass("active-action");
+            $settingsBtn.removeClass("active-action");
             currentAction = null;
             return;
         }
 
         // Update button states
         $createBtn.toggleClass("active-action", actionType === "create");
-        $testBtn.toggleClass("active-action", actionType === "test-notification");
+        $settingsBtn.toggleClass("active-action", actionType === "settings");
 
         // Generate and show content
         var content = contentGenerator();
@@ -177,22 +177,9 @@ $(document).ready(function () {
             '</div>';
     }
 
-    // Generate test notification content
-    function generateTestNotificationContent() {
-        return '<div id="notification-status" style="display: none;" class="alert"></div>' +
-            '<div id="notification-help" style="display: none;" class="alert alert-info">' +
-            '    <strong>' + chrome.i18n.getMessage('helpDontSeeNotifications') + '</strong> ' + chrome.i18n.getMessage('helpFollowSteps') +
-            '    <ol id="help-steps" style="margin: 10px 0; padding-left: 20px;">' +
-            '        <!-- Steps will be populated by JavaScript based on OS -->' +
-            '    </ol>' +
-            '    <a href="#" id="hide-help">' + chrome.i18n.getMessage('linkHide') + '</a>' +
-            '</div>';
-    }
-
     // Test notification function
     function testNotification() {
-        var $status = $("#notification-status");
-        var $help = $("#notification-help");
+        var $status = $("#test-notification-status");
 
         chromeAPI.runtime.sendMessage({ method: "testNotification" }, function(response) {
             if (response.success) {
@@ -201,20 +188,13 @@ $(document).ready(function () {
                              ' <a href="#" id="show-help">' + chrome.i18n.getMessage('linkShowGuide') + '</a>')
                        .show();
 
-                // Add click handler for show help link
-                $("#show-help").on("click", function(e) {
-                    e.preventDefault();
-                    $help.slideDown();
-                });
+                populateHelpSteps();
             } else {
                 $status.removeClass("alert-success").addClass("alert-danger")
                        .html('<strong>' + chrome.i18n.getMessage('errorLabel') + '</strong> ' + response.error)
                        .show();
             }
         });
-
-        // Populate help steps
-        populateHelpSteps();
     }
 
     // Update "Create item" button handler
@@ -251,22 +231,16 @@ $(document).ready(function () {
         }
     });
 
-    // Update "Test Notifications" button handler
-    $("#test-notification-btn").on("click", function() {
-        if (currentAction !== "test-notification") {
-            // Opening test notifications
-            toggleActionContent("test-notification", function() {
-                return generateTestNotificationContent();
-            });
+    // Update "Test Notifications" button handler (now inside settings)
+    $(document).on("click", "#test-notification-btn", function() {
+        testNotification();
+    });
 
-            // Trigger the test
-            testNotification();
-        } else {
-            // Closing
-            toggleActionContent("test-notification", function() {
-                return "";
-            });
-        }
+    // Settings button handler
+    $("#settings-btn").on("click", function() {
+        toggleActionContent("settings", function() {
+            return $("#settings-panel").html();
+        });
     });
 
     // Event delegation for dynamically generated content
@@ -278,9 +252,32 @@ $(document).ready(function () {
         onSaveClick();
     });
 
-    $(document).on("click", "#hide-help", function(e) {
+    $(document).on("click", "#show-help", function(e) {
+        e.preventDefault();
+        $("#notification-help").slideToggle();
+    });
+
+    $(document).on("click", "#hide-help-link", function(e) {
         e.preventDefault();
         $("#notification-help").slideUp();
+    });
+
+    // Import/Export handlers
+    $(document).on("click", "#export-btn", function() {
+        exportRules();
+    });
+
+    $(document).on("click", "#import-btn", function() {
+        $("#import-file-input").click();
+    });
+
+    $(document).on("change", "#import-file-input", function(e) {
+        var file = e.target.files[0];
+        if (file) {
+            importRules(file);
+        }
+        // Reset file input so the same file can be selected again
+        $(this).val('');
     });
 
     // Phase 5: Check for recent notification errors on popup load
@@ -299,6 +296,162 @@ $(document).ready(function () {
             });
         }
     });
+
+    // Export all rules to JSON file
+    function exportRules() {
+        var $status = $("#import-export-status");
+
+        ruleStorage.readRules(function(rules) {
+            if (rules.length === 0) {
+                $status.removeClass("alert-success").addClass("alert-warning")
+                       .html('<strong>Warning:</strong> No items to export.')
+                       .show();
+                setTimeout(function() { $status.fadeOut(); }, 3000);
+                return;
+            }
+
+            // Create export data with metadata
+            var exportData = {
+                version: "1.0",
+                exportDate: new Date().toISOString(),
+                itemCount: rules.length,
+                rules: rules
+            };
+
+            var dataStr = JSON.stringify(exportData, null, 2);
+            var dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+            // Create download link
+            var url = URL.createObjectURL(dataBlob);
+            var downloadLink = document.createElement('a');
+            downloadLink.href = url;
+
+            // Generate filename with current date
+            var date = new Date().toISOString().split('T')[0];
+            downloadLink.download = 'your-notifier-backup-' + date + '.json';
+
+            // Trigger download
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(url);
+
+            // Show success message
+            $status.removeClass("alert-warning alert-danger").addClass("alert-success")
+                   .html('<strong>Success!</strong> Exported ' + rules.length + ' item(s).')
+                   .show();
+            setTimeout(function() { $status.fadeOut(); }, 3000);
+        });
+    }
+
+    // Import rules from JSON file
+    function importRules(file) {
+        var $status = $("#import-export-status");
+
+        if (!file.name.endsWith('.json')) {
+            $status.removeClass("alert-success").addClass("alert-danger")
+                   .html('<strong>Error:</strong> Please select a valid JSON file.')
+                   .show();
+            setTimeout(function() { $status.fadeOut(); }, 5000);
+            return;
+        }
+
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                var importData = JSON.parse(e.target.result);
+
+                // Validate import data structure
+                if (!importData.rules || !Array.isArray(importData.rules)) {
+                    throw new Error('Invalid file format: missing or invalid rules array');
+                }
+
+                var rules = importData.rules;
+
+                if (rules.length === 0) {
+                    $status.removeClass("alert-success").addClass("alert-warning")
+                           .html('<strong>Warning:</strong> The file contains no items to import.')
+                           .show();
+                    setTimeout(function() { $status.fadeOut(); }, 5000);
+                    return;
+                }
+
+                // Validate each rule has required fields with proper types
+                var invalidRules = rules.filter(function(rule) {
+                    return !rule.id ||
+                           !rule.title ||
+                           !rule.url ||
+                           !rule.selector ||
+                           typeof rule.id !== 'string' ||
+                           typeof rule.title !== 'string' ||
+                           typeof rule.url !== 'string' ||
+                           typeof rule.selector !== 'string';
+                });
+
+                if (invalidRules.length > 0) {
+                    throw new Error('Invalid rule data: ' + invalidRules.length + ' rule(s) missing required fields or have invalid types');
+                }
+
+                // Ensure all rules have the necessary default values
+                rules = rules.map(function(rule) {
+                    return {
+                        id: rule.id,
+                        title: rule.title,
+                        url: rule.url,
+                        selector: rule.selector,
+                        updateFrequency: rule.updateFrequency || 5,
+                        index: rule.index || 0,
+                        value: rule.value || '',
+                        history: rule.history || [],
+                        lastUpdated: rule.lastUpdated || null,
+                        attempts: rule.attempts || 0,
+                        new: rule.new || false,
+                        notify: rule.notify !== undefined ? rule.notify : true,
+                        notified: rule.notified || false,
+                        ver: rule.ver || 1
+                    };
+                });
+
+                // Show confirmation dialog
+                var message = 'Import ' + rules.length + ' item(s)?\n\n' +
+                             'This will add them to your existing items. ' +
+                             'Duplicate IDs will be overwritten.';
+
+                if (!confirm(message)) {
+                    return;
+                }
+
+                // Import rules
+                ruleStorage.saveRules(rules, function() {
+                    $status.removeClass("alert-warning alert-danger").addClass("alert-success")
+                           .html('<strong>Success!</strong> Imported ' + rules.length + ' item(s).')
+                           .show();
+
+                    // Refresh the list to show imported rules
+                    refreshRuleControls();
+
+                    setTimeout(function() { $status.fadeOut(); }, 5000);
+                });
+
+            } catch (error) {
+                console.error('Import error:', error);
+                $status.removeClass("alert-success").addClass("alert-danger")
+                       .html('<strong>Error:</strong> ' + error.message)
+                       .show();
+                setTimeout(function() { $status.fadeOut(); }, 5000);
+            }
+        };
+
+        reader.onerror = function() {
+            $status.removeClass("alert-success").addClass("alert-danger")
+                   .html('<strong>Error:</strong> Failed to read file.')
+                   .show();
+            setTimeout(function() { $status.fadeOut(); }, 5000);
+        };
+
+        reader.readAsText(file);
+    }
 
 });
 
@@ -399,9 +552,9 @@ function createRuleControlDOM(rule) {
         var $icon = $settingsBtn.find("span");
         var ruleId = $additionalButtons.attr("id");
 
-        // If showing envelope icon (new update), change back to cog and mark as not new
+        // If showing envelope icon (new update), change back to th-list and mark as not new
         if ($icon.hasClass("glyphicon-envelope")) {
-            $icon.removeClass("glyphicon-envelope").addClass("glyphicon-cog");
+            $icon.removeClass("glyphicon-envelope").addClass("glyphicon-th-list");
 
             ruleStorage.readRule(ruleId, function (rule) {
                 rule.new = false;
@@ -582,11 +735,11 @@ function showNewBadge($ruleControl, rule) {
         // We keep this for potential future use or when refreshList is called while popup is open
         $ruleControl.find(".badge.new").fadeIn(1000);
 
-        // Change settings icon from cog to envelope
+        // Change settings icon from th-list to envelope
         // This persists until user clicks on it
         var $settingsBtn = $ruleControl.find(".settings");
         var $icon = $settingsBtn.find("span");
-        $icon.removeClass("glyphicon-cog").addClass("glyphicon-envelope");
+        $icon.removeClass("glyphicon-th-list").addClass("glyphicon-envelope");
     }
 }
 

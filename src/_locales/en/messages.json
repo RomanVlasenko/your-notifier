@@ -214,5 +214,45 @@
     "notificationNow": {
         "message": "Now:",
         "description": "Prefix for current value in notifications"
+    },
+    "footerRateExtension": {
+        "message": "Rate extension",
+        "description": "Footer link to rate extension in web store"
+    },
+    "footerReportIssue": {
+        "message": "Report issue",
+        "description": "Footer link to report issues on GitHub"
+    },
+    "footerWatchDemo": {
+        "message": "Watch demo",
+        "description": "Footer link to YouTube demo video"
+    },
+    "buttonSettings": {
+        "message": "Settings",
+        "description": "Settings button label"
+    },
+    "settingsImportExport": {
+        "message": "Import / Export",
+        "description": "Settings section heading for import/export"
+    },
+    "settingsImportExportDesc": {
+        "message": "Backup or restore all your tracking rules",
+        "description": "Description for import/export section"
+    },
+    "buttonImport": {
+        "message": "Import",
+        "description": "Import button label"
+    },
+    "buttonExport": {
+        "message": "Export",
+        "description": "Export button label"
+    },
+    "settingsNotifications": {
+        "message": "Notifications",
+        "description": "Settings section heading for notifications"
+    },
+    "settingsHelpSupport": {
+        "message": "Help & Support",
+        "description": "Settings section heading for help and support links"
     }
 }
