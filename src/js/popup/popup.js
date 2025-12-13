@@ -625,7 +625,9 @@ function createRuleControlDOM(rule) {
                 rule.ver = rule.ver + 1;
             });
 
-            ruleStorage.saveRules(rules);
+            ruleStorage.saveRules(rules, function () {
+                // Rules saved successfully
+            });
         });
 
         repaintStripes();

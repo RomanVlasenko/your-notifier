@@ -46,12 +46,33 @@ a, a:hover {
     margin-top: 1px;
 }
 
+/* Legacy draggable class - kept for compatibility */
 .draggable {
     z-index: 999;
     cursor: move;
     text-shadow: 1px 1px #ccc;
     box-shadow: 1px 1px 2px 1px #ccc;
     background: #f2f2f2;
+}
+
+/* SortableJS: The element being dragged */
+.sortable-drag {
+    opacity: 0.5;
+    cursor: move !important;
+}
+
+/* SortableJS: The ghost/placeholder showing where item will drop */
+.sortable-ghost {
+    opacity: 0.4;
+    background: #c8ebfb !important;
+    border: 2px dashed #428bca !important;
+    box-shadow: 0 0 10px rgba(66, 139, 202, 0.3);
+}
+
+/* SortableJS: The chosen element when drag starts */
+.sortable-chosen {
+    cursor: move;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 div.title {
@@ -122,6 +143,13 @@ button.delete {
     padding-bottom: 5px;
     border-radius: 5px;
     font-size: 13px;
+    cursor: move;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rule-control:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .rule-control.odd {

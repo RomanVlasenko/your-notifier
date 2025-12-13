@@ -32,3 +32,7 @@ npm test -- selector-generator.test.js  # Run selector tests only
 ## Testing
 
 Tests use real HTML fixtures from websites. See `tests/agents.md` for fixture creation guidelines.
+
+## Git Commits and Pull Requests
+
+Write natural commit messages without mentioning AI assistance or adding attribution footers.
