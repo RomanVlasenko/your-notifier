@@ -47,10 +47,7 @@ jobs:
       - name: Create extension package
         run: |
           cd src
-          zip -r ../your-notifier-${{ steps.get_version.outputs.version }}.zip . \
-            -x "*.DS_Store" \
-            -x "__MACOSX/*" \
-            -x ".git/*"
+          zip -r ../your-notifier-${{ steps.get_version.outputs.version }}.zip .
           cd ..
 
       - name: Verify package
