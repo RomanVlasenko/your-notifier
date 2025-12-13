@@ -83,25 +83,69 @@ var ruleStorage = {
     }
 };
 
-//Remove rule with the same key from local storage (case when rule was removed on another instance of chrome)
+//Sync rules between chrome instances when changes occur in sync storage
 chrome.storage.onChanged.addListener(function (changes, namespace) {
+    if (namespace !== "sync") {
+        return;
+    }
+
     for (var key in changes) {
         var storageChange = changes[key];
 
-        if (namespace == "sync") {
-            if (_.isUndefined(storageChange.newValue)) {
-                console.log("Rule '%s' was deleted", key);
+        // Skip ruleKeys - it's an index, not a rule
+        if (key === "ruleKeys") {
+            continue;
+        }
 
-                storageUtils.deleteRuleKey(key, function () {
-                    sl.deleteRule(key, function () {
+        if (_.isUndefined(storageChange.newValue)) {
+            // Rule was deleted on another instance
+            console.log("Rule '%s' was deleted", key);
+
+            storageUtils.deleteRuleKey(key, function () {
+                sl.deleteRule(key, function () {
+                    chromeAPI.runtime.sendMessage({msg: "refreshList"}, function() {
+                        if (chrome.runtime.lastError) {
+                            // Ignore - popup may not be open
+                        }
+                    });
+                });
+            });
+        } else if (_.isUndefined(storageChange.oldValue)) {
+            // Rule was added on another instance - initialize local storage
+            console.log("Rule '%s' was added from sync", key);
+
+            var syncRule = storageChange.newValue;
+            sl.readRule(key, function(localRule) {
+                if (_.isUndefined(localRule) || _.isEmpty(localRule)) {
+                    // Initialize local storage with defaults for new synced rule
+                    sl.saveRule({
+                        id: syncRule.id,
+                        index: Date.now(),
+                        value: "",
+                        history: [],
+                        lastUpdated: null,
+                        attempts: 0,
+                        new: false,
+                        notify: true,
+                        notified: false
+                    }, function() {
                         chromeAPI.runtime.sendMessage({msg: "refreshList"}, function() {
                             if (chrome.runtime.lastError) {
                                 // Ignore - popup may not be open
                             }
                         });
                     });
-                });
-            }
+                }
+            });
+        } else {
+            // Rule was modified on another instance - just refresh UI
+            console.log("Rule '%s' was modified from sync", key);
+
+            chromeAPI.runtime.sendMessage({msg: "refreshList"}, function() {
+                if (chrome.runtime.lastError) {
+                    // Ignore - popup may not be open
+                }
+            });
         }
     }
 });
