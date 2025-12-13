@@ -10,7 +10,7 @@ function checkAndUpdate(rule) {
 
     console.log("[urlChecker] Starting fetch for rule %s: %s", rule.id, rule.url);
 
-    fetch(rule.url)
+    fetch(rule.url, { credentials: 'include' })
         .then(function (response) {
             console.log("[urlChecker] Fetch successful for rule %s, status: %s", rule.id, response.status);
             return response.text();

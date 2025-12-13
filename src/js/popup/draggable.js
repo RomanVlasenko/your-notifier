@@ -37,32 +37,11 @@ $(document).ready(function () {
             handle: opt.handle || undefined,  // Drag handle selector
             forceFallback: false,  // Use native HTML5 drag and drop
 
-            // Filter out elements that shouldn't be draggable
-            filter: function(evt, target) {
-                // Prevent dragging when user clicks on interactive elements
-                var $target = $(evt.target);
-                var tagName = evt.target.tagName.toUpperCase();
+            // Filter out elements that shouldn't trigger drag
+            filter: '.rule-buttons-more, .rule-buttons-more *, button, input, select, option, textarea, a',
 
-                // Block drag on buttons, inputs, selects
-                if (tagName === 'BUTTON' || tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA') {
-                    return true;  // Filter out (prevent drag)
-                }
-
-                // Block drag if inside a button
-                if ($target.closest('button').length > 0) {
-                    return true;  // Filter out (prevent drag)
-                }
-
-                // Block drag on links (the .url link should be clickable)
-                if (tagName === 'A') {
-                    return true;  // Filter out (prevent drag)
-                }
-
-                return false;  // Allow drag
-            },
-
-            // Prevent dragging on filtered elements
-            preventOnFilter: true,
+            // Don't call preventDefault on filtered elements - let them work normally
+            preventOnFilter: false,
 
             // Only move .rule-control elements
             draggable: '.rule-control',

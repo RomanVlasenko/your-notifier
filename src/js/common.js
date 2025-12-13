@@ -53,7 +53,7 @@ var c = {
     },
 
     checkUrl: function (rule, callbackHandler) {
-        fetch(rule.url)
+        fetch(rule.url, { credentials: 'include' })
             .then(function (response) { return response.text(); })
             .then(function (srcHtml) {
                 // Send to offscreen document for parsing (if in service worker context)
