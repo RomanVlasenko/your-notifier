@@ -201,11 +201,15 @@
     },
     "statusNotAvailable": {
         "message": "Niet beschikbaar",
-        "description": "Status message when content is not available"
+        "description": "Status message when element disappears after being found previously"
     },
     "statusResourceUnreachable": {
         "message": "Bron onbereikbaar",
-        "description": "Error message when resource cannot be reached"
+        "description": "Error message when network request fails"
+    },
+    "statusElementNotFound": {
+        "message": "Geen match",
+        "description": "Status message when CSS selector doesn't match any element on the page"
     },
     "statusNoHistory": {
         "message": "Geen geschiedenis beschikbaar",

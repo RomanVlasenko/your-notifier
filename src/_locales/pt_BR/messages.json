@@ -201,11 +201,15 @@
     },
     "statusNotAvailable": {
         "message": "Não disponível",
-        "description": "Status message when content is not available"
+        "description": "Status message when element disappears after being found previously"
     },
     "statusResourceUnreachable": {
         "message": "Recurso inacessível",
-        "description": "Error message when resource cannot be reached"
+        "description": "Error message when network request fails"
+    },
+    "statusElementNotFound": {
+        "message": "Sem resultado",
+        "description": "Status message when CSS selector doesn't match any element on the page"
     },
     "statusNoHistory": {
         "message": "Sem histórico disponível",

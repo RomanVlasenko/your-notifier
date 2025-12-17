@@ -1,6 +1,7 @@
 //Constants
 var NOT_AVAILABLE = chrome.i18n.getMessage('statusNotAvailable');
 var ERROR = chrome.i18n.getMessage('statusResourceUnreachable');
+var ELEMENT_NOT_FOUND = chrome.i18n.getMessage('statusElementNotFound');
 var NO_HISTORY = chrome.i18n.getMessage('statusNoHistory');
 
 var HISTORY_MAX = 5;

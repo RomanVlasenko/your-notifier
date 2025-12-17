@@ -27,7 +27,7 @@ function checkAndUpdate(rule) {
             }, function (response) {
                 if (chrome.runtime.lastError) {
                     console.error('[urlChecker] Error sending to offscreen document for rule %s:', rule.id, chrome.runtime.lastError.message);
-                    onError();
+                    onNetworkError();
                     return;
                 }
 
@@ -36,12 +36,13 @@ function checkAndUpdate(rule) {
 
                 if (newVal) {
                     console.log("[urlChecker] Successfully parsed value for rule %s: %s", rule.id, newVal);
-                    //Resetting attempts counter if it's needed
-                    ruleStorage.readRule(rule.id, function (rule) {
-                        if ((rule.attempts || 0) > 0) {
-                            rule.attempts = 0;
-                            rule.value = newVal;
-                            ruleStorage.updateRule(rule, function () {
+                    // Reset attempts counter if needed, then update value
+                    ruleStorage.readRule(rule.id, function (storedRule) {
+                        if ((storedRule.attempts || 0) > 0) {
+                            storedRule.attempts = 0;
+                            ruleStorage.updateRule(storedRule, function () {
+                                // Now update value (pass newVal separately to compare with old value)
+                                rule.value = newVal;
                                 updateRuleValue(rule, callbackHandler);
                             });
                         } else {
@@ -51,17 +52,19 @@ function checkAndUpdate(rule) {
                     });
                 } else {
                     console.log("[urlChecker] Unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
-                    onError();
+                    onSelectorNotFound();
                 }
             });
         })
         .catch(function (error) {
             console.log("[urlChecker] Fetch failed for rule %s. Error: %s. Attempts made: %s", rule.id, error, rule.attempts);
-            onError();
+            onNetworkError();
         });
 
-    function onError() {
-        if (rule.value) {
+    // Called when network request fails
+    function onNetworkError() {
+        if (rule.value && rule.value !== ERROR && rule.value !== ELEMENT_NOT_FOUND) {
+            // Had a valid value before, increment attempts
             if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
                 rule.value = NOT_AVAILABLE;
                 updateRuleValue(rule, callbackHandler);
@@ -74,7 +77,30 @@ function checkAndUpdate(rule) {
                 });
             }
         } else {
+            // No previous value or was already an error state
             rule.value = ERROR;
+            updateRuleValue(rule, callbackHandler);
+        }
+    }
+
+    // Called when selector doesn't match any element
+    function onSelectorNotFound() {
+        if (rule.value && rule.value !== ERROR && rule.value !== ELEMENT_NOT_FOUND) {
+            // Had a valid value before, increment attempts
+            if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
+                rule.value = NOT_AVAILABLE;
+                updateRuleValue(rule, callbackHandler);
+            } else {
+                ruleStorage.readRule(rule.id, function (updatedRule) {
+                    updatedRule.attempts = (updatedRule.attempts || 0) + 1;
+                    ruleStorage.updateRule(updatedRule, function () {
+                        callbackHandler(updatedRule);
+                    });
+                });
+            }
+        } else {
+            // No previous valid value - use ELEMENT_NOT_FOUND instead of ERROR
+            rule.value = ELEMENT_NOT_FOUND;
             updateRuleValue(rule, callbackHandler);
         }
     }
