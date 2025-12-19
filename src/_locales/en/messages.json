@@ -258,5 +258,41 @@
     "settingsHelpSupport": {
         "message": "Help & Support",
         "description": "Settings section heading for help and support links"
+    },
+    "labelLastChecked": {
+        "message": "Checked",
+        "description": "Prefix for last checked timestamp"
+    },
+    "labelNeverChecked": {
+        "message": "Never checked",
+        "description": "Shown when item has never been checked"
+    },
+    "labelJustNow": {
+        "message": "Just now",
+        "description": "Shown when item was checked less than a minute ago"
+    },
+    "labelMinAgo": {
+        "message": "min ago",
+        "description": "Suffix for minutes ago"
+    },
+    "labelHoursAgo": {
+        "message": "hours ago",
+        "description": "Suffix for hours ago"
+    },
+    "labelDaysAgo": {
+        "message": "days ago",
+        "description": "Suffix for days ago"
+    },
+    "labelChecking": {
+        "message": "Checking...",
+        "description": "Shown while checking an item"
+    },
+    "labelCheckFailed": {
+        "message": "Check failed",
+        "description": "Shown when manual check fails"
+    },
+    "buttonCheckNow": {
+        "message": "Check now",
+        "description": "Button to manually check an item immediately"
     }
 }

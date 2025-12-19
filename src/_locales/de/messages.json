@@ -218,5 +218,41 @@
     "notificationNow": {
         "message": "Jetzt:",
         "description": "Prefix for current value in notifications"
+    },
+    "labelLastChecked": {
+        "message": "Geprüft",
+        "description": "Prefix for last checked timestamp"
+    },
+    "labelNeverChecked": {
+        "message": "Nie geprüft",
+        "description": "Shown when item has never been checked"
+    },
+    "labelJustNow": {
+        "message": "Gerade eben",
+        "description": "Shown when item was checked less than a minute ago"
+    },
+    "labelMinAgo": {
+        "message": "Min. her",
+        "description": "Suffix for minutes ago"
+    },
+    "labelHoursAgo": {
+        "message": "Std. her",
+        "description": "Suffix for hours ago"
+    },
+    "labelDaysAgo": {
+        "message": "Tage her",
+        "description": "Suffix for days ago"
+    },
+    "labelChecking": {
+        "message": "Prüfe...",
+        "description": "Shown while checking an item"
+    },
+    "labelCheckFailed": {
+        "message": "Prüfung fehlgeschlagen",
+        "description": "Shown when manual check fails"
+    },
+    "buttonCheckNow": {
+        "message": "Jetzt prüfen",
+        "description": "Button to manually check an item immediately"
     }
 }

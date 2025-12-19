@@ -89,6 +89,17 @@ div.value {
     text-overflow: ellipsis;
 }
 
+/* Vertically center value and buttons relative to both rows */
+.rule-control > .row:first-child {
+    display: flex;
+    align-items: center;
+}
+
+.rule-control > .row:first-child > .value,
+.rule-control > .row:first-child > .buttons {
+    margin-top: 8px;
+}
+
 /* Removed - now using .action-btn class */
 
 button#save {
@@ -425,5 +436,45 @@ button.active-action {
     margin-bottom: 5px !important;
     margin-left: 5px !important;
     margin-right: 5px !important;
+}
+
+/* Last checked row styling */
+.last-checked-row {
+    margin-top: 2px;
+}
+
+.last-checked {
+    font-size: 11px;
+    color: #999;
+    padding-left: 26px !important;
+}
+
+.last-checked .refresh {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #999;
+    font-size: 10px;
+    margin-right: 4px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.last-checked .refresh:hover {
+    color: #428bca;
+}
+
+.last-checked .refresh:focus {
+    outline: none;
+}
+
+/* Refresh button spin animation */
+.refresh .glyphicon-refresh.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 

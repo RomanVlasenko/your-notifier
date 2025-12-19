@@ -258,5 +258,41 @@
     "settingsHelpSupport": {
         "message": "Допомога та Підтримка",
         "description": "Settings section heading for help and support links"
+    },
+    "labelLastChecked": {
+        "message": "Перевірено",
+        "description": "Prefix for last checked timestamp"
+    },
+    "labelNeverChecked": {
+        "message": "Ще не перевірено",
+        "description": "Shown when item has never been checked"
+    },
+    "labelJustNow": {
+        "message": "Щойно",
+        "description": "Shown when item was checked less than a minute ago"
+    },
+    "labelMinAgo": {
+        "message": "хв тому",
+        "description": "Suffix for minutes ago"
+    },
+    "labelHoursAgo": {
+        "message": "год тому",
+        "description": "Suffix for hours ago"
+    },
+    "labelDaysAgo": {
+        "message": "дн тому",
+        "description": "Suffix for days ago"
+    },
+    "labelChecking": {
+        "message": "Перевіряю...",
+        "description": "Shown while checking an item"
+    },
+    "labelCheckFailed": {
+        "message": "Помилка перевірки",
+        "description": "Shown when manual check fails"
+    },
+    "buttonCheckNow": {
+        "message": "Перевірити",
+        "description": "Button to manually check an item immediately"
     }
 }

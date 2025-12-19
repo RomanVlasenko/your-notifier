@@ -113,6 +113,7 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
         newRule.id = String(new Date().getTime());
         newRule.index = -1;
         newRule.notify = true;
+        newRule.lastUpdated = new Date().getTime();
 
         setupOffscreenDocument().then(function () {
             ruleStorage.saveRule(newRule, function () {
@@ -134,6 +135,35 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
     if (request.method == "testNotification") {
         testNotificationSystem().then(result => {
             sendResponse(result);
+        });
+        return true; // Keep channel open for async response
+    }
+    return false;
+});
+
+// Check rule immediately handler
+chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.method == "checkRuleNow") {
+        setupOffscreenDocument().then(function () {
+            ruleStorage.readRule(request.ruleId, function (rule) {
+                if (!rule) {
+                    sendResponse({ success: false, error: "Rule not found" });
+                    return;
+                }
+
+                // Update lastUpdated timestamp
+                rule.lastUpdated = new Date().getTime();
+                ruleStorage.saveRule(rule, function () {
+                    checkAndUpdate(rule, function (updatedRule) {
+                        sendResponse({ success: true, rule: updatedRule });
+
+                        // Notify if value changed
+                        if (updatedRule.new) {
+                            notifications.onRuleUpdated(updatedRule);
+                        }
+                    });
+                });
+            });
         });
         return true; // Keep channel open for async response
     }

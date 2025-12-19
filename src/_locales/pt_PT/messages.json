@@ -258,5 +258,37 @@
     "settingsHelpSupport": {
         "message": "Ajuda e Suporte",
         "description": "Settings section heading for help and support links"
+    },
+    "labelLastChecked": {
+        "message": "Verificado",
+        "description": "Prefix for last checked timestamp"
+    },
+    "labelNeverChecked": {
+        "message": "Nunca verificado",
+        "description": "Shown when item has never been checked"
+    },
+    "labelJustNow": {
+        "message": "Agora mesmo",
+        "description": "Shown when item was checked less than a minute ago"
+    },
+    "labelMinAgo": {
+        "message": "min atrás",
+        "description": "Suffix for minutes ago"
+    },
+    "labelHoursAgo": {
+        "message": "horas atrás",
+        "description": "Suffix for hours ago"
+    },
+    "labelDaysAgo": {
+        "message": "dias atrás",
+        "description": "Suffix for days ago"
+    },
+    "labelChecking": {
+        "message": "A verificar...",
+        "description": "Shown while checking an item"
+    },
+    "labelCheckFailed": {
+        "message": "Falha na verificação",
+        "description": "Shown when manual check fails"
     }
 }

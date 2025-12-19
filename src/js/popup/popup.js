@@ -534,6 +534,9 @@ function createRuleControlDOM(rule) {
     ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
     ruleControl.find(".buttons").append(buttons);
 
+    // Update last checked time
+    updateLastCheckedText(ruleControl, rule);
+
     // Call showNewBadge AFTER buttons are appended so the settings icon exists
     showNewBadge(ruleControl, rule);
 
@@ -544,6 +547,11 @@ function createRuleControlDOM(rule) {
     //Add listeners
     buttons.on("click", ".edit", function (e) {
         onEditClick(rule.id);
+        e.preventDefault();
+    });
+
+    ruleControl.on("click", ".refresh", function (e) {
+        onRefreshClick(rule.id, ruleControl, $(this));
         e.preventDefault();
     });
 
@@ -650,6 +658,10 @@ function updateRuleControlDOM(rule, ruleControl) {
     });
     ruleControl.find(".title a").attr("title", rule.title).attr("href", rule.url).text(rule.title);
     ruleControl.find(".value span").text(rule.value);
+
+    // Update last checked time
+    updateLastCheckedText(ruleControl, rule);
+
     return ruleControl;
 }
 
@@ -749,4 +761,69 @@ function repaintStripes() {
     $existingRulesContainer.find(".rule-control").removeClass("odd, even");
     $existingRulesContainer.find(".rule-control:odd").addClass("odd");
     $existingRulesContainer.find(".rule-control:even").addClass("even");
+}
+
+function formatRelativeTime(timestamp) {
+    if (!timestamp) {
+        return chrome.i18n.getMessage('labelNeverChecked') || 'Never checked';
+    }
+
+    var now = Date.now();
+    var diff = now - timestamp;
+    var seconds = Math.floor(diff / 1000);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+
+    if (seconds < 60) {
+        return chrome.i18n.getMessage('labelJustNow') || 'Just now';
+    } else if (minutes < 60) {
+        return minutes + ' ' + (chrome.i18n.getMessage('labelMinAgo') || 'min ago');
+    } else if (hours < 24) {
+        return hours + ' ' + (chrome.i18n.getMessage('labelHoursAgo') || 'hours ago');
+    } else {
+        return days + ' ' + (chrome.i18n.getMessage('labelDaysAgo') || 'days ago');
+    }
+}
+
+function updateLastCheckedText($ruleControl, rule) {
+    var $lastCheckedText = $ruleControl.find('.last-checked-text');
+    var relativeTime = formatRelativeTime(rule.lastUpdated);
+    var label = chrome.i18n.getMessage('labelLastChecked') || 'Checked';
+    $lastCheckedText.text(label + ' ' + relativeTime);
+}
+
+function onRefreshClick(ruleId, $ruleControl, $button) {
+    var $icon = $button.find('.glyphicon-refresh');
+
+    // Add spinning animation
+    $icon.addClass('spinning');
+    $button.prop('disabled', true);
+
+    // Update the last checked text to show "Checking..."
+    var $lastCheckedText = $ruleControl.find('.last-checked-text');
+    $lastCheckedText.text(chrome.i18n.getMessage('labelChecking') || 'Checking...');
+
+    // Send message to background to check this rule immediately
+    chromeAPI.runtime.sendMessage({ method: "checkRuleNow", ruleId: ruleId }, function(response) {
+        // Stop spinning
+        $icon.removeClass('spinning');
+        $button.prop('disabled', false);
+
+        if (response && response.success) {
+            // Refresh the rule control to show updated value and timestamp
+            ruleStorage.readRule(ruleId, function(rule) {
+                updateRuleControlDOM(rule, $ruleControl);
+                $ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
+            });
+        } else {
+            // Show error state briefly then restore
+            $lastCheckedText.text(chrome.i18n.getMessage('labelCheckFailed') || 'Check failed');
+            setTimeout(function() {
+                ruleStorage.readRule(ruleId, function(rule) {
+                    updateLastCheckedText($ruleControl, rule);
+                });
+            }, 2000);
+        }
+    });
 }

@@ -218,5 +218,41 @@
     "notificationNow": {
         "message": "Ahora:",
         "description": "Prefix for current value in notifications"
+    },
+    "labelLastChecked": {
+        "message": "Verificado",
+        "description": "Prefix for last checked timestamp"
+    },
+    "labelNeverChecked": {
+        "message": "Nunca verificado",
+        "description": "Shown when item has never been checked"
+    },
+    "labelJustNow": {
+        "message": "Ahora mismo",
+        "description": "Shown when item was checked less than a minute ago"
+    },
+    "labelMinAgo": {
+        "message": "min atrás",
+        "description": "Suffix for minutes ago"
+    },
+    "labelHoursAgo": {
+        "message": "horas atrás",
+        "description": "Suffix for hours ago"
+    },
+    "labelDaysAgo": {
+        "message": "días atrás",
+        "description": "Suffix for days ago"
+    },
+    "labelChecking": {
+        "message": "Verificando...",
+        "description": "Shown while checking an item"
+    },
+    "labelCheckFailed": {
+        "message": "Error al verificar",
+        "description": "Shown when manual check fails"
+    },
+    "buttonCheckNow": {
+        "message": "Verificar ahora",
+        "description": "Button to manually check an item immediately"
     }
 }

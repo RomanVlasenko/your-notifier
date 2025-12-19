@@ -258,5 +258,41 @@
     "settingsHelpSupport": {
         "message": "Hulp & Ondersteuning",
         "description": "Settings section heading for help and support links"
+    },
+    "labelLastChecked": {
+        "message": "Gecontroleerd",
+        "description": "Prefix for last checked timestamp"
+    },
+    "labelNeverChecked": {
+        "message": "Nooit gecontroleerd",
+        "description": "Shown when item has never been checked"
+    },
+    "labelJustNow": {
+        "message": "Zojuist",
+        "description": "Shown when item was checked less than a minute ago"
+    },
+    "labelMinAgo": {
+        "message": "min geleden",
+        "description": "Suffix for minutes ago"
+    },
+    "labelHoursAgo": {
+        "message": "uur geleden",
+        "description": "Suffix for hours ago"
+    },
+    "labelDaysAgo": {
+        "message": "dagen geleden",
+        "description": "Suffix for days ago"
+    },
+    "labelChecking": {
+        "message": "Controleren...",
+        "description": "Shown while checking an item"
+    },
+    "labelCheckFailed": {
+        "message": "Controle mislukt",
+        "description": "Shown when manual check fails"
+    },
+    "buttonCheckNow": {
+        "message": "Nu controleren",
+        "description": "Button to manually check an item immediately"
     }
 }
