@@ -43,7 +43,7 @@ a, a:hover {
 }
 
 .rule-buttons {
-    margin-top: 1px;
+    margin-top: 0;
 }
 
 /* Legacy draggable class - kept for compatibility */
@@ -75,29 +75,33 @@ a, a:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
+/* Rule row with flexbox alignment */
+.rule-row {
+    display: flex;
+    align-items: center;
+}
+
+.title-block {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
 div.title {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     color: #428bca;
+    line-height: 16px;
+}
+
+div.title a {
+    line-height: 16px;
 }
 
 div.value {
     overflow: hidden;
-    line-height: 30px;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
-
-/* Vertically center value and buttons relative to both rows */
-.rule-control > .row:first-child {
-    display: flex;
-    align-items: center;
-}
-
-.rule-control > .row:first-child > .value,
-.rule-control > .row:first-child > .buttons {
-    margin-top: 8px;
 }
 
 /* Removed - now using .action-btn class */
@@ -150,8 +154,8 @@ button.delete {
 }
 
 .rule-control {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
     border-radius: 5px;
     font-size: 13px;
     cursor: move;
@@ -438,15 +442,12 @@ button.active-action {
     margin-right: 5px !important;
 }
 
-/* Last checked row styling */
-.last-checked-row {
-    margin-top: 2px;
-}
-
 .last-checked {
-    font-size: 11px;
+    font-size: 10px;
     color: #999;
-    padding-left: 26px !important;
+    line-height: 1;
+    padding-left: 20px;
+    margin-top: 2px;
 }
 
 .last-checked .refresh {
