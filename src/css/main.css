@@ -175,8 +175,17 @@ button.delete {
     background: rgb(226, 226, 226);
 }
 
-.table.history tbody {
+.table.history {
     font-size: 13px;
+}
+
+.table.history td {
+    border-top: 1px solid #ddd !important;
+    padding: 5px;
+}
+
+.table.history tr:first-child td {
+    border-top: none !important;
 }
 
 .panel.history .panel-heading {

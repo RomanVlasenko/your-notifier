@@ -1,12 +1,25 @@
-function checkAndUpdate(rule) {
+var MESSAGE_TIMEOUT = 30000; // 30 second timeout for offscreen document messages
 
-    var callbackHandler;
-    if (arguments && arguments.length > 1) {
-        callbackHandler = arguments[1];
-    } else {
-        callbackHandler = function (o) {
-        }
-    }
+// Helper to send messages with timeout
+function sendMessageWithTimeout(message, timeout) {
+    return new Promise(function (resolve, reject) {
+        var timeoutId = setTimeout(function () {
+            reject(new Error('Message timeout after ' + timeout + 'ms'));
+        }, timeout);
+
+        chrome.runtime.sendMessage(message, function (response) {
+            clearTimeout(timeoutId);
+            if (chrome.runtime.lastError) {
+                reject(new Error(chrome.runtime.lastError.message));
+            } else {
+                resolve(response);
+            }
+        });
+    });
+}
+
+function checkAndUpdate(rule, callbackHandler) {
+    callbackHandler = callbackHandler || function () {};
 
     console.log("[urlChecker] Starting fetch for rule %s: %s", rule.id, rule.url);
 
@@ -18,47 +31,41 @@ function checkAndUpdate(rule) {
         .then(function (srcHtml) {
             console.log("[urlChecker] HTML received for rule %s, length: %s bytes", rule.id, srcHtml.length);
 
-            // Parse HTML using offscreen document
+            // Parse HTML using offscreen document with timeout
             console.log("[urlChecker] Sending PARSE_HTML message for rule %s with selector: %s", rule.id, rule.selector);
-            chrome.runtime.sendMessage({
+            return sendMessageWithTimeout({
                 type: 'PARSE_HTML',
                 html: srcHtml,
                 selector: rule.selector
-            }, function (response) {
-                if (chrome.runtime.lastError) {
-                    console.error('[urlChecker] Error sending to offscreen document for rule %s:', rule.id, chrome.runtime.lastError.message);
-                    onNetworkError();
-                    return;
-                }
+            }, MESSAGE_TIMEOUT);
+        })
+        .then(function (response) {
+            console.log("[urlChecker] Received response from offscreen document for rule %s:", rule.id, response);
+            var newVal = response && response.result ? response.result : '';
 
-                console.log("[urlChecker] Received response from offscreen document for rule %s:", rule.id, response);
-                var newVal = response && response.result ? response.result : '';
-
-                if (newVal) {
-                    console.log("[urlChecker] Successfully parsed value for rule %s: %s", rule.id, newVal);
-                    // Reset attempts counter if needed, then update value
-                    ruleStorage.readRule(rule.id, function (storedRule) {
-                        if ((storedRule.attempts || 0) > 0) {
-                            storedRule.attempts = 0;
-                            ruleStorage.updateRule(storedRule, function () {
-                                // Now update value (pass newVal separately to compare with old value)
-                                rule.value = newVal;
-                                updateRuleValue(rule, callbackHandler);
-                            });
-                        } else {
+            if (newVal) {
+                console.log("[urlChecker] Successfully parsed value for rule %s: %s", rule.id, newVal);
+                // Reset attempts counter if needed, then update value
+                return ruleStorage.readRule(rule.id).then(function (storedRule) {
+                    if ((storedRule.attempts || 0) > 0) {
+                        storedRule.attempts = 0;
+                        return ruleStorage.updateRule(storedRule).then(function () {
                             rule.value = newVal;
-                            updateRuleValue(rule, callbackHandler);
-                        }
-                    });
-                } else {
-                    console.log("[urlChecker] Unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
-                    onSelectorNotFound();
-                }
-            });
+                            return updateRuleValue(rule, callbackHandler);
+                        });
+                    } else {
+                        rule.value = newVal;
+                        return updateRuleValue(rule, callbackHandler);
+                    }
+                });
+            } else {
+                console.log("[urlChecker] Unable to parse value for rule %s. Attempts made: %s", rule.id, rule.attempts);
+                return onSelectorNotFound();
+            }
         })
         .catch(function (error) {
-            console.log("[urlChecker] Fetch failed for rule %s. Error: %s. Attempts made: %s", rule.id, error, rule.attempts);
-            onNetworkError();
+            console.error("[urlChecker] Error for rule %s: %s. Attempts made: %s", rule.id, error.message, rule.attempts);
+            return onNetworkError();
         });
 
     // Called when network request fails
@@ -67,11 +74,11 @@ function checkAndUpdate(rule) {
             // Had a valid value before, increment attempts
             if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
                 rule.value = NOT_AVAILABLE;
-                updateRuleValue(rule, callbackHandler);
+                return updateRuleValue(rule, callbackHandler);
             } else {
-                ruleStorage.readRule(rule.id, function (updatedRule) {
+                return ruleStorage.readRule(rule.id).then(function (updatedRule) {
                     updatedRule.attempts = (updatedRule.attempts || 0) + 1;
-                    ruleStorage.updateRule(updatedRule, function () {
+                    return ruleStorage.updateRule(updatedRule).then(function () {
                         callbackHandler(updatedRule);
                     });
                 });
@@ -79,7 +86,7 @@ function checkAndUpdate(rule) {
         } else {
             // No previous value or was already an error state
             rule.value = ERROR;
-            updateRuleValue(rule, callbackHandler);
+            return updateRuleValue(rule, callbackHandler);
         }
     }
 
@@ -89,11 +96,11 @@ function checkAndUpdate(rule) {
             // Had a valid value before, increment attempts
             if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
                 rule.value = NOT_AVAILABLE;
-                updateRuleValue(rule, callbackHandler);
+                return updateRuleValue(rule, callbackHandler);
             } else {
-                ruleStorage.readRule(rule.id, function (updatedRule) {
+                return ruleStorage.readRule(rule.id).then(function (updatedRule) {
                     updatedRule.attempts = (updatedRule.attempts || 0) + 1;
-                    ruleStorage.updateRule(updatedRule, function () {
+                    return ruleStorage.updateRule(updatedRule).then(function () {
                         callbackHandler(updatedRule);
                     });
                 });
@@ -101,15 +108,15 @@ function checkAndUpdate(rule) {
         } else {
             // No previous valid value - use ELEMENT_NOT_FOUND instead of ERROR
             rule.value = ELEMENT_NOT_FOUND;
-            updateRuleValue(rule, callbackHandler);
+            return updateRuleValue(rule, callbackHandler);
         }
     }
 }
 
 function updateRuleValue(newRule, onRuleUpdated) {
-    var callback = onRuleUpdated ? onRuleUpdated : c.emptyCallback;
+    var callback = onRuleUpdated || c.emptyCallback;
 
-    ruleStorage.readRule(newRule.id, function (exRule) {
+    return ruleStorage.readRule(newRule.id).then(function (exRule) {
         if (!isValuesEqual(exRule.value, newRule.value)) {
             exRule.value = newRule.value;
             exRule.new = true;
@@ -119,7 +126,7 @@ function updateRuleValue(newRule, onRuleUpdated) {
                 appendHistoryRecord(exRule, {"value": exRule.value, "date": new Date().getTime()});
             }
 
-            ruleStorage.updateRule(exRule, function () {
+            return ruleStorage.updateRule(exRule).then(function () {
                 chromeAPI.runtime.sendMessage({msg: "refreshList"}, function() {
                     if (chrome.runtime.lastError) {
                         // Ignore - popup may not be open

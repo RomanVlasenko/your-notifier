@@ -36,7 +36,7 @@ chromeAPI.runtime.onMessage.addListener(
             newRule.id = String(new Date().getTime());
             newRule.index = -1;
 
-            ruleStorage.saveRule(newRule, function () {
+            ruleStorage.saveRule(newRule).then(function () {
                 checkAndUpdate(newRule, function () {
                     chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]});
                 });

@@ -1,4 +1,6 @@
-<div id="dialog" class="yon-dialog-container">
+<div id="yon-modal-overlay" class="yon-modal-overlay"></div>
+<div id="dialog" class="yon-dialog">
+    <div class="yon-dialog-titlebar" id="yon-dialog-titlebar" data-i18n="dialogTitleCreateNewItem">Create New Watch Item</div>
     <div id="yon-edit-rule">
 
         <div class="yon-input-group">
@@ -16,15 +18,13 @@
             <input type="text" id="selector" class="yon-form-control" data-i18n-placeholder="placeholderSelector" placeholder="CSS/jQuery selector...">
         </div>
 
-        <div class="row">
-            <div style="display: none" class="yon-test">
-                <div class="yon-test-inner">
-                    <div class="test-label-container">
-                        <span class="test-label"></span>
-                    </div>
-                    <span style="display: none" class="yon-badge not-available" data-i18n="statusNotAvailable">Not available</span>
-                    <span style="display: none" class="yon-badge ok">OK</span>
+        <div class="yon-test">
+            <div class="yon-test-inner">
+                <div class="test-label-container">
+                    <span class="test-label"></span>
                 </div>
+                <span class="yon-badge not-available" data-i18n="statusNotAvailable">Not available</span>
+                <span class="yon-badge ok">OK</span>
             </div>
         </div>
         <div class="editor-buttons">

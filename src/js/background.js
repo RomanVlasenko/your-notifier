@@ -20,6 +20,7 @@ var NOTIFICATION_AUTOCLOSE_TIME = 10000;
 
 // Offscreen document management
 let offscreenDocumentCreating = null;
+var OFFSCREEN_DOCUMENT_TIMEOUT = 10000; // 10 second timeout for offscreen document creation
 
 async function hasOffscreenDocument() {
     if ('getContexts' in chrome.runtime) {
@@ -34,27 +35,44 @@ async function hasOffscreenDocument() {
 
 async function setupOffscreenDocument() {
     if (await hasOffscreenDocument()) {
-        console.log('[Background] Offscreen document already exists');
         return;
     }
 
     if (offscreenDocumentCreating) {
-        console.log('[Background] Waiting for offscreen document creation to complete');
-        await offscreenDocumentCreating;
+        // Wait for in-progress creation with timeout
+        try {
+            await Promise.race([
+                offscreenDocumentCreating,
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Timeout waiting for offscreen document')), OFFSCREEN_DOCUMENT_TIMEOUT)
+                )
+            ]);
+        } catch (error) {
+            console.error('[Background] Error waiting for offscreen document:', error.message);
+            offscreenDocumentCreating = null;
+            // Try creating again
+            return setupOffscreenDocument();
+        }
     } else {
         console.log('[Background] Creating offscreen document');
-        offscreenDocumentCreating = chrome.offscreen.createDocument({
-            url: 'offscreen.html',
-            reasons: ['DOM_PARSER'],
-            justification: 'Parse HTML from monitored URLs using CSS selectors'
-        });
-        await offscreenDocumentCreating;
-        offscreenDocumentCreating = null;
-        console.log('[Background] Offscreen document created');
+        try {
+            offscreenDocumentCreating = chrome.offscreen.createDocument({
+                url: 'offscreen.html',
+                reasons: ['DOM_PARSER'],
+                justification: 'Parse HTML from monitored URLs using CSS selectors'
+            });
+            await offscreenDocumentCreating;
+            console.log('[Background] Offscreen document created');
 
-        // Wait a bit for the offscreen document to fully load
-        await new Promise(resolve => setTimeout(resolve, 100));
-        console.log('[Background] Offscreen document should be ready now');
+            // Wait a bit for the offscreen document to fully load
+            await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+            console.error('[Background] Error creating offscreen document:', error.message);
+            throw error;
+        } finally {
+            // Always reset the promise, even on error
+            offscreenDocumentCreating = null;
+        }
     }
 }
 
@@ -64,12 +82,12 @@ chromeAPI.browser.setBadgeBackgroundColor({color: "#428bca"});
 // Context menu setup (from eventPage.js)
 chromeAPI.menu.removeAll(function() {
     if (chrome.runtime.lastError) {
-        console.log('[Background] Error removing menus:', chrome.runtime.lastError.message);
+        console.error('[Background] Error removing menus:', chrome.runtime.lastError.message);
     }
     console.log('[Background] Creating context menu');
     chromeAPI.menu.create({id: "openDialog", contexts: ["page", "selection", "link"], title: chrome.i18n.getMessage('contextMenuWatchItem')}, function() {
         if (chrome.runtime.lastError) {
-            console.log('[Background] Error creating menu:', chrome.runtime.lastError.message);
+            console.error('[Background] Error creating menu:', chrome.runtime.lastError.message);
         } else {
             console.log('[Background] Context menu created successfully');
         }
@@ -82,7 +100,8 @@ chromeAPI.menu.onClicked.addListener(function (e) {
             if (tabs && tabs.length > 0) {
                 chromeAPI.tabs.sendMessage(tabs[0].id, {method: "createRule"}, function (response) {
                     if (chrome.runtime.lastError) {
-                        console.log('[Background] Error sending to content script:', chrome.runtime.lastError.message);
+                        // Expected if content script not loaded on this page (e.g., chrome:// URLs)
+                        console.warn('[Background] Cannot send to content script:', chrome.runtime.lastError.message);
                     }
                 });
             }
@@ -115,8 +134,11 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
         newRule.notify = true;
         newRule.lastUpdated = new Date().getTime();
 
-        setupOffscreenDocument().then(function () {
-            ruleStorage.saveRule(newRule, function () {
+        setupOffscreenDocument()
+            .then(function () {
+                return ruleStorage.saveRule(newRule);
+            })
+            .then(function () {
                 checkAndUpdate(newRule, function () {
                     chromeAPI.runtime.sendMessage({msg: "rulesUpdated", rules: [newRule]}, function() {
                         if (chrome.runtime.lastError) {
@@ -125,7 +147,6 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
                     });
                 });
             });
-        });
     }
     return false;
 });
@@ -144,8 +165,11 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
 // Check rule immediately handler
 chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.method == "checkRuleNow") {
-        setupOffscreenDocument().then(function () {
-            ruleStorage.readRule(request.ruleId, function (rule) {
+        setupOffscreenDocument()
+            .then(function () {
+                return ruleStorage.readRule(request.ruleId);
+            })
+            .then(function (rule) {
                 if (!rule) {
                     sendResponse({ success: false, error: "Rule not found" });
                     return;
@@ -153,7 +177,7 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
 
                 // Update lastUpdated timestamp
                 rule.lastUpdated = new Date().getTime();
-                ruleStorage.saveRule(rule, function () {
+                ruleStorage.saveRule(rule).then(function () {
                     checkAndUpdate(rule, function (updatedRule) {
                         sendResponse({ success: true, rule: updatedRule });
 
@@ -164,7 +188,6 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
                     });
                 });
             });
-        });
         return true; // Keep channel open for async response
     }
     return false;
@@ -209,7 +232,9 @@ async function testNotificationSystem() {
                     // Auto-close after 5 seconds
                     setTimeout(() => {
                         console.log('[Background] Auto-closing notification:', testId);
-                        chromeAPI.notifications.clear(testId, () => {});
+                        chromeAPI.notifications.clear(testId, function() {
+                            // Clear callback - no action needed
+                        });
                     }, 5000);
                     resolve(notificationId);
                 }
@@ -231,13 +256,15 @@ async function testNotificationSystem() {
 // Notification handling (from notification.js)
 chromeAPI.runtime.onMessage.addListener(function (request) {
     if (request.msg == "resetUpdates") {
-        ruleStorage.readRules(function (rules) {
+        ruleStorage.readRules().then(function (rules) {
             _.each(rules, function (r) {
                 r.new = false;
-                chromeAPI.notifications.clear(r.id, function () {});
+                chromeAPI.notifications.clear(r.id, function() {
+                    // Clear callback - no action needed
+                });
             });
 
-            ruleStorage.saveRules(rules, function () {
+            ruleStorage.saveRules(rules).then(function () {
                 showBadge("", "Your notifier");
             });
         });
@@ -258,7 +285,7 @@ var notifications = {
 }
 
 function updateBadge() {
-    ruleStorage.readRules(function (rules) {
+    ruleStorage.readRules().then(function (rules) {
         var newRulesCount = _.filter(rules, function (rule) {
             return rule.new;
         }).length;
@@ -353,16 +380,17 @@ async function showPopupNotifications(rules) {
 }
 
 function closeNotification(notificationId) {
-    chromeAPI.notifications.clear(notificationId, function () {
+    chromeAPI.notifications.clear(notificationId, function() {
+        // Clear callback - no action needed
     });
 }
 
 chromeAPI.notifications.onClicked.addListener(function (notificationId) {
-    ruleStorage.readRule(notificationId, function (rule) {
+    ruleStorage.readRule(notificationId).then(function (rule) {
         chromeAPI.tabs.create({url: rule.url});
         chromeAPI.notifications.clear(notificationId, function () {
             rule.new = false;
-            ruleStorage.updateRule(rule, function () {
+            ruleStorage.updateRule(rule).then(function () {
                 updateBadge();
             });
         });
@@ -395,7 +423,7 @@ chromeAPI.alarms.onAlarm.addListener(function (alarm) {
 });
 
 function performScheduledChecking() {
-    ruleStorage.readRules(function (rules) {
+    ruleStorage.readRules().then(function (rules) {
         if (rules.length == 0) {
             return;
         }
@@ -418,9 +446,9 @@ function performScheduledChecking() {
                             console.log("Rule '%s' was updated %s ms ago", rule.id, new Date().getTime() - rule.lastUpdated)
 
                             if (rule.lastUpdated < new Date().getTime() - getUpdateInterval(rule)) {
-                                ruleStorage.readRule(rule.id, function (r) {
+                                ruleStorage.readRule(rule.id).then(function (r) {
                                     r.lastUpdated = new Date().getTime();
-                                    ruleStorage.saveRule(r, function () {
+                                    ruleStorage.saveRule(r).then(function () {
                                         checkAndUpdate(r, function (rule) {
                                             onRuleUpdated(rule);
                                         });

@@ -1,40 +1,43 @@
 var storageUtils = {
 
-    readRuleKeys: function (callback) {
-        chromeAPI.sync.get("ruleKeys", function (data) {
-            var ruleKeys = data.ruleKeys;
-            if (_.isUndefined(ruleKeys)) {
-                callback([]);
-            } else {
-                callback(ruleKeys);
-            }
+    readRuleKeys: function () {
+        return new Promise(function (resolve) {
+            chromeAPI.sync.get("ruleKeys", function (data) {
+                var ruleKeys = data.ruleKeys;
+                if (_.isUndefined(ruleKeys)) {
+                    resolve([]);
+                } else {
+                    resolve(ruleKeys);
+                }
+            });
         });
     },
 
     updateRuleKeys: function (keys) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
-
-        this.readRuleKeys(function (exKeys) {
-            var newKeys = exKeys.concat(keys);
-
-            chromeAPI.storage.set({"ruleKeys": _.uniq(newKeys)}, function () {
-                chromeAPI.sync.set({"ruleKeys": _.uniq(newKeys)}, function () {
-                    callback();
+        var self = this;
+        return this.readRuleKeys().then(function (exKeys) {
+            var newKeys = _.uniq(exKeys.concat(keys));
+            return new Promise(function (resolve) {
+                chromeAPI.storage.set({"ruleKeys": newKeys}, function () {
+                    chromeAPI.sync.set({"ruleKeys": newKeys}, function () {
+                        resolve();
+                    });
                 });
             });
         });
     },
 
     deleteRuleKey: function (ruleKey) {
-        var callback = arguments.length > 1 ? arguments[1] : c.emptyCallback;
-
-        this.readRuleKeys(function (exKeys) {
+        var self = this;
+        return this.readRuleKeys().then(function (exKeys) {
             var newKeys = _.reject(exKeys, function (key) {
                 return key == ruleKey;
             });
-            chromeAPI.storage.set({"ruleKeys": newKeys}, function () {
-                chromeAPI.sync.set({"ruleKeys": newKeys}, function () {
-                    callback();
+            return new Promise(function (resolve) {
+                chromeAPI.storage.set({"ruleKeys": newKeys}, function () {
+                    chromeAPI.sync.set({"ruleKeys": newKeys}, function () {
+                        resolve();
+                    });
                 });
             });
         });
@@ -100,3 +103,6 @@ var storageUtils = {
         return rulesJSON;
     }
 };
+
+// Export to YON namespace
+YON.storageUtils = storageUtils;

@@ -9,7 +9,7 @@ $(document).ready(function () {
 });
 
 function restoreEdit() {
-    sl.readState(function (state) {
+    sl.readState().then(function (state) {
         var rule = state.rule;
 
         //Don't open editor if all fields are empty

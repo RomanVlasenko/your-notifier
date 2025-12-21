@@ -54,13 +54,13 @@ function saveRule() {
     if (isEmpty(newRule.id)) {
         createRule(newRule);
     } else {
-        ruleStorage.readRule(newRule.id, function (exRule) {
+        ruleStorage.readRule(newRule.id).then(function (exRule) {
             if (exRule) {
                 exRule.title = newRule.title;
                 exRule.url = newRule.url;
                 exRule.selector = newRule.selector;
 
-                ruleStorage.saveRule(exRule, function () {
+                ruleStorage.saveRule(exRule).then(function () {
                     persistStatePopup();
                     refreshRuleControls();
                     checkAndUpdate(exRule);
@@ -74,7 +74,7 @@ function createRule(newRule) {
     newRule.id = String(new Date().getTime());
     newRule.index = -1;
 
-    ruleStorage.saveRule(newRule, function () {
+    ruleStorage.saveRule(newRule).then(function () {
         persistStatePopup();
         refreshRuleControls();
         checkAndUpdate(newRule);

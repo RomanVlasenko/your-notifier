@@ -25,7 +25,7 @@ $(document).ready(function () {
             $(".badge.new").fadeOut(500);
         }, 1500);
 
-        sl.readState(function (state) {
+        sl.readState().then(function (state) {
             if (state.page == NORMAL_MODE) {
                 $container.show();
             } else {
@@ -423,7 +423,7 @@ $(document).ready(function () {
                 }
 
                 // Import rules
-                ruleStorage.saveRules(rules, function() {
+                ruleStorage.saveRules(rules).then(function() {
                     $status.removeClass("alert-warning alert-danger").addClass("alert-success")
                            .html('<strong>Success!</strong> Imported ' + rules.length + ' item(s).')
                            .show();
@@ -458,7 +458,7 @@ $(document).ready(function () {
 function refreshRuleControls() {
     var callback = arguments.length > 0 ? arguments[0] : c.emptyCallback;
 
-    ruleStorage.readRules(function (rules) {
+    ruleStorage.readRules().then(function (rules) {
         if (rules.length > 0) {
             $existingRulesContainer.find("#norules").remove();
 
@@ -564,9 +564,9 @@ function createRuleControlDOM(rule) {
         if ($icon.hasClass("glyphicon-envelope")) {
             $icon.removeClass("glyphicon-envelope").addClass("glyphicon-th-list");
 
-            ruleStorage.readRule(ruleId, function (rule) {
+            ruleStorage.readRule(ruleId).then(function (rule) {
                 rule.new = false;
-                ruleStorage.updateRule(rule, c.emptyCallback);
+                ruleStorage.updateRule(rule);
             });
         }
 
@@ -592,18 +592,18 @@ function createRuleControlDOM(rule) {
 
     $additionalButtons.on("change", ".popup-notification input[type=checkbox]", function () {
         var checked = $(this).is(':checked');
-        ruleStorage.readRule(rule.id, function (r) {
+        ruleStorage.readRule(rule.id).then(function (r) {
             r.notify = checked;
-            ruleStorage.updateRule(r, c.emptyCallback);
+            ruleStorage.updateRule(r);
         });
     });
 
     $additionalButtons.on("change", "select.update-frequency", function () {
         var selectedInterval = $(this).find(":selected").attr("value");
 
-        ruleStorage.readRule(rule.id, function (r) {
+        ruleStorage.readRule(rule.id).then(function (r) {
             r.updateFrequency = parseInt(selectedInterval);
-            ruleStorage.updateRule(r, c.emptyCallback);
+            ruleStorage.updateRule(r);
         });
     });
 
@@ -624,7 +624,7 @@ function createRuleControlDOM(rule) {
     }
 
     function onDragEnd() {
-        ruleStorage.readRules(function (rules) {
+        ruleStorage.readRules().then(function (rules) {
             $existingRulesContainer.find(".rule-control").each(function (i, e) {
                 var rule = _.find(rules, function (r) {
                     return r.id == $(e).attr("id");
@@ -633,9 +633,7 @@ function createRuleControlDOM(rule) {
                 rule.ver = rule.ver + 1;
             });
 
-            ruleStorage.saveRules(rules, function () {
-                // Rules saved successfully
-            });
+            ruleStorage.saveRules(rules);
         });
 
         repaintStripes();
@@ -666,13 +664,13 @@ function updateRuleControlDOM(rule, ruleControl) {
 }
 
 function onDeleteClick(ruleId) {
-    ruleStorage.deleteRule(ruleId, function () {
+    ruleStorage.deleteRule(ruleId).then(function () {
         refreshRuleControls();
     });
 }
 
 function onCloneClick(ruleId) {
-    ruleStorage.readRule(ruleId, function (rule) {
+    ruleStorage.readRule(ruleId).then(function (rule) {
         var clonedRule = _.clone(rule);
         clonedRule.id = '';
         setRule(clonedRule);
@@ -681,7 +679,7 @@ function onCloneClick(ruleId) {
 }
 
 function onEditClick(ruleId) {
-    ruleStorage.readRule(ruleId, function (rule) {
+    ruleStorage.readRule(ruleId).then(function (rule) {
         setRule(rule);
         openRuleEditor();
         markRuleAsEditable(rule);
@@ -699,7 +697,7 @@ function onMoreSettingsClick($additionalPanel) {
                 var historyTable = $additionalPanel.find("table.history").empty();
 
                 var ruleId = $additionalPanel.attr("id");
-                ruleStorage.readRule(ruleId, function (rule) {
+                ruleStorage.readRule(ruleId).then(function (rule) {
                     updateHistory(historyTable, rule);
                     $additionalPanel.slideDown("fast");
                 });
@@ -714,10 +712,10 @@ function onMoreSettingsClick($additionalPanel) {
 
 function onClearHistoryClick($additionalPanel, ruleWithHistory) {
 
-    ruleStorage.readRule(ruleWithHistory.id, function (rule) {
+    ruleStorage.readRule(ruleWithHistory.id).then(function (rule) {
         rule.history = [];
 
-        ruleStorage.saveRule(rule, function () {
+        ruleStorage.saveRule(rule).then(function () {
             updateHistory($additionalPanel.find("table.history"), rule)
         });
     });
@@ -812,7 +810,7 @@ function onRefreshClick(ruleId, $ruleControl, $button) {
 
         if (response && response.success) {
             // Refresh the rule control to show updated value and timestamp
-            ruleStorage.readRule(ruleId, function(rule) {
+            ruleStorage.readRule(ruleId).then(function(rule) {
                 updateRuleControlDOM(rule, $ruleControl);
                 $ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
             });
@@ -820,7 +818,7 @@ function onRefreshClick(ruleId, $ruleControl, $button) {
             // Show error state briefly then restore
             $lastCheckedText.text(chrome.i18n.getMessage('labelCheckFailed') || 'Check failed');
             setTimeout(function() {
-                ruleStorage.readRule(ruleId, function(rule) {
+                ruleStorage.readRule(ruleId).then(function(rule) {
                     updateLastCheckedText($ruleControl, rule);
                 });
             }, 2000);

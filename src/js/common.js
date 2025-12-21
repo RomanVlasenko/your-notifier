@@ -1,3 +1,6 @@
+// Your Notifier namespace - prevents global scope pollution
+var YON = window.YON || {};
+
 //Constants
 var NOT_AVAILABLE = chrome.i18n.getMessage('statusNotAvailable');
 var ERROR = chrome.i18n.getMessage('statusResourceUnreachable');
@@ -166,4 +169,20 @@ function localizeElement(element) {
         el.placeholder = chrome.i18n.getMessage(el.dataset.i18nPlaceholder);
     });
 }
+
+// Export to YON namespace for better organization
+YON.constants = {
+    NOT_AVAILABLE: NOT_AVAILABLE,
+    ERROR: ERROR,
+    ELEMENT_NOT_FOUND: ELEMENT_NOT_FOUND,
+    NO_HISTORY: NO_HISTORY,
+    HISTORY_MAX: HISTORY_MAX
+};
+YON.updates = updates;
+YON.validation = validation;
+YON.chromeAPI = chromeAPI;
+YON.utils = c;
+YON.isEmpty = isEmpty;
+YON.isNotEmpty = isNotEmpty;
+YON.localizeElement = localizeElement;
 
