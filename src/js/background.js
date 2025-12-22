@@ -441,6 +441,8 @@ chromeAPI.alarms.onAlarm.addListener(function (alarm) {
 chromeAPI.alarms.get("CheckRulesSchedule", function(alarm) {
     if (!alarm) {
         console.log('[Background] Creating CheckRulesSchedule alarm');
+        // Use 0.5 minutes (30 seconds) for faster check frequency
+        // The REQUEST_PER_URL_INTERVAL (10s) staggers requests to prevent rate limiting
         chromeAPI.alarms.create("CheckRulesSchedule", {periodInMinutes: 0.5});
     } else {
         console.log('[Background] CheckRulesSchedule alarm already exists');
@@ -471,7 +473,7 @@ function performScheduledChecking() {
 
                             console.log("Rule '%s' was updated %s ms ago", rule.id, new Date().getTime() - rule.lastUpdated)
 
-                            if (rule.lastUpdated < new Date().getTime() - getUpdateInterval(rule)) {
+                            if (rule.lastUpdated <= new Date().getTime() - getUpdateInterval(rule)) {
                                 ruleStorage.readRule(rule.id).then(function (r) {
                                     checkAndUpdate(r, function (updatedRule) {
                                         // Update lastUpdated AFTER check completes
