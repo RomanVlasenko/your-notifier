@@ -13,6 +13,8 @@ GitHub link: https://github.com/RomanVlasenko/your-notifier
 - `src/js/selector-generator-adapter.js` - CSS selector generation logic
 - `src/js/background.js` - Service worker for alarms/notifications
 - `src/js/dialog/contentScript.js` - Content script for element selection
+- `src/js/storage/` - Storage layer (sync/local with queue for race condition prevention)
+- `src/js/common.js` - Shared utilities, exports to `YON` namespace
 - `tests/` - Vitest tests with real-world HTML fixtures
 
 ## Development Commands
@@ -31,7 +33,7 @@ npm test -- selector-generator.test.js  # Run selector tests only
 
 ## Testing
 
-Tests use real HTML fixtures from websites. See `tests/agents.md` for fixture creation guidelines.
+Tests use real HTML fixtures from websites. See `tests/AGENTS.md` for fixture creation guidelines.
 
 ## Git Commits and Pull Requests
 

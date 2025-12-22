@@ -231,6 +231,10 @@
         "message": "Watch demo",
         "description": "Footer link to YouTube demo video"
     },
+    "footerBuyMeCoffee": {
+        "message": "Support Extension",
+        "description": "Footer link to Buy Me a Coffee support page"
+    },
     "buttonSettings": {
         "message": "Settings",
         "description": "Settings button label"

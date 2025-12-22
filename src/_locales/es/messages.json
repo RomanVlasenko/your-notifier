@@ -219,6 +219,50 @@
         "message": "Ahora:",
         "description": "Prefix for current value in notifications"
     },
+    "footerRateExtension": {
+        "message": "Calificar extensión",
+        "description": "Footer link to rate extension in web store"
+    },
+    "footerReportIssue": {
+        "message": "Reportar problema",
+        "description": "Footer link to report issues on GitHub"
+    },
+    "footerWatchDemo": {
+        "message": "Ver demostración",
+        "description": "Footer link to YouTube demo video"
+    },
+    "footerBuyMeCoffee": {
+        "message": "Apoyar extensión",
+        "description": "Footer link to Buy Me a Coffee support page"
+    },
+    "buttonSettings": {
+        "message": "Configuración",
+        "description": "Settings button label"
+    },
+    "settingsImportExport": {
+        "message": "Importar / Exportar",
+        "description": "Settings section heading for import/export"
+    },
+    "settingsImportExportDesc": {
+        "message": "Respalde o restaure todas sus reglas de seguimiento",
+        "description": "Description for import/export section"
+    },
+    "buttonImport": {
+        "message": "Importar",
+        "description": "Import button label"
+    },
+    "buttonExport": {
+        "message": "Exportar",
+        "description": "Export button label"
+    },
+    "settingsNotifications": {
+        "message": "Notificaciones",
+        "description": "Settings section heading for notifications"
+    },
+    "settingsHelpSupport": {
+        "message": "Ayuda y Soporte",
+        "description": "Settings section heading for help and support links"
+    },
     "labelLastChecked": {
         "message": "Verificado",
         "description": "Prefix for last checked timestamp"

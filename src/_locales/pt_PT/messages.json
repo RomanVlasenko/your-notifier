@@ -290,5 +290,53 @@
     "labelCheckFailed": {
         "message": "Falha na verificação",
         "description": "Shown when manual check fails"
+    },
+    "buttonCheckNow": {
+        "message": "Verificar agora",
+        "description": "Button to manually check an item immediately"
+    },
+    "footerRateExtension": {
+        "message": "Avaliar extensão",
+        "description": "Footer link to rate extension in web store"
+    },
+    "footerReportIssue": {
+        "message": "Relatar problema",
+        "description": "Footer link to report issues on GitHub"
+    },
+    "footerWatchDemo": {
+        "message": "Ver demonstração",
+        "description": "Footer link to YouTube demo video"
+    },
+    "footerBuyMeCoffee": {
+        "message": "Apoiar extensão",
+        "description": "Footer link to Buy Me a Coffee support page"
+    },
+    "buttonSettings": {
+        "message": "Configurações",
+        "description": "Settings button label"
+    },
+    "settingsImportExport": {
+        "message": "Importar / Exportar",
+        "description": "Settings section heading for import/export"
+    },
+    "settingsImportExportDesc": {
+        "message": "Faça backup ou restaure todas as suas regras de rastreamento",
+        "description": "Description for import/export section"
+    },
+    "buttonImport": {
+        "message": "Importar",
+        "description": "Import button label"
+    },
+    "buttonExport": {
+        "message": "Exportar",
+        "description": "Export button label"
+    },
+    "settingsNotifications": {
+        "message": "Notificações",
+        "description": "Settings section heading for notifications"
+    },
+    "settingsHelpSupport": {
+        "message": "Ajuda e Suporte",
+        "description": "Settings section heading for help and support links"
     }
 }

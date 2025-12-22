@@ -219,6 +219,50 @@
         "message": "Jetzt:",
         "description": "Prefix for current value in notifications"
     },
+    "footerRateExtension": {
+        "message": "Erweiterung bewerten",
+        "description": "Footer link to rate extension in web store"
+    },
+    "footerReportIssue": {
+        "message": "Problem melden",
+        "description": "Footer link to report issues on GitHub"
+    },
+    "footerWatchDemo": {
+        "message": "Demo ansehen",
+        "description": "Footer link to YouTube demo video"
+    },
+    "footerBuyMeCoffee": {
+        "message": "Erweiterung unterstützen",
+        "description": "Footer link to Buy Me a Coffee support page"
+    },
+    "buttonSettings": {
+        "message": "Einstellungen",
+        "description": "Settings button label"
+    },
+    "settingsImportExport": {
+        "message": "Importieren / Exportieren",
+        "description": "Settings section heading for import/export"
+    },
+    "settingsImportExportDesc": {
+        "message": "Sichern oder wiederherstellen Sie alle Ihre Tracking-Regeln",
+        "description": "Description for import/export section"
+    },
+    "buttonImport": {
+        "message": "Importieren",
+        "description": "Import button label"
+    },
+    "buttonExport": {
+        "message": "Exportieren",
+        "description": "Export button label"
+    },
+    "settingsNotifications": {
+        "message": "Benachrichtigungen",
+        "description": "Settings section heading for notifications"
+    },
+    "settingsHelpSupport": {
+        "message": "Hilfe & Support",
+        "description": "Settings section heading for help and support links"
+    },
     "labelLastChecked": {
         "message": "Geprüft",
         "description": "Prefix for last checked timestamp"
