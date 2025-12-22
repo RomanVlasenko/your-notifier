@@ -23,6 +23,22 @@ function checkAndUpdate(rule, callbackHandler) {
 
     console.log("[urlChecker] Starting fetch for rule %s: %s", rule.id, rule.url);
 
+    var callbackCalled = false;
+    var safeCallback = function(result) {
+        if (!callbackCalled) {
+            callbackCalled = true;
+            console.log("[urlChecker] Calling callback for rule %s", rule.id);
+            callbackHandler(result);
+        }
+    };
+
+    // Timeout - if callback hasn't been called after 60 seconds, call it with error state
+    var timeoutId = setTimeout(function() {
+        console.error("[urlChecker] Timeout for rule %s - callback not called", rule.id);
+        rule.value = rule.value || ERROR;
+        safeCallback(rule);
+    }, 60000);
+
     fetch(rule.url, { credentials: 'include' })
         .then(function (response) {
             console.log("[urlChecker] Fetch successful for rule %s, status: %s", rule.id, response.status);
@@ -51,11 +67,11 @@ function checkAndUpdate(rule, callbackHandler) {
                         storedRule.attempts = 0;
                         return ruleStorage.updateRule(storedRule).then(function () {
                             rule.value = newVal;
-                            return updateRuleValue(rule, callbackHandler);
+                            return updateRuleValue(rule, safeCallback);
                         });
                     } else {
                         rule.value = newVal;
-                        return updateRuleValue(rule, callbackHandler);
+                        return updateRuleValue(rule, safeCallback);
                     }
                 });
             } else {
@@ -66,6 +82,9 @@ function checkAndUpdate(rule, callbackHandler) {
         .catch(function (error) {
             console.error("[urlChecker] Error for rule %s: %s. Attempts made: %s", rule.id, error.message, rule.attempts);
             return onNetworkError();
+        })
+        .finally(function() {
+            clearTimeout(timeoutId);
         });
 
     // Called when network request fails
@@ -74,19 +93,19 @@ function checkAndUpdate(rule, callbackHandler) {
             // Had a valid value before, increment attempts
             if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
                 rule.value = NOT_AVAILABLE;
-                return updateRuleValue(rule, callbackHandler);
+                return updateRuleValue(rule, safeCallback);
             } else {
                 return ruleStorage.readRule(rule.id).then(function (updatedRule) {
                     updatedRule.attempts = (updatedRule.attempts || 0) + 1;
                     return ruleStorage.updateRule(updatedRule).then(function () {
-                        callbackHandler(updatedRule);
+                        safeCallback(updatedRule);
                     });
                 });
             }
         } else {
             // No previous value or was already an error state
             rule.value = ERROR;
-            return updateRuleValue(rule, callbackHandler);
+            return updateRuleValue(rule, safeCallback);
         }
     }
 
@@ -96,19 +115,19 @@ function checkAndUpdate(rule, callbackHandler) {
             // Had a valid value before, increment attempts
             if ((rule.attempts || 0) >= updates.MAX_ATTEMPTS) {
                 rule.value = NOT_AVAILABLE;
-                return updateRuleValue(rule, callbackHandler);
+                return updateRuleValue(rule, safeCallback);
             } else {
                 return ruleStorage.readRule(rule.id).then(function (updatedRule) {
                     updatedRule.attempts = (updatedRule.attempts || 0) + 1;
                     return ruleStorage.updateRule(updatedRule).then(function () {
-                        callbackHandler(updatedRule);
+                        safeCallback(updatedRule);
                     });
                 });
             }
         } else {
             // No previous valid value - use ELEMENT_NOT_FOUND instead of ERROR
             rule.value = ELEMENT_NOT_FOUND;
-            return updateRuleValue(rule, callbackHandler);
+            return updateRuleValue(rule, safeCallback);
         }
     }
 }

@@ -1,5 +1,6 @@
 // Your Notifier namespace - prevents global scope pollution
-var YON = window.YON || {};
+// Note: In service workers, use self instead of window
+var YON = (typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : {}).YON || {};
 
 //Constants
 var NOT_AVAILABLE = chrome.i18n.getMessage('statusNotAvailable');

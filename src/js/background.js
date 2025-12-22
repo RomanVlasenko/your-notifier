@@ -165,28 +165,47 @@ chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse)
 // Check rule immediately handler
 chromeAPI.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.method == "checkRuleNow") {
+        console.log('[Background] checkRuleNow for rule:', request.ruleId);
+
+        // Send immediate response so popup doesn't hang waiting
+        sendResponse({ received: true });
+
+        // Then do the actual work asynchronously
         setupOffscreenDocument()
             .then(function () {
+                console.log('[Background] Offscreen doc ready, reading rule:', request.ruleId);
                 return ruleStorage.readRule(request.ruleId);
             })
             .then(function (rule) {
                 if (!rule) {
-                    sendResponse({ success: false, error: "Rule not found" });
-                    return;
+                    console.error('[Background] Rule not found:', request.ruleId);
+                    return Promise.resolve();
                 }
 
-                // Update lastUpdated timestamp
-                rule.lastUpdated = new Date().getTime();
-                ruleStorage.saveRule(rule).then(function () {
+                console.log('[Background] Starting check for rule:', request.ruleId);
+                return new Promise(function(resolve) {
                     checkAndUpdate(rule, function (updatedRule) {
-                        sendResponse({ success: true, rule: updatedRule });
+                        console.log('[Background] Check completed for rule:', request.ruleId);
 
-                        // Notify if value changed
-                        if (updatedRule.new) {
-                            notifications.onRuleUpdated(updatedRule);
-                        }
+                        // Only NOW update lastUpdated timestamp - after check completes
+                        updatedRule.lastUpdated = new Date().getTime();
+                        console.log('[Background] Updated lastUpdated to:', updatedRule.lastUpdated);
+
+                        ruleStorage.saveRule(updatedRule).then(function () {
+                            console.log('[Background] Updated rule saved');
+
+                            // Notify if value changed
+                            if (updatedRule.new) {
+                                notifications.onRuleUpdated(updatedRule);
+                            }
+
+                            resolve();
+                        });
                     });
                 });
+            })
+            .catch(function(err) {
+                console.error('[Background] Error in checkRuleNow:', err);
             });
         return true; // Keep channel open for async response
     }
@@ -398,7 +417,27 @@ chromeAPI.notifications.onClicked.addListener(function (notificationId) {
 });
 
 // Update scheduling (from updateSchedule.js)
-// Check if alarm already exists before creating
+// CRITICAL: In Manifest V3, event listeners MUST be registered synchronously at module load time
+// Register the alarm listener FIRST, before any async operations
+chromeAPI.alarms.onAlarm.addListener(function (alarm) {
+    if (alarm.name == 'CheckRulesSchedule') {
+        console.log('[Background] Alarm fired, checking network');
+        c.isNetworkAvailable({
+            success: function () {
+                // Start the check and log any errors
+                // The returned promise will keep the service worker alive during checks
+                performScheduledChecking().catch(function(err) {
+                    console.error('[Background] Error during scheduled checking:', err);
+                });
+            },
+            error: function () {
+                console.log('[Background] Network not available, skipping check');
+            }
+        });
+    }
+});
+
+// Then create/check the alarm
 chromeAPI.alarms.get("CheckRulesSchedule", function(alarm) {
     if (!alarm) {
         console.log('[Background] Creating CheckRulesSchedule alarm');
@@ -408,28 +447,15 @@ chromeAPI.alarms.get("CheckRulesSchedule", function(alarm) {
     }
 });
 
-chromeAPI.alarms.onAlarm.addListener(function (alarm) {
-    if (alarm.name == 'CheckRulesSchedule') {
-        console.log('[Background] Alarm fired, checking network');
-        c.isNetworkAvailable({
-            success: function () {
-                performScheduledChecking();
-            },
-            error: function () {
-                console.log('[Background] Network not available, skipping check');
-            }
-        });
-    }
-});
-
 function performScheduledChecking() {
-    ruleStorage.readRules().then(function (rules) {
+    // CRITICAL: Must return the promise so alarm listener can wait for completion
+    return ruleStorage.readRules().then(function (rules) {
         if (rules.length == 0) {
-            return;
+            return Promise.resolve();
         }
 
         // Ensure offscreen document is available before checking rules
-        setupOffscreenDocument().then(function () {
+        return setupOffscreenDocument().then(function () {
             // Grouping rules by base URI to make pauses between requests to prevent sites from flooding
             var ruleSets = _.groupBy(rules, function (rule) {
                 return c.baseUrl(rule.url);
@@ -447,10 +473,11 @@ function performScheduledChecking() {
 
                             if (rule.lastUpdated < new Date().getTime() - getUpdateInterval(rule)) {
                                 ruleStorage.readRule(rule.id).then(function (r) {
-                                    r.lastUpdated = new Date().getTime();
-                                    ruleStorage.saveRule(r).then(function () {
-                                        checkAndUpdate(r, function (rule) {
-                                            onRuleUpdated(rule);
+                                    checkAndUpdate(r, function (updatedRule) {
+                                        // Update lastUpdated AFTER check completes
+                                        updatedRule.lastUpdated = new Date().getTime();
+                                        ruleStorage.saveRule(updatedRule).then(function () {
+                                            onRuleUpdated(updatedRule);
                                         });
                                     });
                                 });

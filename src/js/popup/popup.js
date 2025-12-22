@@ -802,26 +802,53 @@ function onRefreshClick(ruleId, $ruleControl, $button) {
     var $lastCheckedText = $ruleControl.find('.last-checked-text');
     $lastCheckedText.text(chrome.i18n.getMessage('labelChecking') || 'Checking...');
 
-    // Send message to background to check this rule immediately
-    chromeAPI.runtime.sendMessage({ method: "checkRuleNow", ruleId: ruleId }, function(response) {
-        // Stop spinning
-        $icon.removeClass('spinning');
-        $button.prop('disabled', false);
+    console.log('[Popup] Starting refresh for rule:', ruleId);
 
-        if (response && response.success) {
-            // Refresh the rule control to show updated value and timestamp
-            ruleStorage.readRule(ruleId).then(function(rule) {
-                updateRuleControlDOM(rule, $ruleControl);
-                $ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
-            });
-        } else {
-            // Show error state briefly then restore
-            $lastCheckedText.text(chrome.i18n.getMessage('labelCheckFailed') || 'Check failed');
-            setTimeout(function() {
-                ruleStorage.readRule(ruleId).then(function(rule) {
-                    updateLastCheckedText($ruleControl, rule);
-                });
-            }, 2000);
+    // Send message to background - don't wait for response callback
+    // Instead, poll the storage to detect when the check completes
+    chrome.runtime.sendMessage(
+        { method: "checkRuleNow", ruleId: ruleId },
+        function(response) {
+            console.log('[Popup] Message sent, response:', response);
+            if (chrome.runtime.lastError) {
+                console.error('[Popup] Error sending message:', chrome.runtime.lastError);
+            }
         }
+    );
+
+    // Get the initial lastUpdated time
+    ruleStorage.readRule(ruleId).then(function(initialRule) {
+        var initialLastUpdated = initialRule ? initialRule.lastUpdated : 0;
+        console.log('[Popup] Initial lastUpdated:', initialLastUpdated);
+
+        // Poll storage every 100ms to see if the check completed
+        var pollInterval = setInterval(function() {
+            ruleStorage.readRule(ruleId).then(function(rule) {
+                if (rule && rule.lastUpdated && rule.lastUpdated > initialLastUpdated) {
+                    // The rule was just updated
+                    clearInterval(pollInterval);
+                    console.log('[Popup] Check completed, new lastUpdated:', rule.lastUpdated);
+
+                    // Stop spinning
+                    $icon.removeClass('spinning');
+                    $button.prop('disabled', false);
+
+                    // Update the rule control to show updated value and timestamp
+                    updateRuleControlDOM(rule, $ruleControl);
+                    $ruleControl.find(".value span").attr("title", rule.value).text(rule.value);
+                }
+            });
+        }, 100);
+
+        // Timeout after 30 seconds
+        setTimeout(function() {
+            if ($icon.hasClass('spinning')) {
+                clearInterval(pollInterval);
+                $icon.removeClass('spinning');
+                $button.prop('disabled', false);
+                $lastCheckedText.text(chrome.i18n.getMessage('labelCheckFailed') || 'Check failed');
+                console.warn('[Popup] Check timed out after 30 seconds');
+            }
+        }, 30000);
     });
 }
