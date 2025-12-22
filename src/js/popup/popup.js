@@ -301,7 +301,7 @@ $(document).ready(function () {
     function exportRules() {
         var $status = $("#import-export-status");
 
-        ruleStorage.readRules(function(rules) {
+        ruleStorage.readRules().then(function(rules) {
             if (rules.length === 0) {
                 $status.removeClass("alert-success").addClass("alert-warning")
                        .html('<strong>Warning:</strong> No items to export.')
@@ -341,6 +341,12 @@ $(document).ready(function () {
                    .html('<strong>Success!</strong> Exported ' + rules.length + ' item(s).')
                    .show();
             setTimeout(function() { $status.fadeOut(); }, 3000);
+        }).catch(function(err) {
+            console.error('Export error:', err);
+            $status.removeClass("alert-warning alert-success").addClass("alert-danger")
+                   .html('<strong>Error:</strong> Failed to export rules.')
+                   .show();
+            setTimeout(function() { $status.fadeOut(); }, 5000);
         });
     }
 
